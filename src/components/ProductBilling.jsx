@@ -4,7 +4,7 @@ import { Button, Checkbox, Label, TextInput, Select } from "flowbite-react";
 export default function ProductBilling() {
   return (
     <div>
-      <form className="flex max-w-md flex-col gap-2">
+      <form className="p-4 flex max-w-md flex-col gap-2">
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="type" value="Product Type" />
           <Select id="type" className="w-64" required>
@@ -84,8 +84,8 @@ export default function ProductBilling() {
           />
         </div>
         <div className="flex justify-end gap-2">
-          <Button type="submit">Clear</Button>
-          <Button type="submit">Add Product</Button>
+          <Button type="submit" outline gradientDuoTone="pinkToOrange">Clear</Button>
+          <Button type="submit" gradientDuoTone="purpleToBlue">Add Product</Button>
         </div>
       </form>
     </div>

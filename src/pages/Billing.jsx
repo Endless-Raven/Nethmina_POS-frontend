@@ -9,38 +9,45 @@ export default function Billing() {
     <div className="flex w-full">
       {/* sidebar */}
       <div className="w-[30%] p-4 min-h-screen">
-        <CustomerBilling/>
-        <div className="">
-          <ProductBilling/>
-        </div>
+        <CustomerBilling />
+        <ProductBilling />
       </div>
       {/* main content */}
       <div className="w-[70%] border-l-4 p-4 min-h-screen">
         <TableBilling />
-        <form className="mt-10 flex max-w-md flex-col gap-4">
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="email1" value="Your email" />
+        <div className="border-2 p-4 rounded-md bg-white">
+          <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
+            <div className="flex gap-4 items-center justify-between">
+              <Label htmlFor="salesman" value="Salesman" />
+              <Select id="salesman" className="w-64" required>
+                <option>Select</option>
+                <option>saman kumara</option>
+                <option>sanath nishantha</option>
+              </Select>
             </div>
-            <TextInput
-              id="email1"
-              type="email"
-              placeholder="name@flowbite.com"
-              required
-            />
-          </div>
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="password1" value="Your password" />
+            <div className="flex gap-4 items-center justify-end mb-4">
+              <Label htmlFor="total" value="Total Price" />
+              <TextInput
+                id="total"
+                type="number"
+                className="w-64"
+                placeholder="30000"
+                required
+              />
             </div>
-            <TextInput id="password1" type="password" required />
           </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id="remember" />
-            <Label htmlFor="remember">Remember me</Label>
+          <div className="flex gap-2 justify-end">
+            <Button type="submit" outline gradientDuoTone="pinkToOrange">
+              Cancel
+            </Button>
+            <Button type="submit" gradientDuoTone="cyanToBlue">
+              Done
+            </Button>
+            <Button type="submit" gradientDuoTone="purpleToBlue">
+              Print
+            </Button>
           </div>
-          <Button type="submit">Submit</Button>
-        </form>
+        </div>
       </div>
     </div>
   );

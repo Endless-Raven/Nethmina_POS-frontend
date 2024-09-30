@@ -1,33 +1,56 @@
 import React from "react";
-import { Button, Checkbox, Label, TextInput, Select } from "flowbite-react";
+import {
+  Button,
+  Checkbox,
+  Label,
+  TextInput,
+  Select,
+  Textarea,
+} from "flowbite-react";
 
 export default function CustomerBilling() {
   return (
     <div>
-      <div className="border-4 p-4 mb-10">
+      <div className="border-2 bg-white p-4 rounded-md">
         <form className="flex max-w-md flex-col gap-4">
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="email1" value="Your email" />
-            </div>
+          <div className="flex gap-4 items-center justify-between">
+            <Label htmlFor="contact" value="Customer Contact" />
             <TextInput
-              id="email1"
-              type="email"
-              placeholder="name@flowbite.com"
+              id="contact"
+              type="number"
+              className="w-56"
+              placeholder="0762223339"
               required
             />
           </div>
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="password1" value="Your password" />
-            </div>
-            <TextInput id="password1" type="password" required />
+          <div className="flex gap-4 items-center justify-between">
+            <Label htmlFor="name" value="Customer Name" />
+            <TextInput
+              id="name"
+              type="text"
+              className="w-56"
+              placeholder="W. Saman Kumara"
+              required
+            />
           </div>
-          <div className="flex items-center gap-2">
-            <Checkbox id="remember" />
-            <Label htmlFor="remember">Remember me</Label>
+          <div className="flex gap-4 items-center justify-between">
+            <Label htmlFor="address" value="Customer Address" />
+            <Textarea
+              id="comment"
+              className="w-56"
+              placeholder="marawila,haputhale"
+              required
+              rows={3}
+            />
           </div>
-          <Button type="submit">Submit</Button>
+          <div className="flex justify-end gap-2">
+            <Button type="submit" outline gradientDuoTone="pinkToOrange">
+              Clear
+            </Button>
+            <Button type="submit" gradientDuoTone="purpleToBlue">
+              Save
+            </Button>
+          </div>
         </form>
       </div>
     </div>
