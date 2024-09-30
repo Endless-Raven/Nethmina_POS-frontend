@@ -1,26 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Checkbox, Label, TextInput, Select } from "flowbite-react";
 
-export default function ProductBilling() {
+export default function ProductBilling({ product }) {
+  const [category, setCategory] = useState([
+    "Mobile Phones",
+    "Screen Protectors",
+    "Smartwatches",
+    "Power Banks",
+    "Chargers & Cables",
+    "Speakers",
+    "Earphones & Headphones",
+    "Phone Cases",
+    "Wi-Fi Routers",
+    "Tablets",
+  ]);
+  const [brands, setBrands] = useState([
+    "Samsung",
+    "Apple",
+    "Huawei",
+    "Xiaomi",
+    "OnePlus",
+    "Google",
+    "Nokia",
+    "Sony",
+    "Oppo",
+    "Vivo",
+  ]);
+
   return (
-    <div>
-      <form className="p-4 flex max-w-md flex-col gap-2">
+    <div className="">
+      <form className="mx-auto p-4 flex max-w-md flex-col gap-2">
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="type" value="Product Type" />
           <Select id="type" className="w-64" required>
             <option>Select</option>
-            <option>Mobile Phone</option>
-            <option>Battery</option>
-            <option>Temperd</option>
+            {category.map((cat, index) => (
+              <option key={index}>{cat}</option>
+            ))}
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="brand" value="Brand Name" />
           <Select id="brand" className="w-64" required>
             <option>Select</option>
-            <option>Samsung</option>
-            <option>Nokia</option>
-            <option>Huawei</option>
+            {brands.map((brand, index) => (
+              <option key={index}>{brand}</option>
+            ))}
           </Select>
         </div>
         <div className="flex gap-4 items-center justify-between">
@@ -84,8 +109,12 @@ export default function ProductBilling() {
           />
         </div>
         <div className="flex justify-end gap-2">
-          <Button type="submit" outline gradientDuoTone="pinkToOrange">Clear</Button>
-          <Button type="submit" gradientDuoTone="purpleToBlue">Add Product</Button>
+          <Button type="submit" outline gradientDuoTone="pinkToOrange">
+            Clear
+          </Button>
+          <Button type="submit" gradientDuoTone="purpleToBlue">
+            Add Product
+          </Button>
         </div>
       </form>
     </div>
