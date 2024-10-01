@@ -12,7 +12,6 @@ export default function Billing() {
     "sanath nishantha",
   ]);
 
-
   // about product Data
   const [product, setProduct] = useState({
     product_id: "",
@@ -27,11 +26,14 @@ export default function Billing() {
     setOrderedList(prevData => [...prevData, product]);
   }  
 
+  // about customer data 
   const [customer, setCustomer] = useState({
     customer_number: "",
     customer_name: "",
     customer_address: "",
   });
+
+
   const [salesman, setSalesman] = useState("");
   const [total, setTotal] = useState(0);
 
@@ -62,8 +64,6 @@ export default function Billing() {
   const handlePrint = (e) => {
     e.preventDefault();
   };
-
-  console.log(orderedList);
 
   return (
     <div className="flex w-full">

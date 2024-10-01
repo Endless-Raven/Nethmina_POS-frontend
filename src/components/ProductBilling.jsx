@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Button, Label, TextInput, Select } from "flowbite-react";
+import { Modal } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 export default function ProductBilling({ product, setProduct, addProduct }) {
   const categories = [
@@ -64,6 +66,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
+  const [openModal, setOpenModal] = useState(false);
 
   // Handle changes for product fields
   const handleProductChange = (e) => {
@@ -115,11 +118,13 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
 
   // Handle form submission
   const handleAdd = (e) => {
-    if (product.serial_number) {
+    if (product.serial_number && product.serial_number.length === 15) {
       e.preventDefault();
       // Validate product data before adding
       addProduct();
       resetProduct(); // Reset product and selections after adding
+    } else {
+      setOpenModal(true);
     }
   };
 
@@ -289,6 +294,22 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
           </Button>
         </div>
       </form>
+      <Modal
+        show={openModal}
+        size="md"
+        onClose={() => setOpenModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Something wrong with product data
+            </h3>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
