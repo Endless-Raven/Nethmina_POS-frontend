@@ -6,98 +6,104 @@ import CustomerBilling from "../components/CustomerBilling";
 
 export default function Billing() {
 
-  const [orderedList, setOrderedList] = useState([
-    {
-      no: 1,
-      name: "Apple iPhone 14 Pro",
-      warranty: "1 year",
-      unitPrice: 460000, // LKR
-      noOfUnits: 1,
-      discount:2000,
-    },
-    {
-      no: 2,
-      name: "Samsung Galaxy S23 Ultra",
-      warranty: "1 year",
-      unitPrice: 380000, // LKR
-      noOfUnits: 1,
-      discount:1000,
-    },
-    {
-      no: 3,
-      name: "OnePlus 11",
-      warranty: "1 year",
-      unitPrice: 270000, // LKR
-      noOfUnits: 1,
-      discount:3000,
-    },
-    {
-      no: 4,
-      name: "Google Pixel 7 Pro",
-      warranty: "1 year",
-      unitPrice: 320000, // LKR
-      noOfUnits: 1,
-      discount:500,
-    },
-    {
-      no: 5,
-      name: "Xiaomi 13 Pro",
-      warranty: "1 year",
-      unitPrice: 290000, // LKR
-      noOfUnits: 1,
-      discount:300,
-    },
-    {
-      no: 6,
-      name: "Huawei P50 Pro",
-      warranty: "1 year",
-      unitPrice: 340000, // LKR
-      noOfUnits: 1,
-      discount:700,
-    },
+  const [orderedList, setOrderedList] = useState([]);
+  const [salesmans, setSalesmans] = useState([
+    "saman kumara",
+    "sanath nishantha",
   ]);
-  const [salesmans,setSalesmans] = useState([""]);
 
 
-  const [product,setProduct] = useState({
-    name:"",
-    serial_number:"",
-    unit_price:"",
-    quantity:"",
-    discount:"",
+  // about product Data
+  const [product, setProduct] = useState({
+    product_id: "",
+    product_name: "",
+    serial_number: "",
+    price: "",
+    quantity: "",
+    discount: 0.00,
+    warranty_period: "",
   });
-  const [customer,setCustomer] = useState({
-    customer_number:"",
-    customer_name:"",
-    customer_address:"",
-  });
-  const [salesman,setSalesman]= useState("");
+  const addProduct = () => {
+    setOrderedList(prevData => [...prevData, product]);
+  }  
 
-  console.log(customer);
+  const [customer, setCustomer] = useState({
+    customer_number: "",
+    customer_name: "",
+    customer_address: "",
+  });
+  const [salesman, setSalesman] = useState("");
+  const [total, setTotal] = useState(0);
+
+  const handleReset = () => {
+    setOrderedList([]);
+    setProduct({
+      product_id: "",
+      product_name: "",
+      serial_number: "",
+      price: "",
+      quantity: "",
+      discount: 0.00,
+      warranty_period: "",
+    });
+    setCustomer({
+      customer_number: "",
+      customer_name: "",
+      customer_address: "",
+    });
+    setTotal(0);
+    setSalesman("");
+  };
+
+  const handleDone = (e) => {
+    e.preventDefault();
+  };
+
+  const handlePrint = (e) => {
+    e.preventDefault();
+  };
+
+  console.log(orderedList);
 
   return (
     <div className="flex w-full">
       {/* sidebar */}
       <div className="w-[30%] p-2 min-h-screen">
+        {/* customer data */}
         <CustomerBilling customer={customer} setCustomer={setCustomer} />
-        <ProductBilling product={product} setProduct={setProduct}/>
+        {/* product data */}
+        <ProductBilling product={product} setProduct={setProduct} addProduct={addProduct}/>
       </div>
       {/* main content */}
       <div className="w-[70%] border-l-4 p-2 min-h-screen relative">
+        {/* table */}
         <TableBilling orderedList={orderedList} />
+        {/* form */}
         <div className="absolute bottom-4 z-10 w-[calc(100%-2rem)] border-2 p-4 rounded-md bg-white">
           <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
             <div className="flex gap-4 items-center justify-between">
               <Label htmlFor="salesman" value="Salesman" />
-              <Select id="salesman" className="w-64" required>
-                <option>Select</option>
-                <option>saman kumara</option>
-                <option>sanath nishantha</option>
+              <Select
+                id="salesman"
+                className="w-64"
+                onChange={(e) => {
+                  setSalesman(e.target.value);
+                }}
+                required
+              >
+                <option value="">Select</option>
+                {salesmans.map((man, index) => (
+                  <option key={index} value={man}>
+                    {man}
+                  </option>
+                ))}
               </Select>
             </div>
             <div className="flex gap-4 items-center justify-end mb-4">
               <Label htmlFor="total" value="Total Price" />
               <TextInput
+                value={total}
+                readOnly
                 id="total"
                 type="number"
                 className="w-64"
@@ -107,13 +113,26 @@ export default function Billing() {
             </div>
           </div>
           <div className="flex gap-2 justify-end">
-            <Button type="submit" outline gradientDuoTone="pinkToOrange">
+            <Button
+              type="reset"
+              outline
+              gradientDuoTone="pinkToOrange"
+              onClick={handleReset}
+            >
               Cancel
             </Button>
-            <Button type="submit" gradientDuoTone="cyanToBlue">
+            <Button
+              type="submit"
+              onClick={handleDone}
+              gradientDuoTone="cyanToBlue"
+            >
               Done
             </Button>
-            <Button type="submit" gradientDuoTone="purpleToBlue">
+            <Button
+              type="submit"
+              onClick={handlePrint}
+              gradientDuoTone="purpleToBlue"
+            >
               Print
             </Button>
           </div>

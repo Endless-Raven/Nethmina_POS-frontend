@@ -36,16 +36,18 @@ export default function TableBilling({ orderedList }) {
                 className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
                 key={index}
               >
-                <Table.Cell>{index + 1}</Table.Cell>
+                <Table.Cell>{item.product_id}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.name}
+                  {item.product_name}
                 </Table.Cell>
-                <Table.Cell>{item.warranty}</Table.Cell>
-                <Table.Cell>Rs: {item.unitPrice}</Table.Cell>
-                <Table.Cell>{item.noOfUnits}</Table.Cell>
+                <Table.Cell>{item.warranty_period}</Table.Cell>
+                <Table.Cell>Rs: {item.price}</Table.Cell>
+                <Table.Cell>{item.quantity}</Table.Cell>
                 <Table.Cell>Rs: {item.discount}</Table.Cell>
                 <Table.Cell>
-                  Rs: {item.unitPrice * item.noOfUnits - item.discount}
+                  Rs:{" "}
+                  {Number(item.price) * Number(item.quantity) -
+                    Number(item.discount)}
                 </Table.Cell>
               </Table.Row>
             ))
