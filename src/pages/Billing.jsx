@@ -56,25 +56,34 @@ export default function Billing() {
       discount:700,
     },
   ]);
- 
+  const [salesmans,setSalesmans] = useState([""]);
+
+
   const [product,setProduct] = useState({
-    name:"Google Pixel 7 Pro",
-    serial_number:350123451234560,
-    unit_price:320000,
-    quantity:1,
-    discount:500,
-  })
-  
+    name:"",
+    serial_number:"",
+    unit_price:"",
+    quantity:"",
+    discount:"",
+  });
+  const [customer,setCustomer] = useState({
+    customer_number:"",
+    customer_name:"",
+    customer_address:"",
+  });
+  const [salesman,setSalesman]= useState("");
+
+  console.log(customer);
 
   return (
     <div className="flex w-full">
       {/* sidebar */}
-      <div className="w-[30%] p-4 min-h-screen">
-        <CustomerBilling />
+      <div className="w-[30%] p-2 min-h-screen">
+        <CustomerBilling customer={customer} setCustomer={setCustomer} />
         <ProductBilling product={product} setProduct={setProduct}/>
       </div>
       {/* main content */}
-      <div className="w-[70%] border-l-4 p-4 min-h-screen relative">
+      <div className="w-[70%] border-l-4 p-2 min-h-screen relative">
         <TableBilling orderedList={orderedList} />
         <div className="absolute bottom-4 z-10 w-[calc(100%-2rem)] border-2 p-4 rounded-md bg-white">
           <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
