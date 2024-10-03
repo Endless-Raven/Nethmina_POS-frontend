@@ -168,7 +168,6 @@ const Inventory = () => {
           ))}
         </select>
 
-        
         <select
           value={selectedBrand}
           onChange={(e) => setSelectedBrand(e.target.value)}
@@ -204,8 +203,8 @@ const Inventory = () => {
             >
               <td className="border border-gray-300 p-2">{item.no}</td>
               <td
-                // className="border border-gray-300 p-2 cursor-pointer text-blue-600 underline"
-                // onClick={() => handleShowAccessories(index)}
+              // className="border border-gray-300 p-2 cursor-pointer text-blue-600 underline"
+              // onClick={() => handleShowAccessories(index)}
               >
                 {item.name}
               </td>
@@ -238,7 +237,8 @@ const Inventory = () => {
           ))}
         </tbody>
       </table>
-      <Button className="mt-3"
+      <Button
+        className="mt-3"
         onClick={() => setShowModal(true)}
         size={"sm"}
         gradientDuoTone="purpleToBlue"
@@ -298,17 +298,16 @@ const Inventory = () => {
               required
             />
             <Label htmlFor="store" value="Store" />
-            <select 
+            <select
               id="store"
               value={newItem.store}
               onChange={(e) =>
                 setNewItem({ ...newItem, store: e.target.value })
               }
-              className="mt-4 border border-gray-300 bg-gray-100 rounded-lg p-2  ">
+              className="mt-4 border border-gray-300 bg-gray-100 rounded-lg p-2  "
+            >
               {stores.map((store) => (
-                <option 
-                 key={store}
-                 value={store}>
+                <option key={store} value={store}>
                   {store}
                 </option>
               ))}

@@ -104,10 +104,7 @@ export default function Billing() {
   // validate all forms
   const validate = () => {
     // Check if any customer details are empty
-    if (
-      customer.customer_number === "" ||
-      customer.customer_name === ""
-    ) {
+    if (customer.customer_number === "" || customer.customer_name === "") {
       return false; // If any detail is empty, return false
     }
     // Check if the ordered list is empty
