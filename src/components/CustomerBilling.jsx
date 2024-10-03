@@ -42,14 +42,14 @@ export default function CustomerBilling({ customer, setCustomer }) {
     <div className="border-2 bg-white p-2 rounded-md mb-4">
       <form
         className="flex max-w-md mx-auto flex-col gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!(/^[A-Za-z\s]+$/.test(customer.customer_name))){
-            setModelData("enter valid name");
-            setOpenModal(true);
-          }
-          // handle save
-        }}
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        //   if (!(/^[A-Za-z\s]+$/.test(customer.customer_name))){
+        //     setModelData("enter valid name");
+        //     setOpenModal(true);
+        //   }
+        //   // handle save
+        // }}
       >
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="contact" value="Customer Contact" />
@@ -89,7 +89,6 @@ export default function CustomerBilling({ customer, setCustomer }) {
             value={customer.customer_address}
             className="w-56"
             placeholder="marawila,haputhale"
-            required
             rows={3}
           />
         </div>

@@ -77,7 +77,6 @@ export default function Billing() {
       customer_address: "",
     });
     setTotal(0);
-    setSalesman("");
   };
 
   // done button function
@@ -107,8 +106,7 @@ export default function Billing() {
     // Check if any customer details are empty
     if (
       customer.customer_number === "" ||
-      customer.customer_name === "" ||
-      customer.customer_address === ""
+      customer.customer_name === ""
     ) {
       return false; // If any detail is empty, return false
     }

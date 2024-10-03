@@ -131,7 +131,9 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
 
   return (
     <div className="">
+
       <form className="mx-auto p-2 flex max-w-md flex-col gap-2">
+
         {/* Product Type Selection */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="type" value="Product Type" />
@@ -296,7 +298,10 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             Add Product
           </Button>
         </div>
+
       </form>
+
+      {/* for display error messages */}
       <Modal
         show={openModal}
         size="md"
@@ -313,6 +318,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
           </div>
         </Modal.Body>
       </Modal>
+
     </div>
   );
 }
