@@ -4,6 +4,7 @@ import { Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 export default function ProductBilling({ product, setProduct, addProduct }) {
+  
   const categories = [
     "Mobile Phones",
     "Screen Protectors",
@@ -159,6 +160,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             sizing={"sm"}
             className="w-64"
             required
+            disabled={selectedCategory===""}
             value={selectedBrand}
             onChange={(e) => setSelectedBrand(e.target.value)}
           >
@@ -179,6 +181,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             sizing={"sm"}
             className="w-64"
             required
+            disabled={selectedBrand===""}
             value={selectedModelId} // Bind selected model ID to the value of the dropdown
             onChange={handleChangeProduct}
           >

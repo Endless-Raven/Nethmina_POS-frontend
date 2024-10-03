@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "flowbite-react";
 
-export default function TableBilling({ orderedList }) {
+export default function TableBilling({ orderedList, setTotal }) {
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // calculate total of all products
+  useEffect(() => {
+    const totalAmount = orderedList.reduce((acc, product) => {
+      const productTotal = product.price * product.quantity;
+      return acc + productTotal;
+    }, 0);
+    setTotal(Number(totalAmount));
+  }, [orderedList]);
 
   return (
     <div className="min-h-[40%] overflow-x-auto">

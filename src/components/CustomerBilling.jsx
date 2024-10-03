@@ -7,8 +7,6 @@ export default function CustomerBilling({ customer, setCustomer }) {
   const [openModal, setOpenModal] = useState(false);
   const [modelData, setModelData] = useState("something went wrong");
 
-  console.log(customer);
-
   const handleCustomerChange = (e) => {
     setCustomer((prev) => ({
       ...prev,
@@ -104,9 +102,6 @@ export default function CustomerBilling({ customer, setCustomer }) {
             onClick={handleReset}
           >
             Clear
-          </Button>
-          <Button size={"sm"} type="submit" gradientDuoTone="purpleToBlue">
-            Save
           </Button>
         </div>
       </form>
