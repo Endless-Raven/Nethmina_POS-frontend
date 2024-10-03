@@ -145,9 +145,9 @@ export default function Billing() {
   });
 
   return (
-    <div className="flex w-full relative">
+    <div className="flex w-full relative ">
       {/* sidebar */}
-      <div className="w-[30%] p-2 min-h-screen">
+      <div className="w-[30%] p-2 ">
         {/* customer data */}
         <CustomerBilling customer={customer} setCustomer={setCustomer} />
         {/* product data */}
@@ -159,11 +159,11 @@ export default function Billing() {
       </div>
 
       {/* main content */}
-      <div className="w-[70%] border-l-4 p-2 min-h-screen relative">
+      <div className="w-[70%] border-l-4 p-2 min-h-[90vh] relative">
         {/* table */}
         <TableBilling setTotal={setTotal} orderedList={orderedList} />
         {/* form */}
-        <div className="absolute bottom-4 z-10 w-[calc(100%-2rem)] border-2 p-4 rounded-md bg-white">
+        <div className="absolute bottom-4 z-10 w-[calc(100%-1rem)] border-2 p-4 rounded-md bg-white">
           <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
             <div className="flex gap-4 items-center justify-between">
               <Label htmlFor="salesman" value="Salesman" />
