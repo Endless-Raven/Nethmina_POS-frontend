@@ -3,15 +3,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Billing from "./pages/Billing";
 import Inventory from "./pages/Inventory";
 import Test from "./pages/Test";
+import Home from "./pages/Home";
 
 function App() {
   return (
-    
     <BrowserRouter>
       <Routes>
-        <Route element={<Billing />} path="/" />
-        <Route element={<Inventory/>} path="/inv" />
-        <Route element={<Test/>} path="/test" />
+        <Route element={<Home />} path="/" />
+        {/* <Route element={<Inventory/>} path="/inv" />
+        <Route element={<Test/>} path="/test" /> */}
       </Routes>
     </BrowserRouter>
   );
