@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Button, Checkbox, Label, TextInput, Select } from "flowbite-react";
+import { Button, Label, TextInput, Select } from "flowbite-react";
+import { Modal } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
-export default function ProductBilling({ product, setProduct }) {
-  const [category, setCategory] = useState([
+export default function ProductBilling({ product, setProduct, addProduct }) {
+  
+  const categories = [
     "Mobile Phones",
     "Screen Protectors",
     "Smartwatches",
@@ -13,8 +16,9 @@ export default function ProductBilling({ product, setProduct }) {
     "Phone Cases",
     "Wi-Fi Routers",
     "Tablets",
-  ]);
-  const [brands, setBrands] = useState([
+  ];
+
+  const brands = [
     "Samsung",
     "Apple",
     "Huawei",
@@ -25,46 +29,112 @@ export default function ProductBilling({ product, setProduct }) {
     "Sony",
     "Oppo",
     "Vivo",
-  ]);
-  const [models, setModels] = useState([
-    "Samsung Galaxy S10",
-    "iPhone 13",
-    "Google Pixel 6",
-    "OnePlus 9 Pro",
-    "Xiaomi Mi 11",
-    "Sony Xperia 5 II",
-    "Huawei P40 Pro",
-    "Oppo Find X3 Pro",
-    "Samsung Galaxy Z Fold 3",
-    "iPhone 12 Mini",
-    "Asus ROG Phone 5",
-  ]);
+  ];
+
+  const models = [
+    {
+      product_id: 1,
+      product_name: "Samsung Galaxy S10",
+      price: 130000,
+      warranty_period: "1 year",
+    },
+    {
+      product_id: 2,
+      product_name: "iPhone 13",
+      price: 250000,
+      warranty_period: "1 year",
+    },
+    {
+      product_id: 3,
+      product_name: "Google Pixel 6",
+      price: 180000,
+      warranty_period: "2 years",
+    },
+    {
+      product_id: 4,
+      product_name: "OnePlus 9 Pro",
+      price: 150000,
+      warranty_period: "1.5 years",
+    },
+    {
+      product_id: 5,
+      product_name: "Xiaomi Mi 11",
+      price: 120000,
+      warranty_period: "1 year",
+    },
+  ];
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
-  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
+  const [openModal, setOpenModal] = useState(false);
 
+  // Handle changes for product fields
   const handleProductChange = (e) => {
+    const { name, value } = e.target;
     setProduct((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
-  const handleReset = (e) => {
-    e.preventDefault();
+  // Handle changes for model selection
+  const handleChangeProduct = (e) => {
+    const selected = e.target.value;
+    setSelectedModelId(selected); // Update the selected model ID
+
+    if (selected) {
+      const model = models.find(
+        (model) => model.product_id === Number(selected)
+      );
+      if (model) {
+        setProduct({
+          product_id: model.product_id,
+          product_name: model.product_name,
+          serial_number: "",
+          price: model.price,
+          quantity: 1,
+          discount: 0.0,
+          warranty_period: model.warranty_period,
+        });
+      }
+    } else {
+      resetProduct(); // Reset product if no model is selected
+    }
+  };
+
+  // Function to reset product data
+  const resetProduct = () => {
     setProduct({
-      name: "",
+      product_id: "",
+      product_name: "",
       serial_number: "",
-      unit_price: "",
+      price: "",
       quantity: "",
       discount: "",
+      warranty_period: "",
     });
+    setSelectedModelId(""); // Reset selected model ID
+  };
+
+  // Handle form submission
+  const handleAdd = (e) => {
+    if (product.serial_number && product.serial_number.length === 15) {
+      e.preventDefault();
+      // Validate product data before adding
+      addProduct();
+      resetProduct(); // Reset product and selections after adding
+    } else {
+      setOpenModal(true);
+    }
   };
 
   return (
     <div className="">
+
       <form className="mx-auto p-2 flex max-w-md flex-col gap-2">
+
+        {/* Product Type Selection */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="type" value="Product Type" />
           <Select
@@ -72,18 +142,19 @@ export default function ProductBilling({ product, setProduct }) {
             sizing={"sm"}
             className="w-64"
             required
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-            }}
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
           >
             <option value="">Select</option>
-            {category.map((cat, index) => (
+            {categories.map((cat, index) => (
               <option key={index} value={cat}>
                 {cat}
               </option>
             ))}
           </Select>
         </div>
+
+        {/* Brand Selection */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="brand" value="Brand Name" />
           <Select
@@ -91,9 +162,9 @@ export default function ProductBilling({ product, setProduct }) {
             sizing={"sm"}
             className="w-64"
             required
-            onChange={(e) => {
-              setSelectedBrand(e.target.value);
-            }}
+            disabled={selectedCategory===""}
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
           >
             <option value="">Select</option>
             {brands.map((brand, index) => (
@@ -103,6 +174,8 @@ export default function ProductBilling({ product, setProduct }) {
             ))}
           </Select>
         </div>
+
+        {/* Product Selection */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="product" value="Product Name" />
           <Select
@@ -110,22 +183,20 @@ export default function ProductBilling({ product, setProduct }) {
             sizing={"sm"}
             className="w-64"
             required
-            onChange={(e) => {
-              setSelectedModel(e.target.value);
-              setProduct((prev) => ({
-                ...prev,
-                ["name"]: e.target.value,
-              }));
-            }}
+            disabled={selectedBrand===""}
+            value={selectedModelId} // Bind selected model ID to the value of the dropdown
+            onChange={handleChangeProduct}
           >
             <option value="">Select</option>
             {models.map((model, index) => (
-              <option key={index} value={model}>
-                {model}
+              <option key={index} value={model.product_id}>
+                {model.product_name}
               </option>
             ))}
           </Select>
         </div>
+
+        {/* Serial Number */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="serial" value="Serial Number" />
           <TextInput
@@ -141,26 +212,28 @@ export default function ProductBilling({ product, setProduct }) {
             required
           />
         </div>
+
+        {/* Unit Price (Read Only) */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="price" value="Unit Price" />
           <TextInput
             sizing={"sm"}
-            value={product.unit_price}
-            name="unit_price"
-            onChange={handleProductChange}
-            min={1}
+            value={product.price}
+            name="price"
             id="price"
             type="number"
             className="w-64"
             placeholder="10000.00"
-            required
+            readOnly
           />
         </div>
+
+        {/* Number of Units */}
         <div className="flex gap-4 items-center justify-between">
-          <Label htmlFor="units" value="No of Units" />
+          <Label htmlFor="quantity" value="No of Units" />
           <TextInput
             sizing={"sm"}
-            id="units"
+            id="quantity"
             type="number"
             min={1}
             onChange={handleProductChange}
@@ -171,6 +244,8 @@ export default function ProductBilling({ product, setProduct }) {
             required
           />
         </div>
+
+        {/* Discount */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="discount" value="Discount" />
           <TextInput
@@ -181,38 +256,69 @@ export default function ProductBilling({ product, setProduct }) {
             type="number"
             min={0}
             className="w-64"
-            placeholder="5%"
+            placeholder="500.00"
             value={product.discount}
-            required
           />
         </div>
+
+        {/* Total Price */}
         <div className="flex gap-4 items-center justify-between mb-3">
           <Label htmlFor="total" value="Total Price" />
           <TextInput
             sizing={"sm"}
             id="total"
-            value={product.unit_price * product.quantity - product.discount}
+            value={
+              (Number(product.price) || 0) * (Number(product.quantity) || 1) -
+              (Number(product.discount) || 0)
+            }
             type="number"
             className="w-64"
             placeholder="30000"
             readOnly
           />
         </div>
+
+        {/* Buttons */}
         <div className="flex justify-end gap-2">
           <Button
-            type="submit"
+            type="reset"
             size={"sm"}
             outline
             gradientDuoTone="pinkToOrange"
-            onClick={handleReset}
+            onClick={resetProduct} // Use resetProduct function for clarity
           >
             Clear
           </Button>
-          <Button type="submit" size={"sm"} gradientDuoTone="purpleToBlue">
+          <Button
+            type="submit"
+            onClick={handleAdd}
+            size={"sm"}
+            gradientDuoTone="purpleToBlue"
+          >
             Add Product
           </Button>
         </div>
+
       </form>
+
+      {/* for display error messages */}
+      <Modal
+        show={openModal}
+        size="md"
+        onClose={() => setOpenModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Something wrong with product data
+            </h3>
+          </div>
+        </Modal.Body>
+      </Modal>
+
     </div>
   );
 }

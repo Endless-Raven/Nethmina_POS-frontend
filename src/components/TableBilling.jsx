@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "flowbite-react";
 
-export default function TableBilling({ orderedList }) {
+export default function TableBilling({ orderedList, setTotal }) {
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // calculate total of all products
+  useEffect(() => {
+    const totalAmount = orderedList.reduce((acc, product) => {
+      const productTotal = product.price * product.quantity;
+      return acc + productTotal;
+    }, 0);
+    setTotal(Number(totalAmount));
+  }, [orderedList]);
 
   return (
     <div className="min-h-[40%] overflow-x-auto">
@@ -36,16 +46,18 @@ export default function TableBilling({ orderedList }) {
                 className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
                 key={index}
               >
-                <Table.Cell>{index + 1}</Table.Cell>
+                <Table.Cell>{item.product_id}</Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.name}
+                  {item.product_name}
                 </Table.Cell>
-                <Table.Cell>{item.warranty}</Table.Cell>
-                <Table.Cell>Rs: {item.unitPrice}</Table.Cell>
-                <Table.Cell>{item.noOfUnits}</Table.Cell>
+                <Table.Cell>{item.warranty_period}</Table.Cell>
+                <Table.Cell>Rs: {item.price}</Table.Cell>
+                <Table.Cell>{item.quantity}</Table.Cell>
                 <Table.Cell>Rs: {item.discount}</Table.Cell>
                 <Table.Cell>
-                  Rs: {item.unitPrice * item.noOfUnits - item.discount}
+                  Rs:{" "}
+                  {Number(item.price) * Number(item.quantity) -
+                    Number(item.discount)}
                 </Table.Cell>
               </Table.Row>
             ))
