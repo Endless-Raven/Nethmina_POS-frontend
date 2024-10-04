@@ -132,7 +132,7 @@ const Inventory = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-slate-100 min-h-[88vh]">
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="relative w-1/2 mx-auto">
           <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
