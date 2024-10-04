@@ -7,6 +7,8 @@ import { Toast } from "flowbite-react";
 import { MdPrint } from "react-icons/md";
 import { MdDone } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { useReactToPrint } from "react-to-print";
+import { Table } from "flowbite-react";
 
 export default function Billing() {
   // toast for done and print
@@ -91,10 +93,11 @@ export default function Billing() {
   };
 
   // print button function
-  const handlePrint = (e) => {
+  const handlePrint = async (e) => {
     e.preventDefault();
     if (validate()) {
       setShowToastPrint(true);
+      await printFn();
       handleReset();
     } else {
       setOpenModal(true);
@@ -119,10 +122,32 @@ export default function Billing() {
     return true;
   };
 
+  // print
+  const data = {
+    invoice: "001",
+  };
+  const componentRef = React.useRef(null);
+
+  const handleAfterPrint = React.useCallback(() => {
+    console.log("`onAfterPrint` called");
+  }, []);
+
+  const handleBeforePrint = React.useCallback(() => {
+    console.log("`onBeforePrint` called");
+    return Promise.resolve();
+  }, []);
+
+  const printFn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Bill",
+    onAfterPrint: handleAfterPrint,
+    onBeforePrint: handleBeforePrint,
+  });
+
   return (
-    <div className="flex w-full relative">
+    <div className="flex w-full relative bg-slate-100">
       {/* sidebar */}
-      <div className="w-[30%] p-2 min-h-screen">
+      <div className="w-[30%] p-2 ">
         {/* customer data */}
         <CustomerBilling customer={customer} setCustomer={setCustomer} />
         {/* product data */}
@@ -134,11 +159,11 @@ export default function Billing() {
       </div>
 
       {/* main content */}
-      <div className="w-[70%] border-l-4 p-2 min-h-screen relative">
+      <div className="w-[70%] border-l-4 p-2 min-h-[90vh] relative">
         {/* table */}
         <TableBilling setTotal={setTotal} orderedList={orderedList} />
         {/* form */}
-        <div className="absolute bottom-4 z-10 w-[calc(100%-2rem)] border-2 p-4 rounded-md bg-white">
+        <div className="absolute bottom-4 z-10 w-[calc(100%-1rem)] border-2 p-4 rounded-md bg-white">
           <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
             <div className="flex gap-4 items-center justify-between">
               <Label htmlFor="salesman" value="Salesman" />
@@ -210,6 +235,7 @@ export default function Billing() {
           <Toast.Toggle onDismiss={() => setShowToastDone(false)} />
         </Toast>
       )}
+
       {/* toast message for adding bill ( print )  */}
       {showToastPrint && (
         <Toast className="absolute top-2 right-2">
@@ -223,6 +249,7 @@ export default function Billing() {
         </Toast>
       )}
 
+      {/* display error when didnt complete all data  */}
       <Modal
         show={openModal}
         size="md"
@@ -239,6 +266,72 @@ export default function Billing() {
           </div>
         </Modal.Body>
       </Modal>
+
+      {/* Bill */}
+      <div className="hidden">
+        <div
+          ref={componentRef}
+          className="bg-white rounded-md flex flex-col gap-6 p-6"
+        >
+          <div className="">
+            <h1 className="text-2xl font-semibold">Nethmina Mobile</h1>
+            <h4>Kurunegala</h4>
+          </div>
+          <div className="w-full flex gap-2">
+            <div className="flex-1">
+              <p className="font-semibold">Invoice To</p>
+              <p>{customer.customer_name}</p>
+              <p className="font-semibold">Mobile</p>
+              <p>{customer.customer_number}</p>
+              <p className="font-semibold">Address</p>
+              <p>{customer.customer_address}</p>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold">Invoice</p>
+              <p>{data.invoice}</p>
+              <p className="font-semibold">Date</p>
+              <p>{new Date().toLocaleDateString()}</p>
+            </div>
+          </div>
+          <div className="">
+            <div className="overflow-x-auto">
+              <Table striped>
+                <Table.Head>
+                  <Table.HeadCell>No</Table.HeadCell>
+                  <Table.HeadCell>Product name</Table.HeadCell>
+                  <Table.HeadCell>Price</Table.HeadCell>
+                  <Table.HeadCell>Qty</Table.HeadCell>
+                  <Table.HeadCell>Warrenty</Table.HeadCell>
+                  <Table.HeadCell>Discount</Table.HeadCell>
+                  <Table.HeadCell>Total</Table.HeadCell>
+                </Table.Head>
+                <Table.Body className="divide-y">
+                  {orderedList.map((product, index) => (
+                    <Table.Row
+                      key={index}
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                    >
+                      <Table.Cell>{index + 1}</Table.Cell>
+                      <Table.Cell>{product.product_name}</Table.Cell>
+                      <Table.Cell>{product.price}</Table.Cell>
+                      <Table.Cell>{product.quantity}</Table.Cell>
+                      <Table.Cell>{product.warranty_period}</Table.Cell>
+                      <Table.Cell>{product.discount}</Table.Cell>
+                      <Table.Cell>{Number(product.price) * Number(product.quantity) -
+                    Number(product.discount)}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <p>Thank you for Your Business</p>
+            <p className="font-semibold">Total : {total}</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
