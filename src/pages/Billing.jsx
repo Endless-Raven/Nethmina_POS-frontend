@@ -145,7 +145,7 @@ export default function Billing() {
   });
 
   return (
-    <div className="flex w-full relative ">
+    <div className="flex w-full relative bg-slate-100">
       {/* sidebar */}
       <div className="w-[30%] p-2 ">
         {/* customer data */}
