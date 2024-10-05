@@ -5,11 +5,11 @@ import Billing from "./Billing";
 import { GrUserAdmin } from "react-icons/gr";
 import { AiOutlineStock } from "react-icons/ai";
 import Inventory from "./Inventory";
-import { CiLogin } from "react-icons/ci";
-import Login from "./Login";
+import { TbReportSearch } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../redux/features/userSlice";
+import DailyReport from "./DailyReport";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -29,11 +29,11 @@ export default function Home() {
         <Tabs.Item active title="Inventory" icon={AiOutlineStock}>
           <Inventory />
         </Tabs.Item>
+        <Tabs.Item active title="Daily Report" icon={TbReportSearch}>
+          <DailyReport />
+        </Tabs.Item>
         <Tabs.Item disabled title="Admin Panel" icon={GrUserAdmin}>
           Disabled content
-        </Tabs.Item>
-        <Tabs.Item active title="Login" icon={CiLogin}>
-          <Login />
         </Tabs.Item>
       </Tabs>
       <div className="absolute top-2 right-4">
