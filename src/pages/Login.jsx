@@ -3,6 +3,8 @@ import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
 import { useSelector, useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/features/userSlice";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function Login() {
   const [formDetail, setFormDetail] = useState({ username: "", password: "" });
@@ -19,26 +21,30 @@ export default function Login() {
     }));
   };
 
-  const clear = () => {
-    setFormDetail({
-      username: "",
-      password: "",
-    });
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      // backend
-      dispatch(signInSuccess(formDetail));
-      setLoading(false);
-      setError(null);
-      clear();
-      navigate("/");
-    } catch (error) {
-      setError(error);
-      setLoading(false);
+    if (formDetail.username === "" || formDetail.password === "") {
+      setError("fill details");
+    } else {
+      try {
+        const response = await axios.post(`${API_BASE_URL}/users/signin`, {
+          username: formDetail.username,
+          password: formDetail.password,
+        });
+        dispatch(signInSuccess(response.data.user));
+        setLoading(false);
+        setError(null);
+        setFormDetail({
+          username: "",
+          password: "",
+        });
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+        setError(error.response ? error.response.data.message : error.message);
+        setLoading(false);
+      }
     }
   };
 

@@ -9,11 +9,20 @@ import { MdDone } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useReactToPrint } from "react-to-print";
 import { Table } from "flowbite-react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function Billing() {
+  const [loading,setLoading] = useState(false);
+  const [error,setError] = useState(null);
+  const [invoiceId,setInvoiceId] = useState("");
   // toast for done and print
   const [showToastDone, setShowToastDone] = useState(false);
   const [showToastPrint, setShowToastPrint] = useState(false);
+
+  const userData = useSelector((state) => state.user.data);
+
   useEffect(() => {
     if (showToastPrint || showToastDone) {
       const timer = setTimeout(() => {
@@ -31,11 +40,24 @@ export default function Billing() {
   const [orderedList, setOrderedList] = useState([]);
 
   // salesman
-  const [salesmans, setSalesmans] = useState([
-    "saman kumara",
-    "sanath nishantha",
-  ]);
+  const [salesmans, setSalesmans] = useState([]);
+  useEffect(() => {
+    fetchCashiers();
+  }, []);
+  const fetchCashiers = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/cashiers/cashiers`, {
+        params: {
+          store_id: userData.store_id,
+        },
+      });
+      setSalesmans(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const [salesman, setSalesman] = useState("");
+  const [salesmanId, setSalesmanId] = useState("");
 
   // about product Data
   const [product, setProduct] = useState({
@@ -82,10 +104,33 @@ export default function Billing() {
   };
 
   // done button function
-  const handleDone = (e) => {
+  const handleDone = async (e) => {
     e.preventDefault();
     if (validate()) {
-      setShowToastDone(true);
+      setError(null);
+      setLoading(true);
+      setShowToastPrint(true);
+      const requestBody = {
+        cashier_id: salesmanId,
+        sales_person: salesman,
+        total_amount: total,
+        products: orderedList,
+        user: userData.user_id,
+        customer_details: {
+          customer_name: customer.customer_name,
+          customer_phone_number: customer.customer_number,
+          customer_address: customer.customer_address,
+        },
+      };
+      try {
+        const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
+        setInvoiceId(response.data.sales_id);
+      } catch (error) {
+        setLoading(false);
+        setError(error.message);
+        console.error(error);
+      }
+      setLoading(false);
       handleReset();
     } else {
       setOpenModal(true);
@@ -96,9 +141,36 @@ export default function Billing() {
   const handlePrint = async (e) => {
     e.preventDefault();
     if (validate()) {
+      setError(null);
+      setLoading(true);
       setShowToastPrint(true);
+
+      const requestBody = {
+        cashier_id: salesmanId,
+        sales_person: salesman,
+        total_amount: total,
+        products: orderedList,
+        user: userData.user_id,
+        customer_details: {
+          customer_name: customer.customer_name,
+          customer_phone_number: customer.customer_number,
+          customer_address: customer.customer_address,
+        },
+      };
+      // Log the request body before sending it
+      console.log("Request Body:", requestBody);
+      try {
+        const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
+        console.log(response.data);
+        setInvoiceId(response.data.sales_id);
+      } catch (error) {
+        setError(error.message);
+        console.error(error);
+        setLoading(false);
+      }
       await printFn();
       handleReset();
+      setLoading(false);
     } else {
       setOpenModal(true);
     }
@@ -122,10 +194,6 @@ export default function Billing() {
     return true;
   };
 
-  // print
-  const data = {
-    invoice: "001",
-  };
   const componentRef = React.useRef(null);
 
   const handleAfterPrint = React.useCallback(() => {
@@ -172,13 +240,17 @@ export default function Billing() {
                 className="w-64"
                 onChange={(e) => {
                   setSalesman(e.target.value);
+                  setSalesmanId(
+                    salesmans.find((c) => c.cashier_name === e.target.value)
+                      .cashier_id
+                  );
                 }}
                 required
               >
                 <option value="">Select</option>
                 {salesmans.map((man, index) => (
-                  <option key={index} value={man}>
-                    {man}
+                  <option key={index} value={man.cashier_name}>
+                    {man.cashier_name}
                   </option>
                 ))}
               </Select>
@@ -197,6 +269,7 @@ export default function Billing() {
             </div>
           </div>
           <div className="flex gap-2 justify-end">
+            {error && <p className="text-red-600">{error}</p>}
             <Button
               type="reset"
               outline
@@ -209,6 +282,7 @@ export default function Billing() {
               type="submit"
               onClick={handleDone}
               gradientDuoTone="cyanToBlue"
+              disabled={loading}
             >
               Done
             </Button>
@@ -216,6 +290,7 @@ export default function Billing() {
               type="submit"
               onClick={handlePrint}
               gradientDuoTone="purpleToBlue"
+              disabled={loading}
             >
               Print
             </Button>
@@ -288,7 +363,7 @@ export default function Billing() {
             </div>
             <div className="flex-1">
               <p className="font-semibold">Invoice</p>
-              <p>{data.invoice}</p>
+              <p>{invoiceId}</p>
               <p className="font-semibold">Date</p>
               <p>{new Date().toLocaleDateString()}</p>
             </div>
@@ -317,8 +392,10 @@ export default function Billing() {
                       <Table.Cell>{product.quantity}</Table.Cell>
                       <Table.Cell>{product.warranty_period}</Table.Cell>
                       <Table.Cell>{product.discount}</Table.Cell>
-                      <Table.Cell>{Number(product.price) * Number(product.quantity) -
-                    Number(product.discount)}</Table.Cell>
+                      <Table.Cell>
+                        {Number(product.price) * Number(product.quantity) -
+                          Number(product.discount)}
+                      </Table.Cell>
                     </Table.Row>
                   ))}
                 </Table.Body>
@@ -331,7 +408,6 @@ export default function Billing() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

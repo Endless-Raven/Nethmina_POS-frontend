@@ -11,7 +11,8 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
   const [openModal, setOpenModal] = useState(false);
-  const [validEmi,setValidEmi] = useState([]);
+  const [validEmi, setValidEmi] = useState([]);
+  const [emiAvialable, setEmiAvialable] = useState(true);
 
   // const categories = [
   //   "Mobile Phones",
@@ -105,7 +106,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
         (model) => model.product_id === Number(selected)
       );
       if (model) {
-        console.log(model)
+        console.log(model);
         setProduct({
           product_id: model.product_id,
           product_name: model.product_name,
@@ -115,13 +116,13 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
           discount: 0.0,
           warranty_period: model.warranty_period,
         });
-        // setValidEmi(model.)
+        setValidEmi(model.imei_number);
       }
     } else {
       resetProduct(); // Reset product if no model is selected
     }
   };
-
+  console.log(validEmi);
   // Function to reset product data
   const resetProduct = () => {
     setProduct({
@@ -134,17 +135,29 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       warranty_period: "",
     });
     setSelectedModelId(""); // Reset selected model ID
+    setValidEmi([]);
   };
+
+  // console.log(product);
 
   // Handle form submission
   const handleAdd = (e) => {
-    if (product.serial_number && product.serial_number.length === 15) {
-      e.preventDefault();
-      // Validate product data before adding
-      addProduct();
-      resetProduct(); // Reset product and selections after adding
+    e.preventDefault();
+    if (validEmi.length > 0) {
+      if (
+        product.serial_number &&
+        product.serial_number.length === 15 &&
+        validEmi.includes(product.serial_number)
+      ) {
+        // Validate product data before adding
+        addProduct();
+        resetProduct(); // Reset product and selections after adding
+      } else {
+        setOpenModal(true);
+      }
     } else {
-      setOpenModal(true);
+      addProduct();
+      resetProduct();
     }
   };
 
@@ -160,7 +173,10 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             className="w-64"
             required
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setValidEmi([]);
+            }}
           >
             <option value="">Select</option>
             {categories.map((cat, index) => (
@@ -181,7 +197,10 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             required
             disabled={selectedCategory === ""}
             value={selectedBrand}
-            onChange={(e) => setSelectedBrand(e.target.value)}
+            onChange={(e) => {
+              setSelectedBrand(e.target.value);
+              setValidEmi([]);
+            }}
           >
             <option value="">Select</option>
             {brands.map((brand, index) => (
