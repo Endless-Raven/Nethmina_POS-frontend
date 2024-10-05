@@ -53,18 +53,18 @@ const DailyReport = () => {
   };
 
   return (
-    <div className="px-8">
+    <div className="px-8 min-h-[90vh]">
       <h1 className="font-bold cursor-default text-3xl text-center text-sky-800">
         Daily Accounting Sales Report
       </h1>
-      <div className="flex justify-between items-center gap-4">
-        <div className="">
-          <p className="mb-2 cursor-default">Select Date</p>
+      <div className="flex justify-between items-center gap-4 ">
+        <div className="flex items-center mb-8 gap-4 cursor-default">
+          <p className="font-semibold text-xl">Select Date</p>
           <input
             type="date"
             name=""
             id=""
-            className="rounded-md p-2 w-9 cursor-pointer"
+            className="rounded-md p-2 w-9 cursor-pointer bg-slate-100"
             min={new Date(new Date().setDate(new Date().getDate() - 7))}
             max={new Date()}
             value={selectedDate}
@@ -72,7 +72,7 @@ const DailyReport = () => {
             disabled={loading}
             onChange={handleDateChange}
           />
-          <p className="my-2 text-right text-lg ">{selectedDate}</p>
+          <p className="text-right text-lg ">{selectedDate}</p>
           {/* <Datepicker
             minDate={new Date(new Date().setDate(new Date().getDate() - 7))}
             maxDate={new Date()}
@@ -95,7 +95,7 @@ const DailyReport = () => {
           Not Sales In that Day
         </div>
       ) : (
-        <table className="bg-slate-100 border rounded-md overflow-hidden shadow-md border-gray-400 w-full mb-16">
+        <table className=" bg-slate-100 border rounded-md overflow-hidden shadow-md border-gray-400 w-full mb-16">
           <thead>
             <tr className="bg-white">
               {columns.map((column, index) => (
