@@ -11,7 +11,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<DailyReport/>} path="/drepot"/>
         <Route element={<Home />} path="/" />
         <Route element={<Login />} path="/login" />
       </Routes>
