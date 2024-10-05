@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
+import axios from "axios";
+const API_BASE_URL = process.env.API_BASE_URL;
 
 const Inventory = () => {
   const [items, setItems] = useState([
@@ -61,39 +63,87 @@ const Inventory = () => {
     name: "",
     brand: "",
     qty: "",
-    category: "Smartphone",
+    category: "",
     wholesalePrice: "",
     retailPrice: "",
-    store: "store 1",
+    store: "",
   });
   const [editIndex, setEditIndex] = useState(null);
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
   // const [selectedAccessories, setSelectedAccessories] = useState([]);
 
-  const [stores, setStores] = [];
-  const [categories, setCategories] = [];
-  const brands = ["Apple", "Samsung", "Google", "OnePlus", "Xiaomi"];
+  const [stores, setStores] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   // const[loading,setLoding]=useState(true);
   // const[error,setError]=useState(null);
 
   useEffect(() => {
-    fetchStoresAndCategoris();
+    fetchStores();
+    fetchCategoris();
+    fetchBrands();
   }, []);
 
-  async function fetchStoresAndCategoris() {
+  async function fetchStores() {
     try {
-      const response = await axios.get();
-      console.log(response);
+      const response = await axios.get(`${API_BASE_URL}/stores/getstore/names`);
+      console.log("response.data",response.data);
+      setStores(response.data);
     } catch (error) {
       console.error(error);
     }
   }
 
+  async function fetchCategoris() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/product/getProductTypes/get`);
+      console.log("responseeee",response.data);
+      setCategories(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  // async function fetchBrands() {
+  //   try {
+  //     const response = await axios.get(`${API_BASE_URL}/product/getFilteredProductDetails/get`,{
+  //       product_type:newItem.category
+  //     });
+  //     console.log("response12345",response);
+  //    // setBrands(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
+
+  async function fetchBrands() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/product/getFilteredProductDetails/get`, {
+        params: { product_type: newItem.category }, // Correctly sending the product type
+      });
+      console.log("Brands response:", response.data);
+      setBrands(response.data); // Uncommented this line to set brands
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
+
+  // const filteredItems = items.filter(
+  //   (item) =>
+  //     (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       item.brand.toLowerCase().includes(searchTerm.toLowerCase())) &&
+  //     (selectedStore === "All" || item.store === selectedStore) &&
+  //     (selectedBrand === "All" || item.brand === selectedBrand)
+  // );
+
 
   const filteredItems = items.filter(
     (item) =>
@@ -102,6 +152,7 @@ const Inventory = () => {
       (selectedStore === "All" || item.store === selectedStore) &&
       (selectedBrand === "All" || item.brand === selectedBrand)
   );
+
 
   const handleAddItem = () => {
     if (editIndex !== null) {
@@ -184,9 +235,9 @@ const Inventory = () => {
           className="p-2 border rounded-lg bg-white"
         >
           <option value="All">All Brands</option>
-          {brands.map((brand) => (
-            <option key={brand} value={brand}>
-              {brand}
+          {brands.map((brand,index) => (
+            <option key={index} value={brand.brand_name}>
+              {brand.brand_name}
             </option>
           ))}
         </select>
