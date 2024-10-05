@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
 
@@ -71,15 +71,25 @@ const Inventory = () => {
   const [selectedBrand, setSelectedBrand] = useState("All");
   // const [selectedAccessories, setSelectedAccessories] = useState([]);
 
-  const stores = ["store 1", "store 2", "store 3"];
+  const [stores, setStores] = [];
+  const [categories, setCategories] = [];
   const brands = ["Apple", "Samsung", "Google", "OnePlus", "Xiaomi"];
-  const categories = [
-    "Smartphone",
-    "Phone Chargers",
-    "Back Covers",
-    "Battery",
-    "Headphone",
-  ];
+
+  // const[loading,setLoding]=useState(true);
+  // const[error,setError]=useState(null);
+
+  useEffect(() => {
+    fetchStoresAndCategoris();
+  }, []);
+
+  async function fetchStoresAndCategoris() {
+    try {
+      const response = await axios.get();
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -192,7 +202,7 @@ const Inventory = () => {
             <th className="border border-gray-300 p-2">Wholesale Price</th>
             <th className="border border-gray-300 p-2">Retail Price</th>
             <th className="border border-gray-300 p-2">Store</th>
-            <th className="border border-gray-300 p-2">Action</th>
+            <th className="border border-gray-300 p-2 hidden">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -216,7 +226,7 @@ const Inventory = () => {
               </td>
               <td className="border border-gray-300 p-2">{item.retailPrice}</td>
               <td className="border border-gray-300 p-2">{item.store}</td>
-              <td className="border border-gray-300 p-2 flex gap-1">
+              <td className="border border-gray-300 p-2 flex gap-1 hiddenz">
                 <Button
                   onClick={() => handleEditItem(index)}
                   gradientDuoTone="purpleToBlue"
@@ -238,7 +248,7 @@ const Inventory = () => {
         </tbody>
       </table>
       <Button
-        className="mt-3"
+        className="mt-3 hidden"
         onClick={() => setShowModal(true)}
         size={"sm"}
         gradientDuoTone="purpleToBlue"
