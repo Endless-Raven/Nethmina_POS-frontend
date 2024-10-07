@@ -99,7 +99,12 @@ const Inventory = () => {
 
   async function fetchproductdata() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/product/getFiltered/ProductDetails`,
+      let product_name;
+      let store_name;
+      let brand_name;
+      let product_type;
+
+      const response = await axios.post(`${API_BASE_URL}/product/getFiltered/ProductDetails`,
         {
           product_name: searchTerm,
           store_name: selectedStore,
@@ -107,6 +112,8 @@ const Inventory = () => {
           product_type: selectedcategory,
         });
       console.log(response);
+      console.log("ss",product_name , store_name , brand_name , product_type);
+      setprodcuts(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -255,7 +262,8 @@ const Inventory = () => {
             setSelectedcategory(e.target.value);
           }}
           className="p-2 border rounded-lg bg-white"
-        >
+        > 
+        <option value="All">All Category</option>
           {categories.map((category) => (
             <option key={category} value={category}>
               {category}
@@ -293,7 +301,10 @@ const Inventory = () => {
           </tr>
         </thead>
         <tbody>
-          {products.map((item, index) => (
+          {products.length < 1 ? (<div>
+           <center> No products </center>
+          </div>):(
+          products.map((item, index) => (
             <tr
               key={item.no}
               className={
@@ -339,7 +350,7 @@ const Inventory = () => {
                 </Button>
               </td>
             </tr>
-          ))}
+          )))}
         </tbody>
       </table>
       <Button
