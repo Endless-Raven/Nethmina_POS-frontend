@@ -15,6 +15,8 @@ export default function NavigationBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  console.log(userData.role);
+
   const handleLogout = () => {
     dispatch(signOut());
     navigate("/login");
@@ -43,7 +45,7 @@ export default function NavigationBar() {
 
       <div className="flex md:order-2 gap-4 items-center">
         {userData.store_id && (
-          <p className="text-blue-800 font-bold cursor-pointer">{store}</p>
+          <p className="text-blue-800 font-bold cursor-default">{store}</p>
         )}
         <Button gradientDuoTone="purpleToBlue" onClick={handleLogout}>
           {userData.store_id ? <span>Logout</span> : <span>Login</span>}
@@ -64,7 +66,7 @@ export default function NavigationBar() {
         </Navbar.Link>
         <Navbar.Link
           active={active === "inventory"}
-          className="cursor-pointer"
+          className={`cursor-pointer ${userData.role==="cashier" && "hidden"}`}
           onClick={() => {
             setActive("inventory");
             navigate("/home/inventory");
@@ -74,7 +76,7 @@ export default function NavigationBar() {
         </Navbar.Link>
         <Navbar.Link
           active={active === "daily report"}
-          className="cursor-pointer"
+          className={`cursor-pointer ${(userData.role==="cashier" || userData.role==="manager" )&& "hidden"}`}
           onClick={() => {
             setActive("daily report");
             navigate("/home/daily_report");
@@ -84,7 +86,7 @@ export default function NavigationBar() {
         </Navbar.Link>
         <Navbar.Link
           active={active === "admin panel"}
-          className="cursor-pointer"
+          className={`cursor-pointer ${(userData.role==="cashier" || userData.role==="manager" )&& "hidden"}`}
           onClick={() => {
             setActive("admin panel");
             navigate("/home/admin_panel");
