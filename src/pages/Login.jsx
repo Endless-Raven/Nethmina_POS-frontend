@@ -39,7 +39,7 @@ export default function Login() {
           username: "",
           password: "",
         });
-        navigate("/");
+        navigate("/home/billing");
       } catch (error) {
         console.log(error);
         setError(error.response ? error.response.data.message : error.message);

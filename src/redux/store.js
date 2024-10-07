@@ -16,6 +16,12 @@ export const store = configureStore({
   reducer: {
     user: persistedReducer,  // Use persistedReducer instead of userReducer
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],  // Ignore redux-persist actions
+      },
+    }),
 });
 
 export const persistor = persistStore(store);  // Export the persistor
