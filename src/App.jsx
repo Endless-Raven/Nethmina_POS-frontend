@@ -1,17 +1,19 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Billing from "./pages/Billing";
-import Inventory from "./pages/Inventory";
-import DailyReport from "./pages/DailyReport";
-import Test from "./pages/Test";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Landing from "./pages/Landing";
+import { useSelector } from "react-redux";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Home />} path="/" />
+        <Route path="/" element={<Landing />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/home/:section" element={<Home />} />
+        </Route>
         <Route element={<Login />} path="/login" />
       </Routes>
     </BrowserRouter>
