@@ -1,73 +1,91 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Label, TextInput, Select } from "flowbite-react";
 import { Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import axios from "axios";
+
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function ProductBilling({ product, setProduct, addProduct }) {
-  
-  const categories = [
-    "Mobile Phones",
-    "Screen Protectors",
-    "Smartwatches",
-    "Power Banks",
-    "Chargers & Cables",
-    "Speakers",
-    "Earphones & Headphones",
-    "Phone Cases",
-    "Wi-Fi Routers",
-    "Tablets",
-  ];
-
-  const brands = [
-    "Samsung",
-    "Apple",
-    "Huawei",
-    "Xiaomi",
-    "OnePlus",
-    "Google",
-    "Nokia",
-    "Sony",
-    "Oppo",
-    "Vivo",
-  ];
-
-  const models = [
-    {
-      product_id: 1,
-      product_name: "Samsung Galaxy S10",
-      price: 130000,
-      warranty_period: "1 year",
-    },
-    {
-      product_id: 2,
-      product_name: "iPhone 13",
-      price: 250000,
-      warranty_period: "1 year",
-    },
-    {
-      product_id: 3,
-      product_name: "Google Pixel 6",
-      price: 180000,
-      warranty_period: "2 years",
-    },
-    {
-      product_id: 4,
-      product_name: "OnePlus 9 Pro",
-      price: 150000,
-      warranty_period: "1.5 years",
-    },
-    {
-      product_id: 5,
-      product_name: "Xiaomi Mi 11",
-      price: 120000,
-      warranty_period: "1 year",
-    },
-  ];
-
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
   const [openModal, setOpenModal] = useState(false);
+  const [validEmi, setValidEmi] = useState([]);
+  const [emiAvialable, setEmiAvialable] = useState(true);
+
+  // const categories = [
+  //   "Mobile Phones",
+  //   "Screen Protectors",
+  //   "Smartwatches",
+  //   "Power Banks",
+  //   "Chargers & Cables",
+  //   "Speakers",
+  //   "Earphones & Headphones",
+  //   "Phone Cases",
+  //   "Wi-Fi Routers",
+  //   "Tablets",
+  // ];
+
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    fetchCate();
+  }, []);
+  const fetchCate = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/getProductTypes/get`
+      );
+      setCategories(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const [brands, setBrands] = useState([]);
+  useEffect(() => {
+    if (selectedCategory !== "") {
+      fetchBrands();
+    }
+  }, [selectedCategory]);
+  const fetchBrands = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/brands/byproducttype`,
+        {
+          params: {
+            product_type: selectedCategory,
+          },
+        }
+      );
+      setBrands(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const [models, setModels] = useState([]);
+  useEffect(() => {
+    if (selectedBrand !== "") {
+      fetchModels();
+    }
+  }, [selectedBrand]);
+  const fetchModels = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/models/bybrand`,
+        {
+          params: {
+            brand_name: selectedBrand,
+            product_type: selectedCategory,
+          },
+        }
+      );
+      setModels(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Handle changes for product fields
   const handleProductChange = (e) => {
@@ -88,21 +106,23 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
         (model) => model.product_id === Number(selected)
       );
       if (model) {
+        console.log(model);
         setProduct({
           product_id: model.product_id,
           product_name: model.product_name,
           serial_number: "",
-          price: model.price,
+          price: model.product_price,
           quantity: 1,
           discount: 0.0,
           warranty_period: model.warranty_period,
         });
+        setValidEmi(model.imei_number);
       }
     } else {
       resetProduct(); // Reset product if no model is selected
     }
   };
-
+  console.log(validEmi);
   // Function to reset product data
   const resetProduct = () => {
     setProduct({
@@ -115,15 +135,30 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       warranty_period: "",
     });
     setSelectedModelId(""); // Reset selected model ID
+    setValidEmi([]);
   };
+
+  // console.log(product);
 
   // Handle form submission
   const handleAdd = (e) => {
-    if (product.serial_number && product.serial_number.length === 15) {
-      e.preventDefault();
-      // Validate product data before adding
+    e.preventDefault();
+    if (validEmi.length > 0) {
+      if (
+        product.serial_number &&
+        product.serial_number.length === 15 &&
+        validEmi.includes(product.serial_number) &&
+        product.product_name !== ""
+      ) {
+        // Validate product data before adding
+        addProduct();
+        resetProduct(); // Reset product and selections after adding
+      } else {
+        setOpenModal(true);
+      }
+    } else if (product.product_name !== "") {
       addProduct();
-      resetProduct(); // Reset product and selections after adding
+      resetProduct();
     } else {
       setOpenModal(true);
     }
@@ -131,9 +166,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
 
   return (
     <div className="">
-
       <form className="mx-auto p-2 flex max-w-md flex-col gap-2">
-
         {/* Product Type Selection */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="type" value="Product Type" />
@@ -143,7 +176,10 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             className="w-64"
             required
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setValidEmi([]);
+            }}
           >
             <option value="">Select</option>
             {categories.map((cat, index) => (
@@ -162,9 +198,12 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             sizing={"sm"}
             className="w-64"
             required
-            disabled={selectedCategory===""}
+            disabled={selectedCategory === ""}
             value={selectedBrand}
-            onChange={(e) => setSelectedBrand(e.target.value)}
+            onChange={(e) => {
+              setSelectedBrand(e.target.value);
+              setValidEmi([]);
+            }}
           >
             <option value="">Select</option>
             {brands.map((brand, index) => (
@@ -183,7 +222,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             sizing={"sm"}
             className="w-64"
             required
-            disabled={selectedBrand===""}
+            disabled={selectedBrand === ""}
             value={selectedModelId} // Bind selected model ID to the value of the dropdown
             onChange={handleChangeProduct}
           >
@@ -298,7 +337,6 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             Add Product
           </Button>
         </div>
-
       </form>
 
       {/* for display error messages */}
@@ -318,7 +356,6 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
           </div>
         </Modal.Body>
       </Modal>
-
     </div>
   );
 }
