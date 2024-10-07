@@ -9,7 +9,7 @@ export default function TableBilling({ orderedList, setTotal }) {
   // calculate total of all products
   useEffect(() => {
     const totalAmount = orderedList.reduce((acc, product) => {
-      const productTotal = product.price * product.quantity;
+      const productTotal = product.price * product.quantity - product.discount;
       return acc + productTotal;
     }, 0);
     setTotal(Number(totalAmount));

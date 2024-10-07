@@ -176,23 +176,32 @@ export default function Billing() {
     }
   };
 
-  // validate all forms
-  const validate = () => {
-    // Check if any customer details are empty
-    if (customer.customer_number === "" || customer.customer_name === "") {
-      return false; // If any detail is empty, return false
-    }
-    // Check if the ordered list is empty
-    if (orderedList.length < 1) {
-      return false; // If no orders, return false
-    }
-    // Check if salesman is empty
-    if (salesman === "") {
-      return false; // If salesman is not specified, return false
-    }
-    // If all checks pass, return true
-    return true;
-  };
+// validate all forms
+const validate = () => {
+  // Check if any customer details are empty
+  if (
+    customer.customer_number === "" || 
+    customer.customer_number.length !== 10 || 
+    customer.customer_name === "" || 
+    !/^[A-Za-z\s]+$/.test(customer.customer_name) // Check if customer_name contains only alphabetic characters
+  ) {
+    return false; // If any detail is empty or invalid, return false
+  }
+  
+  // Check if the ordered list is empty
+  if (orderedList.length < 1) {
+    return false; // If no orders, return false
+  }
+  
+  // Check if salesman is empty
+  if (salesman === "") {
+    return false; // If salesman is not specified, return false
+  }
+  
+  // If all checks pass, return true
+  return true;
+};
+
 
   const componentRef = React.useRef(null);
 
