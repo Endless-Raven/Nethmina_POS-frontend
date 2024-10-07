@@ -14,15 +14,18 @@ const Inventory = () => {
     name: "",
     brand: "",
     qty: "",
+    waranty_period:"",
+    imei_number:"",
     category: "",
     wholesalePrice: "",
     retailPrice: "",
-    store: "",
+    
   });
   const [editIndex, setEditIndex] = useState(null);
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
   const [selectedcategory, setSelectedcategory] = useState("All");
+  const [searchitems, setsearchitems] = useState("");
   // const [selectedAccessories, setSelectedAccessories] = useState([]);
 
   const [stores, setStores] = useState([]);
@@ -37,6 +40,7 @@ const Inventory = () => {
     fetchStores();
     fetchBrands();
     fetchproductdata();
+    fetchsetsearchitems();
   }, []);
 
   useEffect(() => {
@@ -97,6 +101,10 @@ const Inventory = () => {
   //   }
   // }
 
+
+
+
+
   async function fetchproductdata() {
     try {
       let product_name;
@@ -104,20 +112,36 @@ const Inventory = () => {
       let brand_name;
       let product_type;
 
-      const response = await axios.post(`${API_BASE_URL}/product/getFiltered/ProductDetails`,
+      const response = await axios.post(
+        `${API_BASE_URL}/product/getFiltered/ProductDetails`,
         {
           product_name: searchTerm,
           store_name: selectedStore,
           brand_name: selectedBrand,
           product_type: selectedcategory,
-        });
+        }
+      );
       console.log(response);
-      console.log("ss",product_name , store_name , brand_name , product_type);
+      console.log("ss", product_name, store_name, brand_name, product_type);
       setprodcuts(response.data);
     } catch (error) {
       console.error(error);
     }
   }
+  
+  
+  //serch bar
+  async function fetchsetsearchitems() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/stores/getstore/names`);
+      console.log("response.data", response.data);
+      setsearchitems(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
 
   async function fetchStores() {
     try {
@@ -189,6 +213,37 @@ const Inventory = () => {
       (selectedBrand === "All" || item.brand === selectedBrand)
   );
 
+
+  async function fetchaddnewitems() {
+    try {
+      const response = await axios.post(  `${API_BASE_URL}/product`,
+        {
+            product_name: newItem.name,
+            product_price: newItem.retailPrice,
+            waranty_period: newItem.waranty_period,
+            imei_number: newItem.imei_number,
+            product_stock: newItem.qty,
+            product_type: newItem.category,
+            brand_name: newItem.brand,
+            product_model:newItem.product_model,
+            user:1
+
+        }
+      );
+      console.log("holaaaaa")
+      console.log("Product added:", response.data);
+    } catch (error) {
+      console.log("b".newItem)
+      console.error("Error adding product:", error);
+    }
+  }
+
+
+
+
+
+  
+
   const handleAddItem = () => {
     if (editIndex !== null) {
       const updatedItems = [...items];
@@ -209,6 +264,8 @@ const Inventory = () => {
       retailPrice: "",
       store: "",
     });
+  
+    
   };
 
   const handleEditItem = (index) => {
@@ -232,15 +289,20 @@ const Inventory = () => {
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="relative w-1/2 mx-auto">
           <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search Item by Name or Brand"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-            }}
-            className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search Item by Name or Brand"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+              }}
+              className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
+            />
+            <ul className="absolute rounded-md z-20 bg-white w-full ">
+              <li className="border-b-2 p-2"></li>
+            </ul>
+          </div>
         </div>
         <select
           value={selectedStore}
@@ -262,8 +324,8 @@ const Inventory = () => {
             setSelectedcategory(e.target.value);
           }}
           className="p-2 border rounded-lg bg-white"
-        > 
-        <option value="All">All Category</option>
+        >
+          <option value="All">All Category</option>
           {categories.map((category) => (
             <option key={category} value={category}>
               {category}
@@ -301,66 +363,73 @@ const Inventory = () => {
           </tr>
         </thead>
         <tbody>
-          {products.length < 1 ? (<div>
-           <center> No products </center>
-          </div>):(
-          products.map((item, index) => (
-            <tr
-              key={item.no}
-              className={
-                item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200"
-              }
-            >
-              <td className="border border-gray-300 p-2">{index + 1}</td>
-              <td
-              // className="border border-gray-300 p-2 cursor-pointer text-blue-600 underline"
-              // onClick={() => handleShowAccessories(index)}
+          {products.length < 1 ? (
+            <div>
+              <center> No products </center>
+            </div>
+          ) : (
+            products.map((item, index) => (
+              <tr
+                key={item.no}
+                className={
+                  item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200"
+                }
               >
-                {item.product_name}
-              </td>
-              <td className="border border-gray-300 p-2">{item.brand_name}</td>
-              <td className="border border-gray-300 p-2">
-                {item.product_type}
-              </td>
-              <td className="border border-gray-300 p-2">
-                {item.stock_quantity}
-              </td>
-              <td className="border border-gray-300 p-2">
-                {item.product_wholesale_price}
-              </td>
-              <td className="border border-gray-300 p-2">
-                {item.product_price}
-              </td>
-              <td className="border border-gray-300 p-2">{item.store_name}</td>
-              <td className="border border-gray-300 p-2 flex gap-1 hiddenz">
-                <Button
-                  onClick={() => handleEditItem(index)}
-                  gradientDuoTone="purpleToBlue"
-                  size={"xs"}
+                <td className="border border-gray-300 p-2">{index + 1}</td>
+                <td
+                // className="border border-gray-300 p-2 cursor-pointer text-blue-600 underline"
+                // onClick={() => handleShowAccessories(index)}
                 >
-                  Edit
-                </Button>
-                <Button
-                  onClick={() => handleDeleteItem(index)}
-                  outline
-                  size={"xs"}
-                  gradientDuoTone="pinkToOrange"
-                >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          )))}
+                  {item.product_name}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.brand_name}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.product_type}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.stock_quantity}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.product_wholesale_price}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.product_price}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.store_name}
+                </td>
+                <td className="border border-gray-300 p-2 flex gap-1 hiddenz">
+                  <Button
+                    onClick={() => handleEditItem(index)}
+                    gradientDuoTone="purpleToBlue"
+                    size={"xs"}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteItem(index)}
+                    outline
+                    size={"xs"}
+                    gradientDuoTone="pinkToOrange"
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       <Button
-        className="mt-3 hidden"
-        onClick={() => setShowModal(true)}
-        size={"sm"}
-        gradientDuoTone="purpleToBlue"
-      >
-        {editIndex !== null ? "Update Item" : "Add Item"}
-      </Button>
+  className="mt-3" // Removed hidden class
+  onClick={() => setShowModal(true)}
+  size={"sm"}
+  gradientDuoTone="purpleToBlue"
+>
+  z
+</Button>
 
       {/* Add/Edit Item Modal */}
       <Modal show={showModal} onClose={() => setShowModal(false)}>
@@ -376,13 +445,18 @@ const Inventory = () => {
               onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
               required
             />
-            <Label htmlFor="brand" value="Brand" />
+            <Label htmlFor="waranty_period" value="waranty_period" />
             <TextInput
-              id="brand"
-              value={newItem.brand}
-              onChange={(e) =>
-                setNewItem({ ...newItem, brand: e.target.value })
-              }
+              id="waranty_period"
+              value={newItem.waranty_period}
+              onChange={(e) => setNewItem({ ...newItem, waranty_period: e.target.value })}
+              required
+            /> 
+            <Label htmlFor="imei_number" value="imei_number" />
+            <TextInput
+              id="imei_number"
+              value={newItem.imei_number}
+              onChange={(e) => setNewItem({ ...newItem, imei_number: e.target.value })}
               required
             />
             <Label htmlFor="qty" value="Quantity" />
@@ -393,7 +467,30 @@ const Inventory = () => {
               onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
               required
             />
-            <Label htmlFor="wholesalePrice" value="Wholesale Price" />
+            <Label htmlFor="category" value="category" />
+            <TextInput
+              id="category"
+              value={newItem.category}
+              onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+              required
+            /> 
+             <Label htmlFor="product_model" value="product_model" />
+            <TextInput
+              id="product_model"
+              value={newItem.product_model}
+              onChange={(e) => setNewItem({ ...newItem, product_model: e.target.value })}
+              required
+            /> 
+            <Label htmlFor="brand" value="Brand" />
+            <TextInput
+              id="brand"
+              value={newItem.brand}
+              onChange={(e) =>
+                setNewItem({ ...newItem, brand: e.target.value })
+              }
+              required
+            />
+            {/* <Label htmlFor="wholesalePrice" value="Wholesale Price" />
             <TextInput
               type="number"
               id="wholesalePrice"
@@ -402,7 +499,7 @@ const Inventory = () => {
                 setNewItem({ ...newItem, wholesalePrice: e.target.value })
               }
               required
-            />
+            /> */}
             <Label htmlFor="retailPrice" value="Retail Price" />
             <TextInput
               type="number"
@@ -441,7 +538,7 @@ const Inventory = () => {
           </Button>
 
           <Button
-            onClick={handleAddItem}
+            onClick={fetchaddnewitems}
             outline
             size={"sm"}
             gradientDuoTone="purpleToBlue"
@@ -451,7 +548,8 @@ const Inventory = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Accessories Modal 
+      {
+      /* Accessories Modal 
       <Modal
         show={showAccessoriesModal}
         onClose={() => setShowAccessoriesModal(false)}
