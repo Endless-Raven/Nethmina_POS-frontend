@@ -363,12 +363,18 @@ const validate = () => {
           </div>
           <div className="w-full flex gap-2">
             <div className="flex-1">
-              <p className="font-semibold">Invoice To</p>
-              <p>{customer.customer_name}</p>
-              <p className="font-semibold">Mobile</p>
-              <p>{customer.customer_number}</p>
-              <p className="font-semibold">Address</p>
-              <p>{customer.customer_address}</p>
+              <div className="flex gap-4">
+                <p className="font-semibold">Invoice To</p>
+                <p>{customer.customer_name}</p>
+              </div>
+              <div className="flex gap-4">
+                <p className="font-semibold">Mobile</p>
+                <p>{customer.customer_number}</p>
+              </div>
+              <div className="flex gap-4">
+                <p className="font-semibold">Address</p>
+                <p>{customer.customer_address}</p>
+              </div>
             </div>
             <div className="flex-1">
               <p className="font-semibold">Invoice</p>
@@ -400,10 +406,12 @@ const validate = () => {
                       <Table.Cell>{product.price}</Table.Cell>
                       <Table.Cell>{product.quantity}</Table.Cell>
                       <Table.Cell>{product.warranty_period}</Table.Cell>
-                      <Table.Cell>{product.discount}</Table.Cell>
+                      <Table.Cell>{product.discount.toFixed(2)}</Table.Cell>
                       <Table.Cell>
-                        {Number(product.price) * Number(product.quantity) -
-                          Number(product.discount)}
+                        {(
+                          Number(product.price) * Number(product.quantity) -
+                          Number(product.discount)
+                        ).toFixed(2)}
                       </Table.Cell>
                     </Table.Row>
                   ))}
@@ -413,7 +421,7 @@ const validate = () => {
           </div>
           <div className="flex justify-between">
             <p>Thank you for Your Business</p>
-            <p className="font-semibold">Total : {total}</p>
+            <p className="font-semibold">Total : {total.toFixed(2)}</p>
           </div>
         </div>
       </div>
