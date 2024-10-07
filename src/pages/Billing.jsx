@@ -406,7 +406,7 @@ const validate = () => {
                       <Table.Cell>{product.price}</Table.Cell>
                       <Table.Cell>{product.quantity}</Table.Cell>
                       <Table.Cell>{product.warranty_period}</Table.Cell>
-                      <Table.Cell>{product.discount.toFixed(2)}</Table.Cell>
+                      <Table.Cell>{Number(product.discount).toFixed(2)}</Table.Cell>
                       <Table.Cell>
                         {(
                           Number(product.price) * Number(product.quantity) -
