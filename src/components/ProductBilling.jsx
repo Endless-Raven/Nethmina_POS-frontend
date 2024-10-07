@@ -147,7 +147,8 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       if (
         product.serial_number &&
         product.serial_number.length === 15 &&
-        validEmi.includes(product.serial_number)
+        validEmi.includes(product.serial_number) &&
+        product.product_name !== ""
       ) {
         // Validate product data before adding
         addProduct();
@@ -155,9 +156,11 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       } else {
         setOpenModal(true);
       }
-    } else {
+    } else if (product.product_name !== "") {
       addProduct();
       resetProduct();
+    } else {
+      setOpenModal(true);
     }
   };
 
