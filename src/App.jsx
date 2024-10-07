@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import { useSelector } from "react-redux";
 import PrivateRoute from "./components/PrivateRoute";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/home/:section" element={<Home />} />
         </Route>
         <Route element={<Login />} path="/login" />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
