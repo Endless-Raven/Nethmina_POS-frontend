@@ -54,6 +54,7 @@ export default function NavigationBar() {
       <Navbar.Collapse>
         <Navbar.Link
           active={active === "billing"}
+          className="cursor-pointer"
           onClick={() => {
             setActive("billing");
             navigate("/home/billing");
@@ -63,6 +64,7 @@ export default function NavigationBar() {
         </Navbar.Link>
         <Navbar.Link
           active={active === "inventory"}
+          className="cursor-pointer"
           onClick={() => {
             setActive("inventory");
             navigate("/home/inventory");
@@ -72,6 +74,7 @@ export default function NavigationBar() {
         </Navbar.Link>
         <Navbar.Link
           active={active === "daily report"}
+          className="cursor-pointer"
           onClick={() => {
             setActive("daily report");
             navigate("/home/daily_report");
@@ -81,6 +84,7 @@ export default function NavigationBar() {
         </Navbar.Link>
         <Navbar.Link
           active={active === "admin panel"}
+          className="cursor-pointer"
           onClick={() => {
             setActive("admin panel");
             navigate("/home/admin_panel");
