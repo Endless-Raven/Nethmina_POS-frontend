@@ -14,13 +14,12 @@ import axios from "axios";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function Billing() {
+  
   const [loading,setLoading] = useState(false);
   const [error,setError] = useState(null);
   const [invoiceId,setInvoiceId] = useState("");
-  // toast for done and print
   const [showToastDone, setShowToastDone] = useState(false);
   const [showToastPrint, setShowToastPrint] = useState(false);
-
   const userData = useSelector((state) => state.user.data);
 
   useEffect(() => {
@@ -109,7 +108,7 @@ export default function Billing() {
     if (validate()) {
       setError(null);
       setLoading(true);
-      setShowToastPrint(true);
+      setShowToastDone(true);
       const requestBody = {
         cashier_id: salesmanId,
         sales_person: salesman,
@@ -161,7 +160,6 @@ export default function Billing() {
       console.log("Request Body:", requestBody);
       try {
         const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
-        console.log(response.data);
         setInvoiceId(response.data.sales_id);
       } catch (error) {
         setError(error.message);

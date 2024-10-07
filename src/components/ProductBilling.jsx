@@ -14,19 +14,6 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
   const [validEmi, setValidEmi] = useState([]);
   const [emiAvialable, setEmiAvialable] = useState(true);
 
-  // const categories = [
-  //   "Mobile Phones",
-  //   "Screen Protectors",
-  //   "Smartwatches",
-  //   "Power Banks",
-  //   "Chargers & Cables",
-  //   "Speakers",
-  //   "Earphones & Headphones",
-  //   "Phone Cases",
-  //   "Wi-Fi Routers",
-  //   "Tablets",
-  // ];
-
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     fetchCate();
