@@ -21,7 +21,7 @@ export default function TableBilling({ orderedList, setTotal }) {
         <Table.Head>
           <Table.HeadCell>No</Table.HeadCell>
           <Table.HeadCell>Product Name</Table.HeadCell>
-          <Table.HeadCell>Warrenty</Table.HeadCell>
+          <Table.HeadCell>warranty</Table.HeadCell>
           <Table.HeadCell>Unit Price</Table.HeadCell>
           <Table.HeadCell>No of Units</Table.HeadCell>
           <Table.HeadCell>Discount</Table.HeadCell>

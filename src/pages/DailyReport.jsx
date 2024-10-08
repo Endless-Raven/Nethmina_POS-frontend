@@ -54,7 +54,7 @@ const DailyReport = () => {
 
   return (
     <div className="px-8 min-h-[90vh]">
-      <h1 className="font-bold cursor-default text-3xl text-center text-sky-800">
+      <h1 className="font-bold cursor-default text-3xl text-center text-sky-800 py-12">
         Daily Accounting Sales Report
       </h1>
       <div className="flex justify-between items-center gap-4 ">
@@ -73,18 +73,7 @@ const DailyReport = () => {
             onChange={handleDateChange}
           />
           <p className="text-right text-lg ">{selectedDate}</p>
-          {/* <Datepicker
-            minDate={new Date(new Date().setDate(new Date().getDate() - 7))}
-            maxDate={new Date()}
-            value={selectedDate}
-            onChange={handleDateChange}
-          /> */}
         </div>
-        {/* <div className="flex items-center gap-4 cursor-default font-semibold mt-4 text-xl">
-          <p>
-            Total Save: Rs <span>12000</span>
-          </p>
-        </div> */}
       </div>
       {loading ? (
         <div className="w-full h-[60vh] flex justify-center items-center text-2xl font-semibold">

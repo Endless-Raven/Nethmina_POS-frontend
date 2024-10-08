@@ -14,10 +14,9 @@ import axios from "axios";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function Billing() {
-  
-  const [loading,setLoading] = useState(false);
-  const [error,setError] = useState(null);
-  const [invoiceId,setInvoiceId] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [invoiceId, setInvoiceId] = useState("");
   const [showToastDone, setShowToastDone] = useState(false);
   const [showToastPrint, setShowToastPrint] = useState(false);
   const userData = useSelector((state) => state.user.data);
@@ -174,32 +173,31 @@ export default function Billing() {
     }
   };
 
-// validate all forms
-const validate = () => {
-  // Check if any customer details are empty
-  if (
-    customer.customer_number === "" || 
-    customer.customer_number.length !== 10 || 
-    customer.customer_name === "" || 
-    !/^[A-Za-z\s]+$/.test(customer.customer_name) // Check if customer_name contains only alphabetic characters
-  ) {
-    return false; // If any detail is empty or invalid, return false
-  }
-  
-  // Check if the ordered list is empty
-  if (orderedList.length < 1) {
-    return false; // If no orders, return false
-  }
-  
-  // Check if salesman is empty
-  if (salesman === "") {
-    return false; // If salesman is not specified, return false
-  }
-  
-  // If all checks pass, return true
-  return true;
-};
+  // validate all forms
+  const validate = () => {
+    // Check if any customer details are empty
+    if (
+      customer.customer_number === "" ||
+      customer.customer_number.length !== 10 ||
+      customer.customer_name === "" ||
+      !/^[A-Za-z\s]+$/.test(customer.customer_name) // Check if customer_name contains only alphabetic characters
+    ) {
+      return false; // If any detail is empty or invalid, return false
+    }
 
+    // Check if the ordered list is empty
+    if (orderedList.length < 1) {
+      return false; // If no orders, return false
+    }
+
+    // Check if salesman is empty
+    if (salesman === "") {
+      return false; // If salesman is not specified, return false
+    }
+
+    // If all checks pass, return true
+    return true;
+  };
 
   const componentRef = React.useRef(null);
 
@@ -375,21 +373,29 @@ const validate = () => {
               </div>
             </div>
             <div className="flex-1">
-              <p className="font-semibold">Invoice</p>
-              <p>{invoiceId}</p>
-              <p className="font-semibold">Date</p>
-              <p>{new Date().toLocaleDateString()}</p>
+              <div className="flex gap-4">
+                <p className="font-semibold">Invoice</p>
+                <p className="ml-4">{invoiceId}</p>
+              </div>
+              <div className="flex gap-4">
+                <p className="font-semibold">Date</p>
+                <p className="ml-9">{new Date().toLocaleDateString()}</p>
+              </div>
+              <div className="flex gap-4">
+                <p className="font-semibold">Salesman</p>
+                <p>{salesman}</p>
+              </div>
             </div>
           </div>
           <div className="">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto my-4">
               <Table striped>
                 <Table.Head>
                   <Table.HeadCell>No</Table.HeadCell>
                   <Table.HeadCell>Product name</Table.HeadCell>
                   <Table.HeadCell>Price</Table.HeadCell>
                   <Table.HeadCell>Qty</Table.HeadCell>
-                  <Table.HeadCell>Warrenty</Table.HeadCell>
+                  <Table.HeadCell>warranty</Table.HeadCell>
                   <Table.HeadCell>Discount</Table.HeadCell>
                   <Table.HeadCell>Total</Table.HeadCell>
                 </Table.Head>
@@ -404,7 +410,9 @@ const validate = () => {
                       <Table.Cell>{product.price}</Table.Cell>
                       <Table.Cell>{product.quantity}</Table.Cell>
                       <Table.Cell>{product.warranty_period}</Table.Cell>
-                      <Table.Cell>{Number(product.discount).toFixed(2)}</Table.Cell>
+                      <Table.Cell>
+                        {Number(product.discount).toFixed(2)}
+                      </Table.Cell>
                       <Table.Cell>
                         {(
                           Number(product.price) * Number(product.quantity) -
@@ -419,7 +427,7 @@ const validate = () => {
           </div>
           <div className="flex justify-between">
             <p>Thank you for Your Business</p>
-            <p className="font-semibold">Total : {total.toFixed(2)}</p>
+            <p className="font-semibold mr-2">Total : {total.toFixed(2)}</p>
           </div>
         </div>
       </div>
