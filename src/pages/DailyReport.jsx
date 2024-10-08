@@ -107,7 +107,7 @@ const DailyReport = () => {
           </thead>
           {/* Main Sales Table */}
           <tbody>
-            {salesData.map((store, storeIndex) => (
+            { salesData ? salesData.map((store, storeIndex) => (
               <React.Fragment key={storeIndex}>
                 {/* Store Name Row */}
                 <tr>
@@ -151,7 +151,9 @@ const DailyReport = () => {
                   </tr>
                 ))}
               </React.Fragment>
-            ))}
+            )) : (
+              <div className="text-center py-4 font-semibold">no sales for now</div>
+            )}
           </tbody>
           <tfoot>
             <tr className="bg-white">
@@ -163,9 +165,9 @@ const DailyReport = () => {
               </td>
               <td className="border-gray-400 p-2 font-bold">
                 Rs:
-                {salesData
+                {salesData ? salesData
                   .reduce((acc, item) => acc + item.total_sales, 0)
-                  .toFixed(2)}
+                  .toFixed(2) : 0.00 }
               </td>
             </tr>
           </tfoot>
