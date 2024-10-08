@@ -29,14 +29,15 @@ const DailyReport = () => {
       setError(null);
       setLoading(true);
       const response = await axios.get(
-        `${API_BASE_URL}/sales/daily-sales-report`,
+        `${API_BASE_URL}/sales/getSalesItems/ByDate`,
         {
           params: {
             date: selectedDate,
           },
         }
       );
-      setSalesData(response.data.report);
+      console.log(response);
+      setSalesData(response.data.stores_sales);
     } catch (error) {
       setSalesData({});
       setLoading(false);
@@ -68,7 +69,6 @@ const DailyReport = () => {
             min={new Date(new Date().setDate(new Date().getDate() - 7))}
             max={new Date()}
             value={selectedDate}
-            onSelect={selectedDate}
             disabled={loading}
             onChange={handleDateChange}
           />
@@ -133,9 +133,7 @@ const DailyReport = () => {
                     </td>
                     <td className="border border-gray-400 p-2 ">
                       Rs :{" "}
-                      {item.total_amount
-                        ? Number(item.total_amount).toFixed(2)
-                        : "-"}
+                      {Number((item.item_price*item.item_quantity)-item.discount).toFixed(2)}
                     </td>
                   </tr>
                 ))}
