@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Label, TextInput, Select, Modal } from "flowbite-react";
+import { Button, Label, TextInput, Select, Modal, Spinner } from "flowbite-react";
 import TableBilling from "../components/TableBilling";
 import ProductBilling from "../components/ProductBilling";
 import CustomerBilling from "../components/CustomerBilling";
@@ -107,7 +107,6 @@ export default function Billing() {
     if (validate()) {
       setError(null);
       setLoading(true);
-      setShowToastDone(true);
       const requestBody = {
         cashier_id: salesmanId,
         sales_person: salesman,
@@ -123,13 +122,14 @@ export default function Billing() {
       try {
         const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
         setInvoiceId(response.data.sales_id);
+        setShowToastDone(true);
+        setLoading(false);
+        handleReset();
       } catch (error) {
         setLoading(false);
         setError(error.message);
         console.error(error);
       }
-      setLoading(false);
-      handleReset();
     } else {
       setOpenModal(true);
     }
@@ -141,8 +141,6 @@ export default function Billing() {
     if (validate()) {
       setError(null);
       setLoading(true);
-      setShowToastPrint(true);
-
       const requestBody = {
         cashier_id: salesmanId,
         sales_person: salesman,
@@ -155,19 +153,18 @@ export default function Billing() {
           customer_address: customer.customer_address,
         },
       };
-      // Log the request body before sending it
-      console.log("Request Body:", requestBody);
       try {
         const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
         setInvoiceId(response.data.sales_id);
+        setShowToastPrint(true);
+        printFn();
+        handleReset();
+        setLoading(false);
       } catch (error) {
         setError(error.message);
         console.error(error);
         setLoading(false);
       }
-      await printFn();
-      handleReset();
-      setLoading(false);
     } else {
       setOpenModal(true);
     }
@@ -289,7 +286,17 @@ export default function Billing() {
               gradientDuoTone="cyanToBlue"
               disabled={loading}
             >
-              Done
+              {loading ? (
+                <>
+                  <Spinner
+                    aria-label="Alternate spinner button example"
+                    size="sm"
+                  />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                <>Done</>
+              )}
             </Button>
             <Button
               type="submit"
@@ -297,7 +304,17 @@ export default function Billing() {
               gradientDuoTone="purpleToBlue"
               disabled={loading}
             >
-              Print
+              {loading ? (
+                <>
+                  <Spinner
+                    aria-label="Alternate spinner button example"
+                    size="sm"
+                  />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                <>Print</>
+              )}
             </Button>
           </div>
         </div>

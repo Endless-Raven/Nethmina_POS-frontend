@@ -21,15 +21,6 @@ export default function Landing() {
         >
           Login
         </Button>
-        <Button
-          gradientDuoTone="pinkToOrange"
-          size="xl"
-          onClick={() => {
-            navigate("/home/billing");
-          }}
-        >
-          Go To Billing
-        </Button>
       </div>
     </div>
   );
