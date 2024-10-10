@@ -438,14 +438,14 @@ const handleSuggestionClickcategory = (suggestion) => {
         </select>
       </div>
       
-      <Button
+      {/* <Button
         className="mt-3 p-1 mb-3 " // Removed hidden class
         onClick={() => setShowModal(true)}
         size={"sm"}
         gradientDuoTone="purpleToBlue"
       >
         Add Item
-      </Button>
+      </Button> */}
 
       <table className="w-full  bg-slate-50">
         <thead>
