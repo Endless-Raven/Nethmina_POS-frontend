@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   define: {
     'process.env': {
-      API_BASE_URL: 'http://13.60.205.115:3000',
+      API_BASE_URL: 'http://localhost:3000',
     },
   },
 })
