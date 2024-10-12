@@ -9,9 +9,9 @@ import ManageShopsAndEmp from './ManageShopsAndEmp'
 export default function AdminPanel() {
   return (
     <div>
-      <Dashboard/>
+      {/* <Dashboard/> */}
       {/* <Product/> */}
-      {/* <InventoryAdmin/> */}
+      <InventoryAdmin/>
       {/* <TrackPhone/> */}
       {/* <MonthlyReport/> */}
       {/* <ManageShopsAndEmp/> */}
