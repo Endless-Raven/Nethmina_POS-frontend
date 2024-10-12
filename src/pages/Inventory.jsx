@@ -424,7 +424,7 @@ const Inventory = () => {
         gradientDuoTone="purpleToBlue"
       >
         Add Item
-      </Button>
+      </Button> */
 
       <table className="w-full  bg-slate-50">
         <thead>
