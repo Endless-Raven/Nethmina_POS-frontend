@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
 import axios from "axios";
+import Brand from "../components/Brand";
+import Type from "../components/Type";
+import Model from "../components/Model";
+
 const API_BASE_URL = process.env.API_BASE_URL;
 
 const Inventory = () => {
@@ -17,8 +21,10 @@ const Inventory = () => {
     waranty_period: "",
     imei_number: "",
     category: "",
+    model:"",
     wholesalePrice: "",
     retailPrice: "",
+    wholesale_price:""
   });
   const [editIndex, setEditIndex] = useState(null);
   const [selectedStore, setSelectedStore] = useState("All");
@@ -27,25 +33,17 @@ const Inventory = () => {
   const [searchitems, setsearchitems] = useState("");
   // const [selectedAccessories, setSelectedAccessories] = useState([]);
 
-  const [itemNames, setItemNames] = useState({ name: "" , category:"" });
+  const [itemNames, setItemNames] = useState({ name: "", category: "" });
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1); // To track the active suggestion
 
-
-  
-  const [suggestionscategory, setSuggestionscategory] = useState([]);
-  const [showSuggestionscategory, setShowSuggestionscategory] = useState(false);
-  const [activeIndexcategory, setActiveIndexcategory] = useState(-1); // To track the active suggestion
-
-
-
+ 
   const [stores, setStores] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [products, setprodcuts] = useState([]);
   const [loading, setloading] = useState([]);
-  
 
   // const[loading,setLoding]=useState(true);
 
@@ -58,6 +56,11 @@ const Inventory = () => {
     fetchproductdata();
     fetchsetsearchitems();
   }, []);
+
+  useEffect(() => {
+    fetchproductdata();
+  }, [searchTerm, selectedStore, selectedBrand, selectedcategory]);
+  
 
   useEffect(() => {
     fetchBrands();
@@ -138,31 +141,14 @@ const Inventory = () => {
     }
   };
 
-  const fetchSuggestionscategory = async (query) => {
-    if (query.length > 0) {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/product/getProductTypes/get`,
-          {
-            params: { searchText: query },
-          }
-        );
-        setSuggestionscategory(response.data);
-        setShowSuggestionscategory(true);
-      } catch (err) {
-        console.error("Error fetching suggestions:", err);
-      }
-    } else {
-      setSuggestionscategory([]);
-      setShowSuggestionscategory(false);
-    }
-  };
-
+ 
 
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       // Move down in suggestions
-      setActiveIndex((prevIndex) => Math.min(prevIndex + 1, suggestions.length - 1));
+      setActiveIndex((prevIndex) =>
+        Math.min(prevIndex + 1, suggestions.length - 1)
+      );
     } else if (e.key === "ArrowUp") {
       // Move up in suggestions
       setActiveIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -174,21 +160,6 @@ const Inventory = () => {
       setShowSuggestions(false); // Hide suggestions after selection
     }
   };
-
-
- // Handle input change
- const handleInputChangecategory = async (e) => {
-  const value = e.target.value;
-  setNewItem({ ...newItem, category: value });
-  await fetchSuggestionscategory(value); // Fetch suggestions when the user types
-  setActiveIndexcategory(-1); // Reset the active suggestion index
-};
-
-// Handle suggestion click
-const handleSuggestionClickcategory = (suggestion) => {
-  setNewItem({ ...newItem, category: suggestion }); // Use setItemNames instead of setNewItem
-  setShowSuggestionscategory(false); // Hide suggestions after selecting
-};
 
 
 
@@ -314,26 +285,34 @@ const handleSuggestionClickcategory = (suggestion) => {
   async function fetchaddnewitems() {
     try {
       setloading(true);
+  
+      // Check if newItem.imei_number is an array
+      const imeiNumbers = Array.isArray(newItem.imei_number) ? newItem.imei_number : [newItem.imei_number];
+  
       const response = await axios.post(`${API_BASE_URL}/product`, {
         product_name: itemNames.name,
         product_price: newItem.retailPrice,
-        waranty_period: newItem.waranty_period,
-        imei_number: newItem.imei_number,
+        warranty_period: newItem.warranty_period, // Fixed typo from "waranty_period" to "warranty_period"
+        imei_numbers: imeiNumbers, // Pass as an array
         product_stock: newItem.qty,
         product_type: newItem.category,
         brand_name: newItem.brand,
-        product_model: newItem.product_model,
+        product_model: newItem.model,
+        product_wholesale_price: newItem.wholesale_price,
         user: 1,
       });
+  
       console.log("holaaaaa");
       console.log("Product added:", response.data);
     } catch (error) {
-      console.log("b".newItem);
+      console.log("b", itemNames.name);
+      console.log("fkjsdhbgfikhb", newItem.imei_number);
       console.error("Error adding product:", error);
-    } finally{
+    } finally {
       setloading(false);
     }
   }
+  
 
   const handleAddItem = () => {
     if (editIndex !== null) {
@@ -437,15 +416,15 @@ const handleSuggestionClickcategory = (suggestion) => {
           ))}
         </select>
       </div>
-      
-      {/* <Button
+
+      <Button
         className="mt-3 p-1 mb-3 " // Removed hidden class
         onClick={() => setShowModal(true)}
         size={"sm"}
         gradientDuoTone="purpleToBlue"
       >
         Add Item
-      </Button> */}
+      </Button> */
 
       <table className="w-full  bg-slate-50">
         <thead>
@@ -521,7 +500,6 @@ const handleSuggestionClickcategory = (suggestion) => {
           )}
         </tbody>
       </table>
-      
 
       {/* Add/Edit Item Modal */}
       <Modal show={showModal} onClose={() => setShowModal(false)}>
@@ -532,29 +510,33 @@ const handleSuggestionClickcategory = (suggestion) => {
           <div>
             <Label htmlFor="name" value="Name" />
             <div className="relative">
-                <div className="">
-                  <input
-                    type="text"
-                    id="name"
-                    value={itemNames.name}
-                    // onChange={async (e) => {
-                    //   const value = e.target.value;
-                    //   setItemNames({ ...itemNames, name: value });
-                    //   await fetchSuggestions(value); // Fetch suggestions when the user types
-                    // }}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    required
-                    className="border p-2 w-full rounded-md"
-                    placeholder="Search products..."
-                  />
-                  {itemNames.name !== "" && showSuggestions && suggestions.length > 0 && (
-                    <ul className="absolute rounded-md z-20 bg-white w-full border">
+              <div className="">
+                <input
+                  type="text"
+                  id="name"
+                  value={itemNames.name}
+                  // onChange={async (e) => {
+                  //   const value = e.target.value;
+                  //   setItemNames({ ...itemNames, name: value });
+                  //   await fetchSuggestions(value); // Fetch suggestions when the user types
+                  // }}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  required
+                  className="border p-2 w-full rounded-md"
+                  placeholder="Search products..."
+                />
+                {itemNames.name !== "" &&
+                  showSuggestions &&
+                  suggestions.length > 0 && (
+                    <ul className="absolute top-full left-0 rounded-md z-20 bg-white w-full border">
                       {suggestions.map((suggestion, index) => (
                         <li
                           key={index}
                           className={`p-2 text-sm ${
-                            index === activeIndex ? "bg-gray-300" : "bg-gray-100"
+                            index === activeIndex
+                              ? "bg-gray-300"
+                              : "bg-gray-100"
                           } hover:bg-gray-200 cursor-pointer border-b-2 border-gray-400`}
                           onClick={() => handleSuggestionClick(suggestion)}
                         >
@@ -591,61 +573,17 @@ const handleSuggestionClickcategory = (suggestion) => {
               onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
               required
             />
-           <br></br>
-        <div className="">
-  <input
-    type="text"
-    id="category"
-    value={newItem.category} // Bind to the category property in newItem
-    onChange={handleInputChangecategory}
-    className="border p-2 w-full rounded-md"
-    placeholder="Search categories..."
-  />
-  {newItem.category !== "" && showSuggestionscategory && suggestionscategory.length > 0 && (
-    <ul className="absolute rounded-md z-20 bg-white w-full border">
-      {suggestionscategory.map((suggestion, index) => (
-        <li
-          key={index}
-          className={`p-2 text-sm ${
-            index === activeIndexcategory ? "bg-gray-300" : "bg-gray-100"
-          } hover:bg-gray-200 cursor-pointer border-b-2 border-gray-400`}
-          onClick={() => handleSuggestionClickcategory(suggestion)}
-        >
-          {suggestion}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
-        <br></br>
-            <Label htmlFor="product_model" value="product_model" />
-            <TextInput
-              id="product_model"
-              value={newItem.product_model}
-              onChange={(e) =>
-                setNewItem({ ...newItem, product_model: e.target.value })
-              }
-              required
-            />
             <br></br>
-             <select
-          value={selectedBrand}
-          onChange={(e) => {
-            setSelectedBrand(e.target.value);
-            setNewItem({ ...newItem, brand: e.target.value });
-          }}
-          className="p-2 border rounded-lg bg-white"
-        >
-          <option value="All">All Brands</option>
-          {brands.map((brand, index) => (
-            <option key={index} value={brand}>
-              {brand}
-            </option>
-          ))}
-        </select>
-        <br></br>
-        
+            <Type onSelectType={(type) => setNewItem({...newItem, category: type})} />
+            <br></br>
+            
+            <Model onSelectModel={(model) => setNewItem({...newItem, model: model})} />
+            <br></br>
+
+            <Brand onSelectBrand={(brand) => setNewItem({...newItem, brand: brand})} />
+
+            <br></br>
+
             {/* <Label htmlFor="wholesalePrice" value="Wholesale Price" />
             <TextInput
               type="number"
@@ -663,6 +601,16 @@ const handleSuggestionClickcategory = (suggestion) => {
               value={newItem.retailPrice}
               onChange={(e) =>
                 setNewItem({ ...newItem, retailPrice: e.target.value })
+              }
+              required
+            />
+            <Label htmlFor="wholesale_price" value="Retail Price" />
+            <TextInput
+              type="number"
+              id="wholesale_price"
+              value={newItem.wholesale_price}
+              onChange={(e) =>
+                setNewItem({ ...newItem, wholesale_price: e.target.value })
               }
               required
             />
