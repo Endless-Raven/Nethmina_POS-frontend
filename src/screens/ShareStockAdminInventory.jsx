@@ -1,19 +1,52 @@
-import React, { useState } from 'react';
-import { Button, Modal, Label, Select, TextInput } from 'flowbite-react';
-import PendingRequestList from '../components/admin_inventory/PendingRequestList';
-import { ProductTable } from '../components/admin_inventory/ProductTable';
+import React, { useState } from "react";
+import { Button, Modal, Label, Select, TextInput } from "flowbite-react";
+import PendingRequestList from "../components/admin_inventory/PendingRequestList";
+import { ProductTable } from "../components/admin_inventory/ProductTable";
 function ShareStockAdminInventory() {
-  const [fromShop, setFromShop] = useState('');
-  const [toShop, setToShop] = useState('');
+  const samplePending = [
+    {
+      from: "bgd",
+      time: "23.55",
+      date: "25/10/24",
+      products: [
+        {
+          category: "greer",
+          brand: "fwrg",
+          product: "asggg",
+          qty: "45",
+        },
+        {
+          category: "greer",
+          brand: "fwrg",
+          product: "asggg",
+          qty: "45",
+        },
+      ],
+    },
+    {
+      from: "mjkyli7u",
+      time: "23.55",
+      date: "25/10/24",
+      products: [
+        {
+          category: "greer",
+          brand: "fwrg",
+          product: "asggg",
+          qty: "45",
+        },
+      ],
+    },
+  ];
+  const [toShop, setToShop] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({
-    shopName: '',
-    category: '',
-    brand: '',
-    product: '',
-    qty: '1',
-    imeiNumbers: []
+    shopName: "",
+    category: "",
+    brand: "",
+    product: "",
+    qty: "1",
+    imeiNumbers: [],
   });
 
   // Open modal
@@ -26,38 +59,41 @@ function ShareStockAdminInventory() {
   const handleAddItem = () => {
     setItems([...items, newItem]); // Add new item to items list
     setModalOpen(false); // Close modal after adding
-    setNewItem({ shopName: '', category: '', brand: '', product: '', qty: '1', imeiNumbers: [] }); // Reset form
+    setNewItem({
+      shopName: "",
+      category: "",
+      brand: "",
+      product: "",
+      qty: "1",
+      imeiNumbers: [],
+    }); // Reset form
   };
 
   return (
-    <div className="share-stock-container relative p-5 min-h-screen max-w-5xl mx-auto">
+    <div className="share-stock-container  p-5 min-h-screen max-w-5xl mx-auto">
       {/* Pending Request List */}
-      <PendingRequestList />
+      <PendingRequestList data={samplePending} />
 
       {/* From Input - Top Left Corner */}
-      <div className="absolute left-12">
+      <div className="absolute left-9 mt-2">
         <Label htmlFor="fromShop">From:</Label>
-        <TextInput
-          id="fromShop"
-          value={fromShop}
-          onChange={(e) => setFromShop(e.target.value)}
-          placeholder="Select shop"
-        />
+        <TextInput id="fromShop" value={"Admin"} readOnly />
       </div>
 
-      {/* To Input - Top Right Corner */}
-      <div className="absolute right-12">
-        <Label htmlFor="toShop">To:</Label>
-        <TextInput
-          id="toShop"
-          value={toShop}
-          onChange={(e) => setToShop(e.target.value)}
-          placeholder="Select shop"
-        />
+      {/* Dropdown - Top Right Corner */}
+      <div className="absolute right-9 mt-2 ">
+        <div className="">
+          <Label htmlFor="Shops">To:</Label>
+        </div>
+        <Select id="Shops" required={true}>
+          <option value="Kurunegala">Kurunegala</option>
+          <option value="Kandy">Kandy</option>
+          <option value="Polonnaruwa">Polonnaruwa</option>
+        </Select>
       </div>
 
       {/* Add Item Button */}
-      <div className="text-center mt-52">
+      <div className="text-center mt-36 mx-1 ">
         <Button gradientDuoTone="purpleToBlue" onClick={openModal}>
           Add Item
         </Button>
@@ -69,17 +105,23 @@ function ShareStockAdminInventory() {
         <Modal.Body>
           <div className="space-y-1">
             <Label htmlFor="shopName">Shop Name</Label>
-            <TextInput
+            <Select
               id="shopName"
-              placeholder="Shop Name"
-              value={newItem.shopName}
-              onChange={(e) => setNewItem({ ...newItem, shopName: e.target.value })}
-            />
+              onChange={(e) =>
+                setNewItem({ ...newItem, shopName: e.target.value })
+              }
+            >
+              <option value="">Select Shop Name</option>
+              <option value="Kandy">Kandy</option>
+              <option value="Polonnaruwa">Polonnaruwa</option>
+            </Select>
 
             <Label htmlFor="category">Category</Label>
             <Select
               id="category"
-              onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+              onChange={(e) =>
+                setNewItem({ ...newItem, category: e.target.value })
+              }
             >
               <option value="">Select Category</option>
               <option value="mobile phone">Mobile Phone</option>
@@ -87,20 +129,30 @@ function ShareStockAdminInventory() {
             </Select>
 
             <Label htmlFor="brand">Brand</Label>
-            <TextInput
+            <Select
               id="brand"
-              placeholder="Brand"
               value={newItem.brand}
-              onChange={(e) => setNewItem({ ...newItem, brand: e.target.value })}
-            />
+              onChange={(e) =>
+                setNewItem({ ...newItem, brand: e.target.value })
+              }
+            >
+              <option value="">Select Category</option>
+              <option value="mobile phone">Mobile Phone</option>
+              <option value="mobile accessories">Mobile Accessories</option>
+            </Select>
 
             <Label htmlFor="product">Product</Label>
-            <TextInput
+            <Select
               id="product"
-              placeholder="Product"
               value={newItem.product}
-              onChange={(e) => setNewItem({ ...newItem, product: e.target.value })}
-            />
+              onChange={(e) =>
+                setNewItem({ ...newItem, product: e.target.value })
+              }
+            >
+              <option value="">Select Category</option>
+              <option value="mobile phone">Mobile Phone</option>
+              <option value="mobile accessories">Mobile Accessories</option>
+            </Select>
 
             <Label htmlFor="qty">Quantity</Label>
             <TextInput
@@ -112,7 +164,7 @@ function ShareStockAdminInventory() {
             />
 
             {/* IMEI Numbers if Category is 'Phone' */}
-            {newItem.category === 'mobile phone' && (
+            {newItem.category === "mobile phone" && (
               <div>
                 <Label>IMEI Numbers</Label>
                 {[...Array(Number(newItem.qty))].map((_, index) => (
@@ -132,14 +184,19 @@ function ShareStockAdminInventory() {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button gradientDuoTone="pinkToOrange" onClick={closeModal}>Cancel</Button>
-          <Button gradientDuoTone="purpleToBlue" onClick={handleAddItem}>Add Item</Button>
+          <Button gradientDuoTone="pinkToOrange" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button gradientDuoTone="purpleToBlue" onClick={handleAddItem}>
+            Add Item
+          </Button>
         </Modal.Footer>
       </Modal>
 
       {/* ProductTable to display added items */}
       <div className="mt-10">
-        <ProductTable items={items} /> {/* Pass items as a prop to ProductTable */}
+        <ProductTable items={items} />{" "}
+        {/* Pass items as a prop to ProductTable */}
       </div>
 
       {/* Transfer Button */}

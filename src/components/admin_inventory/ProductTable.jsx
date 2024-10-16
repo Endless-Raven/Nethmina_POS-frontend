@@ -2,7 +2,7 @@ import {Checkbox,Table,TableBody,TableCell,TableHead,TableHeadCell,TableRow,}fro
 
 export function ProductTable({ items }) {
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto border border-collapse">
       <Table hoverable>
         <TableHead>
           <TableHeadCell>Product Name</TableHeadCell>
@@ -12,12 +12,12 @@ export function ProductTable({ items }) {
           {items.map((item, index) => (
             <TableRow
               key={index}
-              className="bg-white dark:border-gray-700 dark:bg-gray-800"
+              className=" bg-white"
             >
-              <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+              <TableCell className="">
                 {item.product}
               </TableCell>
-              <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+              <TableCell className="">
                 {item.qty}
               </TableCell>
             </TableRow>
