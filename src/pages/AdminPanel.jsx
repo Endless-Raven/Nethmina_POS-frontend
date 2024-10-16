@@ -16,7 +16,7 @@ export default function AdminPanel() {
     <div className="flex">
       <SidebarAdminPanel />
       <div className="m-3 relative shadow-md bg-slate-50 rounded-md flex-grow p-3 max-h-screen overflow-y-scroll">
-        <p className="text-4xl font-bold absolute right-5 top-3 text-slate-500 uppercase cursor-default hover:drop-shadow-md">
+        <p className="text-4xl font-bold absolute z-20 right-5 top-3 text-slate-500 uppercase cursor-default hover:drop-shadow-md">
           {section}
         </p>
         {section === "dashboard" ? (
