@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
+
 import axios from "axios";
-import Brand from "../components/Brand";
-import Type from "../components/Type";
-import Model from "../components/Model";
+
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
@@ -12,31 +11,13 @@ const Inventory = () => {
   const [items, setItems] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
   // const [showAccessoriesModal, setShowAccessoriesModal] = useState(false);
-  const [newItem, setNewItem] = useState({
-    name: "",
-    brand: "",
-    qty: "",
-    waranty_period: "",
-    imei_number: "",
-    category: "",
-    model:"",
-    wholesalePrice: "",
-    retailPrice: "",
-    wholesale_price:""
-  });
-  const [editIndex, setEditIndex] = useState(null);
+
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
   const [selectedcategory, setSelectedcategory] = useState("All");
   const [searchitems, setsearchitems] = useState("");
   // const [selectedAccessories, setSelectedAccessories] = useState([]);
-
-  const [itemNames, setItemNames] = useState({ name: "", category: "" });
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1); // To track the active suggestion
 
  
   const [stores, setStores] = useState([]);
@@ -45,6 +26,7 @@ const Inventory = () => {
   const [products, setprodcuts] = useState([]);
   const [loading, setloading] = useState([]);
 
+  const [editIndex, setEditIndex] = useState(null);
   // const[loading,setLoding]=useState(true);
 
   // const[error,setError]=useState(null);
@@ -120,62 +102,7 @@ const Inventory = () => {
   //   }
   // }
 
-  // Function to fetch suggestions from the server
-  const fetchSuggestions = async (query) => {
-    if (query.length > 0) {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/product/searchProductsBy/Name`,
-          {
-            params: { searchText: query },
-          }
-        );
-        setSuggestions(response.data);
-        setShowSuggestions(true);
-      } catch (err) {
-        console.error("Error fetching suggestions:", err);
-      }
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    }
-  };
 
- 
-
-  const handleKeyDown = (e) => {
-    if (e.key === "ArrowDown") {
-      // Move down in suggestions
-      setActiveIndex((prevIndex) =>
-        Math.min(prevIndex + 1, suggestions.length - 1)
-      );
-    } else if (e.key === "ArrowUp") {
-      // Move up in suggestions
-      setActiveIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    } else if (e.key === "Enter") {
-      // Select the active suggestion on Enter key press
-      if (activeIndex >= 0 && activeIndex < suggestions.length) {
-        handleSuggestionClick(suggestions[activeIndex]);
-      }
-      setShowSuggestions(false); // Hide suggestions after selection
-    }
-  };
-
-
-
-  // Handle input change
-  const handleInputChange = async (e) => {
-    const value = e.target.value;
-    setItemNames({ ...itemNames, name: value });
-    await fetchSuggestions(value); // Fetch suggestions when the user types
-    setActiveIndex(-1); // Reset the active suggestion index
-  };
-
-  // Handle suggestion click
-  const handleSuggestionClick = (suggestion) => {
-    setItemNames({ ...itemNames, name: suggestion }); // Use setItemNames instead of setNewItem
-    setShowSuggestions(false); // Hide suggestions after selecting
-  };
 
   async function fetchproductdata() {
     try {
@@ -282,60 +209,6 @@ const Inventory = () => {
       (selectedBrand === "All" || item.brand === selectedBrand)
   );
 
-  async function fetchaddnewitems() {
-    try {
-      setloading(true);
-  
-      // Check if newItem.imei_number is an array
-      const imeiNumbers = Array.isArray(newItem.imei_number) ? newItem.imei_number : [newItem.imei_number];
-  
-      const response = await axios.post(`${API_BASE_URL}/product`, {
-        product_name: itemNames.name,
-        product_price: newItem.retailPrice,
-        warranty_period: newItem.warranty_period, // Fixed typo from "waranty_period" to "warranty_period"
-        imei_numbers: imeiNumbers, // Pass as an array
-        product_stock: newItem.qty,
-        product_type: newItem.category,
-        brand_name: newItem.brand,
-        product_model: newItem.model,
-        product_wholesale_price: newItem.wholesale_price,
-        user: 1,
-      });
-  
-      console.log("holaaaaa");
-      console.log("Product added:", response.data);
-    } catch (error) {
-      console.log("b", itemNames.name);
-      console.log("fkjsdhbgfikhb", newItem.imei_number);
-      console.error("Error adding product:", error);
-    } finally {
-      setloading(false);
-    }
-  }
-  
-
-  const handleAddItem = () => {
-    if (editIndex !== null) {
-      const updatedItems = [...items];
-      updatedItems[editIndex] = { ...newItem, no: editIndex + 1 };
-      setItems(updatedItems);
-      setEditIndex(null);
-    } else {
-      setItems([...items, { ...newItem, no: items.length + 1 }]);
-    }
-
-    setShowModal(false);
-    setNewItem({
-      name: "",
-      brand: "",
-      qty: "",
-      category: "",
-      wholesalePrice: "",
-      retailPrice: "",
-      store: "",
-    });
-  };
-
   const handleEditItem = (index) => {
     setNewItem(items[index]);
     setEditIndex(index);
@@ -417,15 +290,7 @@ const Inventory = () => {
         </select>
       </div>
 
-      <Button
-        className="mt-3 p-1 mb-3 " // Removed hidden class
-        onClick={() => setShowModal(true)}
-        size={"sm"}
-        gradientDuoTone="purpleToBlue"
-      >
-        Add Item
-      </Button> */
-
+     
       <table className="w-full  bg-slate-50">
         <thead>
           <tr>
@@ -501,157 +366,7 @@ const Inventory = () => {
         </tbody>
       </table>
 
-      {/* Add/Edit Item Modal */}
-      <Modal show={showModal} onClose={() => setShowModal(false)}>
-        <Modal.Header>
-          {editIndex !== null ? "Edit Item" : "Add Item"}
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <Label htmlFor="name" value="Name" />
-            <div className="relative">
-              <div className="">
-                <input
-                  type="text"
-                  id="name"
-                  value={itemNames.name}
-                  // onChange={async (e) => {
-                  //   const value = e.target.value;
-                  //   setItemNames({ ...itemNames, name: value });
-                  //   await fetchSuggestions(value); // Fetch suggestions when the user types
-                  // }}
-                  onChange={handleInputChange}
-                  onKeyDown={handleKeyDown}
-                  required
-                  className="border p-2 w-full rounded-md"
-                  placeholder="Search products..."
-                />
-                {itemNames.name !== "" &&
-                  showSuggestions &&
-                  suggestions.length > 0 && (
-                    <ul className="absolute top-full left-0 rounded-md z-20 bg-white w-full border">
-                      {suggestions.map((suggestion, index) => (
-                        <li
-                          key={index}
-                          className={`p-2 text-sm ${
-                            index === activeIndex
-                              ? "bg-gray-300"
-                              : "bg-gray-100"
-                          } hover:bg-gray-200 cursor-pointer border-b-2 border-gray-400`}
-                          onClick={() => handleSuggestionClick(suggestion)}
-                        >
-                          {suggestion}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-              </div>
-            </div>
-            <Label htmlFor="waranty_period" value="waranty_period" />
-            <TextInput
-              id="waranty_period"
-              value={newItem.waranty_period}
-              onChange={(e) =>
-                setNewItem({ ...newItem, waranty_period: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="imei_number" value="imei_number" />
-            <TextInput
-              id="imei_number"
-              value={newItem.imei_number}
-              onChange={(e) =>
-                setNewItem({ ...newItem, imei_number: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="qty" value="Quantity" />
-            <TextInput
-              type="number"
-              id="qty"
-              value={newItem.qty}
-              onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
-              required
-            />
-            <br></br>
-            <Type onSelectType={(type) => setNewItem({...newItem, category: type})} />
-            <br></br>
-            
-            <Model onSelectModel={(model) => setNewItem({...newItem, model: model})} />
-            <br></br>
-
-            <Brand onSelectBrand={(brand) => setNewItem({...newItem, brand: brand})} />
-
-            <br></br>
-
-            {/* <Label htmlFor="wholesalePrice" value="Wholesale Price" />
-            <TextInput
-              type="number"
-              id="wholesalePrice"
-              value={newItem.wholesalePrice}
-              onChange={(e) =>
-                setNewItem({ ...newItem, wholesalePrice: e.target.value })
-              }
-              required
-            /> */}
-            <Label htmlFor="retailPrice" value="Retail Price" />
-            <TextInput
-              type="number"
-              id="retailPrice"
-              value={newItem.retailPrice}
-              onChange={(e) =>
-                setNewItem({ ...newItem, retailPrice: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="wholesale_price" value="Retail Price" />
-            <TextInput
-              type="number"
-              id="wholesale_price"
-              value={newItem.wholesale_price}
-              onChange={(e) =>
-                setNewItem({ ...newItem, wholesale_price: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="store" value="Store" />
-            <select
-              id="store"
-              value={newItem.store}
-              onChange={(e) =>
-                setNewItem({ ...newItem, store: e.target.value })
-              }
-              className="mt-4 border border-gray-300 bg-gray-100 rounded-lg p-2  "
-            >
-              {stores.map((store) => (
-                <option key={store} value={store}>
-                  {store}
-                </option>
-              ))}
-            </select>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={() => setShowModal(false)}
-            outline
-            size={"sm"}
-            gradientDuoTone="pinkToOrange"
-          >
-            Cancel
-          </Button>
-
-          <Button
-            onClick={fetchaddnewitems}
-            outline
-            size={"sm"}
-            gradientDuoTone="purpleToBlue"
-          >
-            {editIndex !== null ? "Update Item" : "Add Item"}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
+      
       {/* Accessories Modal 
       <Modal
         show={showAccessoriesModal}
