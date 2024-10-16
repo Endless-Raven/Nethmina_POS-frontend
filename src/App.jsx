@@ -4,8 +4,9 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import { useSelector } from "react-redux";
-import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute, { PrivateRouteAdmin } from "./components/PrivateRoute";
 import NotFoundPage from "./pages/NotFoundPage";
+import AdminPanel from "./pages/AdminPanel";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
           <Route path="/home/:section" element={<Home />} />
         </Route>
         <Route element={<Login />} path="/login" />
+        <Route element={<PrivateRouteAdmin />}>
+          <Route path="/adminpanel/:section" element={<AdminPanel />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
