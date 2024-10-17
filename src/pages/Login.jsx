@@ -21,7 +21,6 @@ export default function Login() {
     }));
   };
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
     if (formDetail.username === "" || formDetail.password === "") {
@@ -39,7 +38,11 @@ export default function Login() {
           username: "",
           password: "",
         });
-        navigate("/home/billing");
+        if (response.data.user.role === "admin") {
+          navigate("/adminpanel/dashboard");
+        } else {
+          navigate("/home/billing");
+        }
       } catch (error) {
         console.log(error);
         setError(error.response ? error.response.data.message : error.message);
