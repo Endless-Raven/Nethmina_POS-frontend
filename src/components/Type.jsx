@@ -3,12 +3,25 @@ import axios from "axios"; // Ensure axios is imported
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export default function Type({ onSelectType }) {
+export default function Type({ onSelectType , reset , type}) {
   const [itemNames, setItemNames] = useState({ Type: "" });
   const [suggestionscategory, setSuggestionscategory] = useState([]);
   const [showSuggestionscategory, setShowSuggestionscategory] = useState(false);
   const [activeIndexcategory, setActiveIndexcategory] = useState(-1); // To track the active suggestion
  
+  useEffect(() => {
+    if (type) {
+      setItemNames({ Type: type}); // Reset brand input field
+    }
+  }, [type]);
+
+  useEffect(() => {
+    if (reset) {
+      setItemNames({ Type: "" }); // Reset brand input field
+    }
+  }, [reset]);
+
+
   const fetchSuggestionscategory = async (query) => {
     if (query.length > 0) {
       try {
@@ -20,6 +33,9 @@ export default function Type({ onSelectType }) {
         );
         setSuggestionscategory(response.data);
         setShowSuggestionscategory(true);
+        //  if (e.key === "Enter") {
+        //     setShowSuggestionscategory(false); // Hide suggestions after selection
+        // }
       } catch (err) {
         console.error("Error fetching suggestions:", err);
       }
@@ -31,7 +47,7 @@ export default function Type({ onSelectType }) {
 
   // Handle input change
   const handleInputChangecategory = async (e) => {
-    const value = e.target.value;
+    const value =e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
     setItemNames({ ...itemNames, Type: value });
     await fetchSuggestionscategory(value); // Fetch suggestions when the user types
     setActiveIndexcategory(-1); // Reset the active suggestion index
@@ -47,6 +63,7 @@ export default function Type({ onSelectType }) {
 
   const handleKeyDown = (e) => {
     try {
+        
       if (e.key === "ArrowDown") {
         setActiveIndexcategory((prevIndex) =>
           Math.min(prevIndex + 1, suggestionscategory.length - 1)
@@ -57,7 +74,7 @@ export default function Type({ onSelectType }) {
         if (activeIndexcategory >= 0 && activeIndexcategory < suggestionscategory.length) {
             handleSuggestionClickcategory(suggestionscategory[activeIndexcategory]);
         }
-        setShowSuggestions(false); // Hide suggestions after selection
+        setShowSuggestionscategory(false); // Hide suggestions after selection
       }
     } catch (err) {
       console.error("Error handling key down event", err);

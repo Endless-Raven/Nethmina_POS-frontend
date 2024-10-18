@@ -1,43 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal, Label, TextInput } from "flowbite-react";
+import { Button, Modal } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
-import Brand from "../components/Brand";
-import Type from "../components/Type";
-import Model from "../components/Model";
+import Add_item_Model from "../components/Add_item_Model";
+import Edit_Item_Model from "../components/Edit_Item_Model";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
 function Product() {
-  const [itemNames, setItemNames] = useState({ name: "", category: "" });
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  
-  const [stores, setStores] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const [newItem, setNewItem] = useState({
-    name: "",
-    brand: "",
-    qty: "",
-    warranty_period: "",
-    imei_number: "",
-    category: "",
-    model: "",
-    wholesale_price: "",
-    retailPrice: "",
-  });
-
-  const [items, setItems] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStore, setSelectedStore] = useState("All");
-  const [selectedBrand, setSelectedBrand] = useState("All");
-  const [selectedcategory, setSelectedcategory] = useState("All");
+  const [stores, setStores] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [products, setprodcuts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStore, setSelectedStore] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedProductName,setselectedProductName] = useState("");
+
   useEffect(() => {
     fetchStores();
     fetchCategories();
@@ -47,104 +30,23 @@ function Product() {
 
   useEffect(() => {
     fetchProductData();
-  }, [searchTerm, selectedStore, selectedBrand, selectedcategory]);
-
+  }, [searchTerm, selectedStore, selectedBrand, selectedCategory]);
 
   useEffect(() => {
     fetchBrands();
-    fetchproductdata();
-  }, [selectedcategory]);
+  }, [selectedCategory]);
 
   useEffect(() => {
-    fetchproductdata();
+    fetchProductData();
   }, [selectedBrand]);
 
   useEffect(() => {
-    fetchproductdata();
+    fetchProductData();
   }, [searchTerm]);
 
   useEffect(() => {
-    fetchproductdata();
+    fetchProductData();
   }, [selectedStore]);
-
-  async function fetchproductdata() {
-    try {
-      let product_name;
-      let store_name;
-      let brand_name;
-      let product_type;
-
-      const response = await axios.post(
-        `${API_BASE_URL}/product/getFiltered/ProductDetails`,
-        {
-          product_name: searchTerm,
-          store_name: selectedStore,
-          brand_name: selectedBrand,
-          product_type: selectedcategory,
-        }
-      );
-      console.log(response);
-      console.log("ss", product_name, store_name, brand_name, product_type);
-      setprodcuts(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-
-
-  // Fetch suggestions for products
-  const fetchSuggestions = async (query) => {
-    if (query.length > 0) {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/product/searchProductsBy/Name`,
-          {
-            params: { searchText: query },
-          }
-        );
-        setSuggestions(response.data);
-        setShowSuggestions(true);
-      } catch (err) {
-        console.error("Error fetching suggestions:", err);
-      }
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    }
-  };
-
-  // Handle input changes and fetch suggestions
-  const handleInputChange = async (e) => {
-    const value = e.target.value;
-    setItemNames({ ...itemNames, name: value });
-    await fetchSuggestions(value);
-    setActiveIndex(-1);
-  };
-
-  // Handle suggestion click
-  const handleSuggestionClick = (suggestion) => {
-    setItemNames({ ...itemNames, name: suggestion });
-    setShowSuggestions(false);
-  };
-
-  // Handle keyboard navigation in suggestions
-  const handleKeyDown = (e) => {
-    if (e.key === "ArrowDown") {
-      setActiveIndex((prevIndex) =>
-        Math.min(prevIndex + 1, suggestions.length - 1)
-      );
-    } else if (e.key === "ArrowUp") {
-      setActiveIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    } else if (
-      e.key === "Enter" &&
-      activeIndex >= 0 &&
-      activeIndex < suggestions.length
-    ) {
-      handleSuggestionClick(suggestions[activeIndex]);
-      setShowSuggestions(false);
-    }
-  };
 
   // Fetch store names
   const fetchStores = async () => {
@@ -174,10 +76,9 @@ function Product() {
       const response = await axios.get(
         `${API_BASE_URL}/product/brands/byproducttype`,
         {
-          params: { product_type: selectedcategory },
+          params: { product_type: selectedCategory },
         }
       );
-      console.log("response",response.data)
       setBrands(response.data);
     } catch (error) {
       console.error("Error fetching brands:", error);
@@ -193,41 +94,12 @@ function Product() {
           product_name: searchTerm,
           store_name: selectedStore,
           brand_name: selectedBrand,
-          product_type: selectedcategory,
+          product_type: selectedCategory,
         }
       );
-      setprodcuts(response.data);
+      setProducts(response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
-    }
-  };
-
-  // Add new product
-  const fetchAddNewItems = async () => {
-    try {
-      setLoading(true);
-      const imeiNumbers = Array.isArray(newItem.imei_number)
-        ? newItem.imei_number
-        : [newItem.imei_number];
-
-      const response = await axios.post(`${API_BASE_URL}/product`, {
-        product_name: itemNames.name,
-        product_price: newItem.retailPrice,
-        warranty_period: newItem.warranty_period,
-        imei_numbers: imeiNumbers,
-        product_stock: newItem.qty,
-        product_type: newItem.category,
-        brand_name: newItem.brand,
-        product_model: newItem.model,
-        product_wholesale_price: newItem.wholesale_price,
-        user: 1,
-      });
-
-      console.log("Product added:", response.data);
-    } catch (error) {
-      console.error("Error adding product:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -235,55 +107,9 @@ function Product() {
     setSearchTerm(e.target.value);
   };
 
-  const filteredItems = items.filter(
-    (item) =>
-      (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.brand.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (selectedStore === "All" || item.store === selectedStore) &&
-      (selectedBrand === "All" || item.brand === selectedBrand)
-  );
-
-  const handleRowClick = (productId) => {
-    console.log("Product ID:", productId);
-    // Add your processing logic here
-  };
-
-  const handleEditItem = (index) => {
-    setNewItem(items[index]);
-    setEditIndex(index);
-    setShowModal(true);
-  };
-
-  const handleDeleteItem = (index) => {
-    const updatedItems = items.filter((_, i) => i !== index);
-    setItems(updatedItems);
-  };
-
-  // const handleAddItem = () => {
-  //   if (editIndex !== null) {
-  //     const updatedItems = [...items];
-  //     updatedItems[editIndex] = { ...newItem, no: editIndex + 1 };
-  //     setItems(updatedItems);
-  //     setEditIndex(null);
-  //   } else {
-  //     setItems([...items, { ...newItem, no: items.length + 1 }]);
-  //   }
-
-  //   setShowModal(false);
-  //   setNewItem({
-  //     name: "",
-  //     brand: "",
-  //     qty: "",
-  //     category: "",
-  //     wholesalePrice: "",
-  //     retailPrice: "",
-  //     store: "",
-  //   });
-  // };
-
   return (
     <div>
-      Product
+      <h1>Product</h1>
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
@@ -293,12 +119,12 @@ function Product() {
                 type="text"
                 placeholder="Search Item by Name or Brand"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearch}
                 className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
               />
             </div>
-            <br></br>
-            <div class="relative flex flex-col w-full gap-4  ">
+            <br />
+            <div className="relative flex flex-col w-full gap-4">
               <select
                 value={selectedStore}
                 onChange={(e) => setSelectedStore(e.target.value)}
@@ -312,8 +138,8 @@ function Product() {
                 ))}
               </select>
               <select
-                value={selectedcategory}
-                onChange={async (e) => setSelectedcategory(e.target.value)}
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
                 className="p-2 border rounded-lg bg-white"
               >
                 <option value="All">All Categories</option>
@@ -339,7 +165,7 @@ function Product() {
           </div>
         </div>
         <div className="w-2/3">
-          <table className="bg-slate-50">
+          <table className="bg-slate-50 m-5">
             <thead>
               <tr>
                 <th className="border border-gray-300 p-2">No</th>
@@ -360,13 +186,13 @@ function Product() {
                   </td>
                 </tr>
               ) : (
-                products.slice(0, 10).map((item, index) => (
+                products.slice(0, 6).map((item, index) => (
                   <tr
                     key={item.no}
                     className={
                       item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200"
                     }
-                    onClick={() => handleRowClick(item.product_id)} // Add the onClick handler
+                    onClick={() => console.log("Product ID:", item.product_id)} // Add your processing logic here
                   >
                     <td className="border border-gray-300 p-2">{index + 1}</td>
                     <td className="border border-gray-300 p-2">
@@ -390,6 +216,20 @@ function Product() {
                     <td className="border border-gray-300 p-2">
                       {item.store_name}
                     </td>
+                    <td
+                      className="border border-gray-300 p-2"
+                      
+                    >
+                      <Button
+                        className="m-3 p-1 mb-3 text-lg"
+                        onClick={() => {setShowEditModal(true),setselectedProductName(item.product_name)} }
+                        size="m"
+                        
+                        gradientDuoTone="Transparent"
+                      >
+                        ...
+                      </Button>
+                    </td>
                   </tr>
                 ))
               )}
@@ -411,137 +251,16 @@ function Product() {
           {editIndex !== null ? "Edit Item" : "Add Item"}
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <Label htmlFor="name" value="Name" />
-            <div className="relative">
-              <input
-                type="text"
-                id="name"
-                value={itemNames.name}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                required
-                className="border p-2 w-full rounded-md"
-                placeholder="Search products..."
-              />
-              {itemNames.name !== "" &&
-                showSuggestions &&
-                suggestions.length > 0 && (
-                  <ul className="absolute top-full left-0 rounded-md z-20 bg-white w-full border">
-                    {suggestions.map((suggestion, index) => (
-                      <li
-                        key={index}
-                        className={`p-2 text-sm ${
-                          index === activeIndex ? "bg-gray-300" : "bg-gray-100"
-                        } hover:bg-gray-200 cursor-pointer border-b-2 border-gray-400`}
-                        onClick={() => handleSuggestionClick(suggestion)}
-                      >
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-            </div>
-            <Label htmlFor="waranty_period" value="Warranty Period" />
-            <TextInput
-              id="waranty_period"
-              value={newItem.waranty_period}
-              onChange={(e) =>
-                setNewItem({ ...newItem, waranty_period: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="imei_number" value="IMEI Number" />
-            <TextInput
-              id="imei_number"
-              value={newItem.imei_number}
-              onChange={(e) =>
-                setNewItem({ ...newItem, imei_number: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="qty" value="Quantity" />
-            <TextInput
-              type="number"
-              id="qty"
-              value={newItem.qty}
-              onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
-              required
-            />
-            <div class="flex flex-col mt-4 mb-4 w-full gap-4">
-              <Type
-                onSelectType={(type) =>
-                  setNewItem({ ...newItem, category: type })
-                }
-              />
-              <Model
-                onSelectModel={(model) =>
-                  setNewItem({ ...newItem, model: model })
-                }
-              />
-              <Brand
-                onSelectBrand={(brand) =>
-                  setNewItem({ ...newItem, brand: brand })
-                }
-              />
-            </div>
-            <Label htmlFor="retailPrice" value="Retail Price" />
-            <TextInput
-              type="number"
-              id="retailPrice"
-              value={newItem.retailPrice}
-              onChange={(e) =>
-                setNewItem({ ...newItem, retailPrice: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="wholesale_price" value="Wholesale Price" />
-            <TextInput
-              type="number"
-              id="wholesale_price"
-              value={newItem.wholesale_price}
-              onChange={(e) =>
-                setNewItem({ ...newItem, wholesale_price: e.target.value })
-              }
-              required
-            />
-            <Label htmlFor="store" value="Store" />
-            <select
-              id="store"
-              value={newItem.store}
-              onChange={(e) =>
-                setNewItem({ ...newItem, store: e.target.value })
-              }
-              className="mt-4 border border-gray-300 bg-gray-100 rounded-lg p-2"
-            >
-              {stores.map((store) => (
-                <option key={store} value={store}>
-                  {store}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Add_item_Model />
         </Modal.Body>
-        <Modal.Footer>
-        {footerMessage && <p className="text-sm text-red-500">{footerMessage}</p>}
-        <Button
-          onClick={fetchAddNewItems}
-          outline
-          size={"sm"}
-          gradientDuoTone="purpleToBlue"
-          disabled={loading} // Disable button when loading
-        >
-          {loading ? "Adding..." : editIndex !== null ? "Update Item" : "Add Item"}
-        </Button>
-          <Button
-            onClick={() => setShowModal(false)}
-            outline
-            size="sm"
-            gradientDuoTone="pinkToOrange"
-          >
-            Cancel
-          </Button>
-        </Modal.Footer>
+      </Modal>
+      <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
+        <Modal.Header>
+          {editIndex !== null ? "Edit Item" : "Add Item"}
+        </Modal.Header>
+        <Modal.Body>
+        <Edit_Item_Model productName={selectedProductName} />
+        </Modal.Body>
       </Modal>
     </div>
   );

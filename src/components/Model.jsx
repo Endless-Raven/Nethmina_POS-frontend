@@ -4,12 +4,25 @@ import axios from "axios"; // Ensure axios is imported
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export default function Model({onSelectModel}) {
+export default function Model({onSelectModel , reset, model}) {
+
   const [itemNames, setItemNames] = useState({ Model: "" });
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1); // To track the active suggestion
 
+  useEffect(() => {
+    if (model) {
+      setItemNames({ Model: model }); // Reset brand input field
+    }
+  }, [model]);
+
+
+  useEffect(() => {
+    if (reset) {
+      setItemNames({ Model: "" }); // Reset brand input field
+    }
+  }, [reset]);
 
   // Fetch suggestions based on the category passed as query prop
   const fetchSuggestions = async (queryValue) => {
@@ -54,7 +67,7 @@ export default function Model({onSelectModel}) {
   };
 
   const handleInputChange = async (e) => {
-    const value = e.target.value;
+    const value =e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
     setItemNames({ ...itemNames, Model: value }); // Update the input value
     await fetchSuggestions(itemNames.Model); // Fetch suggestions based on input value
     setActiveIndex(-1); // Reset the active suggestion index
