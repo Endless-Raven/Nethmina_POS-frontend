@@ -6,37 +6,23 @@ import { Toast } from "flowbite-react";
 import { HiCheck } from "react-icons/hi";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
-export default function EditeEmpAdmin({ show, onClose, emp, shops }) {
-  const [employee, setEmployee] = useState({
-    user_id: 1,
-    username: "samantha",
-    role: "cashier",
-    phone: 712341234,
-    store_id: 2,
+export default function EditeShopAdmin({ show, onClose, shop}) {
+  const [shopData, setShopData] = useState({
+    store_id: 1,
+    store_name: "",
+    store_address: "",
+    store_phone_number: 1234567890,
   });
 
   useEffect(() => {
-    setEmployee(emp);
-  }, [emp]);
+    setShopData(shop);
+  }, [shop]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setEmployee((prev) => ({
       ...prev,
       [id]: value,
-    }));
-  };
-  const handleStoreChange = (e) => {
-    setEmployee((prev) => ({
-      ...prev,
-      store_id: e.target.value,
-    }));
-  };
-
-  const handleRoleChange = (e) => {
-    setEmployee((prev) => ({
-      ...prev,
-      role: e.target.value,
     }));
   };
 
@@ -47,7 +33,7 @@ export default function EditeEmpAdmin({ show, onClose, emp, shops }) {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await fetchData("employee_and_shop/update_employee", employee);
+    await fetchData("employee_and_shop/update_shop", shopData);
     if (error) {
       setShowToast(true);
     } else {
@@ -56,7 +42,7 @@ export default function EditeEmpAdmin({ show, onClose, emp, shops }) {
   };
 
   const handeDelete = async () => {
-    await deleteData(`employee_and_shop/delete_employee/${employee.user_id}`);
+    await deleteData(`employee_and_shop/delete_shop/${shopData.store_id}`);
     if (!error1) {
       setOpenModal(false);
     } else {
@@ -77,67 +63,50 @@ export default function EditeEmpAdmin({ show, onClose, emp, shops }) {
           <form className="flex max-w-md mx-auto flex-col gap-4">
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="user_id" value="Emp Id" />
+                <Label htmlFor="store_id" value="Store Id" />
               </div>
               <TextInput
-                id="user_id"
+                id="store_id"
                 type="text"
                 readOnly
-                value={employee.user_id}
+                value={shopData.store_id}
               />
             </div>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="username" value="Name" />
+                <Label htmlFor="store_name" value="Store Name" />
               </div>
               <TextInput
-                id="username"
+                id="store_name"
                 type="text"
                 required
-                value={employee.username}
+                value={shopData.store_name}
                 onChange={handleChange}
               />
             </div>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="role" value="Position" />
-              </div>
-              <Select
-                id="role"
-                value={employee.role}
-                onChange={handleRoleChange} // Add onChange handler for store
-                required
-              >
-                <option value="cashier">cashier</option>
-                <option value="manager">manager</option>
-              </Select>
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="phone" value="Mobile Number" />
+                <Label htmlFor="store_address" value="Store Address" />
               </div>
               <TextInput
-                id="phone"
+                id="store_address"
                 type="text"
                 required
-                value={employee.phone}
+                value={shopData.store_address}
                 onChange={handleChange} // Add onChange handler
               />
             </div>
-            <div className="my-2 block">
-              <Label htmlFor="store" value="Store" />
-              <Select
-                id="store"
-                value={employee.store_id}
-                onChange={handleStoreChange} // Add onChange handler for store
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="store_phone_number" value="Store Phone Number" />
+              </div>
+              <TextInput
+                id="store_phone_number"
+                type="text"
                 required
-              >
-                {shops.map((shop, index) => (
-                  <option value={shop.store_id} key={index}>
-                    {shop.store_name}
-                  </option>
-                ))}
-              </Select>
+                value={shopData.store_phone_number}
+                onChange={handleChange} // Add onChange handler
+              />
             </div>
             <div className="flex gap-3 w-full my-3">
               <Button color="gray" className="flex-grow" onClick={onClose}>
