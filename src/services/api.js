@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export function useMobileForImei() {
+export function useMobileForImei() {                  // get data by sending query
     
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -25,4 +25,73 @@ export function useMobileForImei() {
   };
 
   return { data, error, loading, fetchMobileData }; 
+}
+
+export function useGetWithoutQuery() {                // get data without sending anything
+    
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async (endpoint) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/${endpoint}`);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching getting data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data, error, loading, fetchData }; 
+}
+
+
+
+export function useUpdateWithData() {                   // update database with sending form data
+    
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async (endpoint,data) => {
+    setLoading(true);
+    try {
+      const response = await axios.put(`${API_BASE_URL}/${endpoint}`,data);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error updating data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data, error, loading, fetchData }; 
+}
+
+
+export function useDelete() {                           // delete
+    
+  const [data1, setData] = useState(null);
+  const [error1, setError] = useState(null);
+  const [loading1, setLoading] = useState(false);
+
+  const deleteData = async (endpoint) => {
+    setLoading(true);
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/${endpoint}`);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error deleting data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data1, error1, loading1, deleteData }; 
 }
