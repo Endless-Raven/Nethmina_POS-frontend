@@ -11,7 +11,7 @@ function TrackPhone() {
     brand_name: "apple",
     product_type: "mobile phone",
     store_name: "kandy",
-    date: "2024/10/02", // when sold give sold data, otherwise give added date
+    date: "2024/10/02",
     product_price: 3000,
     sold: false,
   };
