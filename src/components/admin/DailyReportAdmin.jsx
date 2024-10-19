@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Button, Modal } from "flowbite-react";
 import { useMobileForImei } from "../../services/api";
 import { Table } from "flowbite-react";
+import { useReactToPrint } from "react-to-print";
 
 export default function DailyReportAdmin({ show, onClose, date }) {
   const data = {
@@ -70,6 +71,25 @@ export default function DailyReportAdmin({ show, onClose, date }) {
   useEffect(() => {
     fetchMobileData("report/get_daily_report", { date });
   }, [date]);
+
+  const componentRef = React.useRef(null);
+
+  const handleAfterPrint = React.useCallback(() => {
+    console.log("`onAfterPrint` called");
+  }, []);
+
+  const handleBeforePrint = React.useCallback(() => {
+    console.log("`onBeforePrint` called");
+    return Promise.resolve();
+  }, []);
+
+  const printFn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: `${date} income expence report`,
+    onAfterPrint: handleAfterPrint,
+    onBeforePrint: handleBeforePrint,
+  });
+
   return (
     <Modal show={show} onClose={onClose}>
       <Modal.Header>{date} Income Expense Report</Modal.Header>
@@ -79,7 +99,7 @@ export default function DailyReportAdmin({ show, onClose, date }) {
         ) : error ? (
           <div>{error}</div>
         ) : data ? (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" ref={componentRef}>
             <Table hoverable>
               <Table.Head>
                 <Table.HeadCell>Time</Table.HeadCell>
@@ -102,7 +122,6 @@ export default function DailyReportAdmin({ show, onClose, date }) {
                       <Table.Row
                         key={index2}
                         className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900"
-                        onClick={() => handleClick(sale)}
                       >
                         <Table.Cell>{sale.time}</Table.Cell>
                         <Table.Cell>{sale.category}</Table.Cell>
@@ -143,7 +162,7 @@ export default function DailyReportAdmin({ show, onClose, date }) {
         )}
       </Modal.Body>
       <Modal.Footer className="flex justify-end">
-        {/* <Button onClick={onClose}>Print</Button> */}
+        <Button onClick={printFn}>Print</Button>
         <Button color="gray" onClick={onClose}>
           Close
         </Button>
