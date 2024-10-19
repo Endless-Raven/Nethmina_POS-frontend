@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal, Label, Select, TextInput } from "flowbite-react";
 import PendingRequestList from "../components/admin_inventory/PendingRequestList";
 import { ProductTable } from "../components/admin_inventory/ProductTable";
+
 function ShareStockAdminInventory() {
   const samplePending = [
     {
@@ -37,8 +38,10 @@ function ShareStockAdminInventory() {
       ],
     },
   ];
+  
   const [toShop, setToShop] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [cancelTransfer, setCancelTransfer] = useState(false);
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({
     shopName: "",
@@ -55,8 +58,13 @@ function ShareStockAdminInventory() {
   // Close modal
   const closeModal = () => setModalOpen(false);
 
-  // Handle adding item
+  // Handle adding item with validation
   const handleAddItem = () => {
+    if (!newItem.product) {
+      alert("Please enter a product name.");
+      return; // Prevent adding item if no product name is entered
+    }
+    
     setItems([...items, newItem]); // Add new item to items list
     setModalOpen(false); // Close modal after adding
     setNewItem({
@@ -101,97 +109,124 @@ function ShareStockAdminInventory() {
 
       {/* Modal for Adding Items */}
       <Modal show={modalOpen} onClose={closeModal}>
-        <Modal.Header>Add Item</Modal.Header>
-        <Modal.Body>
-          <div className="space-y-1">
-            <Label htmlFor="shopName">Shop Name</Label>
-            <Select
-              id="shopName"
-              onChange={(e) =>
-                setNewItem({ ...newItem, shopName: e.target.value })
-              }
-            >
-              <option value="">Select Shop Name</option>
-              <option value="Kandy">Kandy</option>
-              <option value="Polonnaruwa">Polonnaruwa</option>
-            </Select>
+  <Modal.Header>Add Item</Modal.Header>
+  <Modal.Body>
+    <div className="space-y-4">
+      {/* Shop Name Selector */}
+      <Label htmlFor="shopName">Shop Name</Label>
+      <Select
+        id="shopName"
+        value={newItem.shopName}
+        onChange={(e) =>
+          setNewItem({ ...newItem, shopName: e.target.value })
+        }
+      >
+        <option value="">Select Shop Name</option>
+        <option value="Kandy">Kandy</option>
+        <option value="Polonnaruwa">Polonnaruwa</option>
+      </Select>
 
-            <Label htmlFor="category">Category</Label>
-            <Select
-              id="category"
-              onChange={(e) =>
-                setNewItem({ ...newItem, category: e.target.value })
-              }
-            >
-              <option value="">Select Category</option>
-              <option value="mobile phone">Mobile Phone</option>
-              <option value="mobile accessories">Mobile Accessories</option>
-            </Select>
+      {/* Show Category Selector after selecting Shop */}
+      {newItem.shopName && (
+        <>
+          <Label htmlFor="category">Category</Label>
+          <Select
+            id="category"
+            value={newItem.category}
+            onChange={(e) =>
+              setNewItem({ ...newItem, category: e.target.value })
+            }
+          >
+            <option value="">Select Category</option>
+            <option value="mobile phone">Mobile Phone</option>
+            <option value="mobile accessories">Mobile Accessories</option>
+          </Select>
+        </>
+      )}
 
-            <Label htmlFor="brand">Brand</Label>
-            <Select
-              id="brand"
-              value={newItem.brand}
-              onChange={(e) =>
-                setNewItem({ ...newItem, brand: e.target.value })
-              }
-            >
-              <option value="">Select Category</option>
-              <option value="mobile phone">Mobile Phone</option>
-              <option value="mobile accessories">Mobile Accessories</option>
-            </Select>
+      {/* Show Brand Selector after selecting Category */}
+      {newItem.category && (
+        <>
+          <Label htmlFor="brand">Brand</Label>
+          <Select
+            id="brand"
+            value={newItem.brand}
+            onChange={(e) =>
+              setNewItem({ ...newItem, brand: e.target.value })
+            }
+          >
+            <option value="">Select Brand</option>
+            <option value="Apple">Apple</option>
+            <option value="Samsung">Samsung</option>
+          </Select>
+        </>
+      )}
 
-            <Label htmlFor="product">Product</Label>
-            <Select
-              id="product"
-              value={newItem.product}
-              onChange={(e) =>
-                setNewItem({ ...newItem, product: e.target.value })
-              }
-            >
-              <option value="">Select Category</option>
-              <option value="mobile phone">Mobile Phone</option>
-              <option value="mobile accessories">Mobile Accessories</option>
-            </Select>
+      {/* Show Product Selector after selecting Brand */}
+      {newItem.brand && (
+        <>
+          <Label htmlFor="product">Product</Label>
+          <Select
+            id="product"
+            value={newItem.product}
+            onChange={(e) =>
+              setNewItem({ ...newItem, product: e.target.value })
+            }
+          >
+            <option value="">Select Product</option>
+            <option value="iPhone 12">iPhone 12</option>
+            <option value="Samsung Galaxy A21s">
+              Samsung Galaxy A21s
+            </option>
+          </Select>
+        </>
+      )}
 
-            <Label htmlFor="qty">Quantity</Label>
-            <TextInput
-              id="qty"
-              min={0}
-              type="number"
-              value={newItem.qty}
-              onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
-            />
+      {/* Quantity Input */}
+      {newItem.product && (
+        <>
+          <Label htmlFor="qty">Quantity</Label>
+          <TextInput
+            id="qty"
+            type="number"
+            min={1}
+            value={newItem.qty}
+            onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
+          />
 
-            {/* IMEI Numbers if Category is 'Phone' */}
-            {newItem.category === "mobile phone" && (
-              <div>
-                <Label>IMEI Numbers</Label>
-                {[...Array(Number(newItem.qty))].map((_, index) => (
-                  <TextInput
-                    key={index}
-                    type="text"
-                    placeholder={`IMEI ${index + 1}`}
-                    onChange={(e) => {
-                      const imeis = [...newItem.imeiNumbers];
-                      imeis[index] = e.target.value;
-                      setNewItem({ ...newItem, imeiNumbers: imeis });
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button gradientDuoTone="pinkToOrange" onClick={closeModal}>
-            Cancel
-          </Button>
-          <Button gradientDuoTone="purpleToBlue" onClick={handleAddItem}>
-            Add Item
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          {/* IMEI Numbers if Category is Mobile Phone */}
+          {newItem.category === "mobile phone" && (
+            <>
+              <Label>IMEI Numbers</Label>
+              {[...Array(Number(newItem.qty))].map((_, index) => (
+                <TextInput
+                  key={index}
+                  type="text"
+                  placeholder={`IMEI ${index + 1}`}
+                  onChange={(e) => {
+                    const imeiNumbers = [...newItem.imeiNumbers];
+                    imeiNumbers[index] = e.target.value;
+                    setNewItem({ ...newItem, imeiNumbers });
+                  }}
+                />
+              ))}
+            </>
+          )}
+        </>
+      )}
+    </div>
+  </Modal.Body>
+
+  <Modal.Footer>
+    <Button gradientDuoTone="pinkToOrange" onClick={closeModal}>
+      Cancel
+    </Button>
+    <Button gradientDuoTone="purpleToBlue" onClick={handleAddItem}>
+      Add Item
+    </Button>
+  </Modal.Footer>
+</Modal>
+
 
       {/* ProductTable to display added items */}
       <div className="mt-10">
@@ -200,7 +235,10 @@ function ShareStockAdminInventory() {
       </div>
 
       {/* Transfer Button */}
-      <div className="text-center mt-10  flex justify-end ">
+      <div className="text-center mt-10  flex justify-end gap-2 ">
+        <Button gradientDuoTone="pinkToOrange" onClick={cancelTransfer}>
+          Cancel
+        </Button>
         <Button gradientDuoTone="purpleToBlue">Transfer</Button>
       </div>
     </div>
