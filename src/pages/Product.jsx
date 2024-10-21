@@ -164,7 +164,7 @@ function Product() {
           </div>
         </div>
         <div className="w-2/3">
-          <table className="bg-slate-50 m-16">
+          <table className="bg-slate-50 mt-16">
             <thead>
               <tr>
                 <th className="border border-gray-300 p-2">No</th>
