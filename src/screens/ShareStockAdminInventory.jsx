@@ -38,7 +38,6 @@ function ShareStockAdminInventory() {
       ],
     },
   ];
-
   const [toShop, setToShop] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [cancelTransfer, setCancelTransfer] = useState(false);
@@ -60,7 +59,6 @@ function ShareStockAdminInventory() {
 
   // Handle adding item with validation
   const handleAddItem = () => {
-    // Validate product name
     if (!newItem.product) {
       alert("Please enter a product name.");
       return; // Prevent adding item if no product name is entered
