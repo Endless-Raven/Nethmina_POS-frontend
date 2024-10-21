@@ -171,11 +171,10 @@ function Product() {
                 <th className="border border-gray-300 p-2">No</th>
                 <th className="border border-gray-300 p-2">Name</th>
                 <th className="border border-gray-300 p-2">Brand</th>
-                <th className="border border-gray-300 p-2">Category</th>
-                <th className="border border-gray-300 p-2">Qty</th>
-                <th className="border border-gray-300 p-2">Wholesale Price</th>
-                <th className="border border-gray-300 p-2">Retail Price</th>
-                <th className="border border-gray-300 p-2">Store</th>
+                <th className="border border-gray-300 p-2">Type</th>
+                <th className="border border-gray-300 p-2">Price</th>
+                <th className="border border-gray-300 p-2">Warranty</th>
+                <th className="border border-gray-300 p-2">  </th>
               </tr>
             </thead>
             <tbody>
@@ -190,7 +189,7 @@ function Product() {
                   <tr
                     key={item.no}
                     className={
-                      item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200"
+                       "bg-green-200"
                     }
                     onClick={() => console.log("Product ID:", item.product_id)} // Add your processing logic here
                   >
@@ -205,18 +204,12 @@ function Product() {
                       {item.product_type}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      {item.stock_quantity}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {item.product_wholesale_price}
-                    </td>
-                    <td className="border border-gray-300 p-2">
                       {item.product_price}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      {item.store_name}
+                      {item.warranty_period}
                     </td>
-                    <td
+                     <td
                       className="border border-gray-300 p-2"
                       
                     >
