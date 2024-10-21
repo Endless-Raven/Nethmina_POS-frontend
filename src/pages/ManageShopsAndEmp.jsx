@@ -1,9 +1,11 @@
-import { Table } from "flowbite-react";
+import { Button, Table } from "flowbite-react";
 import React, { useState } from "react";
 import EditeEmpAdmin from "../components/admin/EditeEmpAdmin";
 import { useGetWithoutQuery } from "../services/api";
 import { useEffect } from "react";
 import EditeShopAdmin from "../components/admin/EditeShopAdmin";
+import AddEmpAdmin from "../components/admin/AddEmpAdmin";
+import AddShopAdmin from "../components/admin/AddShopAdmin";
 
 function ManageShopsAndEmp() {
   const {
@@ -86,6 +88,8 @@ function ManageShopsAndEmp() {
   });
   const [openModalEmp, setOpenModalEmp] = useState(false);
   const [selectedEmp, setSelectedEmp] = useState({});
+  const [openModelAddEmp, setOpenModelAddEmp] = useState(false);
+  const [openModelAddShop, setOpenModelAddShop] = useState(false);
 
   return (
     <div className="pt-16">
@@ -94,48 +98,65 @@ function ManageShopsAndEmp() {
       ) : error ? (
         <div>{error}</div>
       ) : data ? (
-        <Table striped>
-          <Table.Head>
-            <Table.HeadCell className="bg-slate-400">Emp_Id</Table.HeadCell>
-            <Table.HeadCell className="bg-slate-400">Emp_name</Table.HeadCell>
-            <Table.HeadCell className="bg-slate-400">Phone</Table.HeadCell>
-            <Table.HeadCell className="bg-slate-400">Position</Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {data.shop_data.map((shop, index) => (
-              <React.Fragment key={index}>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900">
-                  <Table.Cell
-                    onClick={() => {
-                      setOpenModelShop(true);
-                      let { employees, ...rest } = shop;
-                      setSelectedShop(rest);
-                    }}
-                    colSpan={4}
-                    className="text-center font-semibold bg-slate-200"
-                  >
-                    {shop.store_name}
-                  </Table.Cell>
-                </Table.Row>
-                {shop.employees.map((emp, index2) => (
-                  <Table.Row
-                    key={index2}
-                    className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900"
-                    onClick={() => {
-                      setOpenModalEmp(true);
-                      setSelectedEmp(emp);
-                    }}
-                  >
-                    <Table.Cell>{emp.user_id}</Table.Cell>
-                    <Table.Cell>{emp.username}</Table.Cell>
-                    <Table.Cell>{emp.phone}</Table.Cell>
-                    <Table.Cell>{emp.role}</Table.Cell>
+        <div className="">
+          <Table striped>
+            <Table.Head>
+              <Table.HeadCell className="bg-slate-400">Emp_Id</Table.HeadCell>
+              <Table.HeadCell className="bg-slate-400">Emp_name</Table.HeadCell>
+              <Table.HeadCell className="bg-slate-400">Phone</Table.HeadCell>
+              <Table.HeadCell className="bg-slate-400">Position</Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {data.shop_data.map((shop, index) => (
+                <React.Fragment key={index}>
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900">
+                    <Table.Cell
+                      onClick={() => {
+                        setOpenModelShop(true);
+                        let { employees, ...rest } = shop;
+                        setSelectedShop(rest);
+                      }}
+                      colSpan={4}
+                      className="text-center font-semibold bg-slate-200"
+                    >
+                      {shop.store_name}
+                    </Table.Cell>
                   </Table.Row>
-                ))}
-              </React.Fragment>
-            ))}
-          </Table.Body>
-        </Table>
+                  {shop.employees.map((emp, index2) => (
+                    <Table.Row
+                      key={index2}
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900"
+                      onClick={() => {
+                        setOpenModalEmp(true);
+                        setSelectedEmp(emp);
+                      }}
+                    >
+                      <Table.Cell>{emp.user_id}</Table.Cell>
+                      <Table.Cell>{emp.username}</Table.Cell>
+                      <Table.Cell>{emp.phone}</Table.Cell>
+                      <Table.Cell>{emp.role}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </React.Fragment>
+              ))}
+            </Table.Body>
+          </Table>
+          <div className="mt-10 flex gap-4 items-center justify-end">
+            <Button
+              outline
+              gradientDuoTone="purpleToBlue"
+              onClick={() => setOpenModelAddShop(true)}
+            >
+              Add Shop
+            </Button>
+            <Button
+              gradientDuoTone="greenToBlue"
+              onClick={() => setOpenModelAddEmp(true)}
+            >
+              Add Employee
+            </Button>
+          </div>
+        </div>
       ) : (
         <div>Something went wrong</div>
       )}
@@ -149,6 +170,15 @@ function ManageShopsAndEmp() {
         show={openModelShop}
         onClose={() => setOpenModelShop(false)}
         shop={selectedShop}
+      />
+      <AddEmpAdmin
+        show={openModelAddEmp}
+        shops={data.shop_list}
+        onClose={() => setOpenModelAddEmp(false)}
+      />
+      <AddShopAdmin
+        show={openModelAddShop}
+        onClose={() => setOpenModelAddShop(false)}
       />
     </div>
   );
