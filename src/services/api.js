@@ -95,3 +95,25 @@ export function useDelete() {                           // delete
 
   return { data1, error1, loading1, deleteData }; 
 }
+
+export function usePost() {                           // post data with form data
+    
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const postData = async (endpoint,formData) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/${endpoint}`,formData);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error Posting data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data, error, loading, postData }; 
+}
