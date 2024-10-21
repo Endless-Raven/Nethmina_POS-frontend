@@ -109,7 +109,6 @@ function Product() {
 
   return (
     <div>
-      <h1>Product</h1>
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
@@ -117,7 +116,7 @@ function Product() {
               <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
               <input
                 type="text"
-                placeholder="Search Item by Name or Brand"
+                placeholder="Search Item by Name"
                 value={searchTerm}
                 onChange={handleSearch}
                 className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
@@ -165,17 +164,16 @@ function Product() {
           </div>
         </div>
         <div className="w-2/3">
-          <table className="bg-slate-50 m-5">
+          <table className="bg-slate-50 mt-16">
             <thead>
               <tr>
                 <th className="border border-gray-300 p-2">No</th>
                 <th className="border border-gray-300 p-2">Name</th>
                 <th className="border border-gray-300 p-2">Brand</th>
-                <th className="border border-gray-300 p-2">Category</th>
-                <th className="border border-gray-300 p-2">Qty</th>
-                <th className="border border-gray-300 p-2">Wholesale Price</th>
-                <th className="border border-gray-300 p-2">Retail Price</th>
-                <th className="border border-gray-300 p-2">Store</th>
+                <th className="border border-gray-300 p-2">Type</th>
+                <th className="border border-gray-300 p-2">Price</th>
+                <th className="border border-gray-300 p-2">Warranty</th>
+                <th className="border border-gray-300 p-2">  </th>
               </tr>
             </thead>
             <tbody>
@@ -190,7 +188,7 @@ function Product() {
                   <tr
                     key={item.no}
                     className={
-                      item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200"
+                       "bg-green-200"
                     }
                     onClick={() => console.log("Product ID:", item.product_id)} // Add your processing logic here
                   >
@@ -205,18 +203,12 @@ function Product() {
                       {item.product_type}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      {item.stock_quantity}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {item.product_wholesale_price}
-                    </td>
-                    <td className="border border-gray-300 p-2">
                       {item.product_price}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      {item.store_name}
+                      {item.warranty_period}
                     </td>
-                    <td
+                     <td
                       className="border border-gray-300 p-2"
                       
                     >
