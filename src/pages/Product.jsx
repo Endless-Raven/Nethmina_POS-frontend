@@ -109,7 +109,6 @@ function Product() {
 
   return (
     <div>
-      <h1>Product</h1>
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
@@ -117,7 +116,7 @@ function Product() {
               <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
               <input
                 type="text"
-                placeholder="Search Item by Name or Brand"
+                placeholder="Search Item by Name"
                 value={searchTerm}
                 onChange={handleSearch}
                 className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
@@ -165,7 +164,7 @@ function Product() {
           </div>
         </div>
         <div className="w-2/3">
-          <table className="bg-slate-50 m-5">
+          <table className="bg-slate-50 m-16">
             <thead>
               <tr>
                 <th className="border border-gray-300 p-2">No</th>
