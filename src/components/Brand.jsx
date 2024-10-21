@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Ensure axios is imported
+import { SiTruenas } from "react-icons/si";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export default function Brand({onSelectBrand}) {
+export default function Brand({onSelectBrand , reset , brand}) {
+  
   const [itemNames, setItemNames] = useState({ Brand: "" });
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1); // To track the active suggestion
+
+  useEffect(() => {
+    if (itemNames.Brand === ""  && brand) {
+      setItemNames({ Brand: brand }); // Reset brand input field
+    }
+  }, [brand]);
 
   // Fetch suggestions based on the category passed as query prop
   const fetchSuggestions = async (queryValue) => {
@@ -22,6 +30,9 @@ export default function Brand({onSelectBrand}) {
         setSuggestions(response.data);
         console.log(queryValue);
         setShowSuggestions(true); // Show the suggestions only if there is data
+        // if (e.key === "Enter") {
+        //   setShowSuggestions(false); // Hide suggestions after selection
+        // }
       } catch (err) {
         console.error("Error fetching suggestions:", err);
       }
@@ -52,7 +63,7 @@ export default function Brand({onSelectBrand}) {
   };
 
   const handleInputChange = async (e) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
     setItemNames({ ...itemNames, Brand: value }); // Update the input value
     await fetchSuggestions(itemNames.Brand); // Fetch suggestions based on input value
     setActiveIndex(-1); // Reset the active suggestion index
@@ -65,6 +76,16 @@ export default function Brand({onSelectBrand}) {
     onSelectBrand(suggestion);
   };
 
+
+
+  useEffect(() => {
+    if (reset) {
+      setItemNames({ Brand: "" });
+      setSuggestions([]);
+      setShowSuggestions(false);
+      setActiveIndex(-1); // Reset the active suggestion index
+    }
+  }, [reset]);
   // useEffect(() => {
   //   if (query) {
   //     fetchSuggestions(query); // Fetch suggestions based on the passed query
