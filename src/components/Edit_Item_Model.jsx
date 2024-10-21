@@ -49,7 +49,8 @@ const Edit_Item_Model = ({ productName }) => {
         setSelectedModel(product.product_model);
         setSelectedBrand(product.brand_name);
         setItemNames({ name: product.product_name });
-        console.log(product.product_type);
+        console.log(product.brand_name);
+        setFooterMessage("");
       } catch (error) {
         console.error("Error fetching product details:", error);
         setFooterMessage("Error fetching product details.");

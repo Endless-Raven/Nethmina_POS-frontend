@@ -12,8 +12,8 @@ export default function Brand({onSelectBrand , reset , brand}) {
   const [activeIndex, setActiveIndex] = useState(-1); // To track the active suggestion
 
   useEffect(() => {
-    if (brand) {
-      setItemNames({ Model: brand }); // Reset brand input field
+    if (itemNames.Brand === ""  && brand) {
+      setItemNames({ Brand: brand }); // Reset brand input field
     }
   }, [brand]);
 

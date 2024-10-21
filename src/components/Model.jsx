@@ -11,8 +11,10 @@ export default function Model({onSelectModel , reset, model}) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1); // To track the active suggestion
 
+
+
   useEffect(() => {
-    if (model) {
+    if (itemNames.Model === "" && model) {
       setItemNames({ Model: model }); // Reset brand input field
     }
   }, [model]);

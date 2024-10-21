@@ -10,7 +10,7 @@ export default function Type({ onSelectType , reset , type}) {
   const [activeIndexcategory, setActiveIndexcategory] = useState(-1); // To track the active suggestion
  
   useEffect(() => {
-    if (type) {
+    if (itemNames.Type === "" && type) {
       setItemNames({ Type: type}); // Reset brand input field
     }
   }, [type]);
