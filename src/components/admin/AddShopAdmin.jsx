@@ -102,7 +102,7 @@ export default function AddShopAdmin({ show, onClose, shops }) {
             </div>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="store_phone_number" value="Password" />
+                <Label htmlFor="store_phone_number" value="Phone number" />
               </div>
               <TextInput
                 id="store_phone_number"
