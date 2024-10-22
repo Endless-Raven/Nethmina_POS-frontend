@@ -7,6 +7,7 @@ import UpdateItemModel from "../components/admin/UpdateItemModel";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
+
 function InventoryAdmin() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -109,6 +110,7 @@ function InventoryAdmin() {
 
   return (
     <div>
+
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
