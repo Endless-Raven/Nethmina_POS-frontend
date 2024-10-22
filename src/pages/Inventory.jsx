@@ -3,33 +3,25 @@ import { CiSearch } from "react-icons/ci";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
 
 import axios from "axios";
-
+import UpcommingStockInv from "../components/UpcommingStockInv";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
 const Inventory = () => {
   const [items, setItems] = useState([]);
-
   const [searchTerm, setSearchTerm] = useState("");
-  // const [showAccessoriesModal, setShowAccessoriesModal] = useState(false);
-
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
   const [selectedcategory, setSelectedcategory] = useState("All");
   const [searchitems, setsearchitems] = useState("");
-  // const [selectedAccessories, setSelectedAccessories] = useState([]);
-
- 
   const [stores, setStores] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [products, setprodcuts] = useState([]);
   const [loading, setloading] = useState([]);
-
   const [editIndex, setEditIndex] = useState(null);
-  // const[loading,setLoding]=useState(true);
 
-  // const[error,setError]=useState(null);
+  const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
 
   useEffect(() => {
     fetchCategoris();
@@ -42,7 +34,6 @@ const Inventory = () => {
   useEffect(() => {
     fetchproductdata();
   }, [searchTerm, selectedStore, selectedBrand, selectedcategory]);
-  
 
   useEffect(() => {
     fetchBrands();
@@ -60,49 +51,6 @@ const Inventory = () => {
   useEffect(() => {
     fetchproductdata();
   }, [selectedStore]);
-
-  // async function fetchproductdata() {
-  //   // let params = {};
-
-  //   // if (searchTerm) {
-  //   //   params.product_name = searchTerm;
-  //   // }
-  //   // if (selectedStore) {
-  //   //   params.store_name = selectedStore;
-  //   // }
-  //   // if (selectedBrand) {
-  //   //   params.brand_name = selectedBrand;
-  //   // }
-  //   // if (selectedcategory) {
-  //   //   params.product_type = selectedcategory;
-  //   // }
-
-  //   try {
-  //     const response = await axios.get(
-  //       `${API_BASE_URL}/product/getFiltered/ProductDetails`,
-  //       {
-  //         product_name: searchTerm,
-  //         store_name: selectedStore,
-  //         brand_name: selectedBrand,
-  //         product_type: selectedcategory,
-  //       }
-  //     );
-  //     console.log("response.data", response.data);
-  //     console.log(
-  //       "req.data",
-  //       searchTerm,
-  //       selectedStore,
-  //       selectedBrand,
-  //       selectedcategory
-  //     );
-  //     // Save the response data in an array or object
-  //     // setprodcuts(response.data); // Assuming you are storing the final data in a state
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-
 
   async function fetchproductdata() {
     try {
@@ -161,18 +109,6 @@ const Inventory = () => {
     }
   }
 
-  // async function fetchBrands() {
-  //   try {
-  //     const response = await axios.get(`${API_BASE_URL}/product/getFilteredProductDetails/get`,{
-  //       product_type:newItem.category
-  //     });
-  //     console.log("response12345",response);
-  //    // setBrands(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
   async function fetchBrands() {
     try {
       console.log("sjds");
@@ -193,14 +129,6 @@ const Inventory = () => {
     setSearchTerm(e.target.value);
   };
 
-  // const filteredItems = items.filter(
-  //   (item) =>
-  //     (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       item.brand.toLowerCase().includes(searchTerm.toLowerCase())) &&
-  //     (selectedStore === "All" || item.store === selectedStore) &&
-  //     (selectedBrand === "All" || item.brand === selectedBrand)
-  // );
-
   const filteredItems = items.filter(
     (item) =>
       (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -220,11 +148,6 @@ const Inventory = () => {
     setItems(updatedItems);
   };
 
-  const handleShowAccessories = (index) => {
-    // setSelectedAccessories(items[index].accessories);
-    // setShowAccessoriesModal(true);
-  };
-
   return (
     <div className="p-6 bg-slate-100 min-h-[88vh]">
       <div className="flex justify-between items-center mb-4 gap-3">
@@ -240,9 +163,6 @@ const Inventory = () => {
               }}
               className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
             />
-            {/* <ul className="absolute rounded-md z-20 bg-white w-full ">
-              <li className="border-b-2 p-2"></li>
-            </ul> */}
           </div>
         </div>
         <select
@@ -290,7 +210,6 @@ const Inventory = () => {
         </select>
       </div>
 
-     
       <table className="w-full  bg-slate-50">
         <thead>
           <tr>
@@ -319,12 +238,7 @@ const Inventory = () => {
                 }
               >
                 <td className="border border-gray-300 p-2">{index + 1}</td>
-                <td
-                // className="border border-gray-300 p-2 cursor-pointer text-blue-600 underline"
-                // onClick={() => handleShowAccessories(index)}
-                >
-                  {item.product_name}
-                </td>
+                <td>{item.product_name}</td>
                 <td className="border border-gray-300 p-2">
                   {item.brand_name}
                 </td>
@@ -343,49 +257,37 @@ const Inventory = () => {
                 <td className="border border-gray-300 p-2">
                   {item.store_name}
                 </td>
-                {/* <td className="border border-gray-300 p-2 flex gap-1 hiddenz">
-                  <Button
-                    onClick={() => handleEditItem(index)}
-                    gradientDuoTone="purpleToBlue"
-                    size={"xs"}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDeleteItem(index)}
-                    outline
-                    size={"xs"}
-                    gradientDuoTone="pinkToOrange"
-                  >
-                    Delete
-                  </Button>
-                </td> */}
               </tr>
             ))
           )}
         </tbody>
       </table>
-
-      
-      {/* Accessories Modal 
-      <Modal
-        show={showAccessoriesModal}
-        onClose={() => setShowAccessoriesModal(false)}
-      >
-        <Modal.Header>Accessories</Modal.Header>
-        <Modal.Body>
-          <ul>
-            {selectedAccessories.map((accessory) => (
-              <li key={accessory.name}>
-                {accessory.name}: ${accessory.price}
-              </li>
-            ))}
-          </ul>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setShowAccessoriesModal(false)}>Close</Button>
-        </Modal.Footer>
-      </Modal> */}
+      <div className="flex justify-between fixed bottom-2 left-0 w-full px-6">
+        <Button
+          gradientDuoTone="purpleToBlue"
+          outline
+          className="shadow-md drop-shadow-md"
+          onClick={() => setOpenModalUpcomming(true)}
+        >
+          Upcomming Stocks
+        </Button>
+        <div className="flex gap-4">
+          <Button
+            gradientDuoTone="purpleToBlue"
+            className="shadow-md drop-shadow-md"
+          >
+            Request Product
+          </Button>
+          <Button
+            gradientDuoTone="greenToBlue"
+            outline
+            className="shadow-md drop-shadow-md"
+          >
+            Pending Request
+          </Button>
+        </div>
+      </div>
+      <UpcommingStockInv show={openModalUpcomming} close={() => setOpenModalUpcomming(false)}/>
     </div>
   );
 };
