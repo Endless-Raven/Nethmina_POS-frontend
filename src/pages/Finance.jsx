@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { Button } from 'flowbite-react';
 
 export default function Finance() {
-  const [category, setCategory] = useState('');
-  const [amount, setAmount] = useState('');
+  const [incomeAmount, setIncomeAmount] = useState('');
+  const [expenseAmount, setExpenseAmount] = useState('');
   const [incomeType, setIncomeType] = useState('selling');
   const [expenseType, setExpenseType] = useState('inventory cost');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(''); // Message for success or error
+  const [isSuccess, setIsSuccess] = useState(false); // To track if message is success
 
   // Function to handle adding new income
   const handleAddIncome = async (e) => {
@@ -13,23 +15,36 @@ export default function Finance() {
 
     const newIncome = {
       category: incomeType, // Use the selected income type
-      amount: parseFloat(amount),
+      amount: parseFloat(incomeAmount),
       is_income: true,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
     };
 
-    // Send POST request to add income
-    const response = await fetch('/add-income', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newIncome),
-    });
+    try {
+      // Send POST request to add income
+      const response = await fetch('/add-income', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newIncome),
+      });
 
-    const data = await response.json();
-    setMessage(data.message);
+      if (response.ok) {
+        const data = await response.json();
+        setMessage(data.message); // Set success message
+        setIsSuccess(true); // Set success flag
+        setIncomeAmount(''); // Clear the income amount after submission
+      } else {
+        setMessage('Error adding income. Please try again.');
+        setIsSuccess(false); // Set error flag
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setMessage('Failed to add income. Please check the server.');
+      setIsSuccess(false); // Set error flag
+    }
   };
 
   // Function to handle adding new expense
@@ -38,23 +53,36 @@ export default function Finance() {
 
     const newExpense = {
       category: expenseType, // Use the selected expense type
-      amount: parseFloat(amount),
+      amount: parseFloat(expenseAmount),
       is_income: false,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
     };
 
-    // Send POST request to add expense
-    const response = await fetch('/add-expense', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newExpense),
-    });
+    try {
+      // Send POST request to add expense
+      const response = await fetch('/add-expense', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newExpense),
+      });
 
-    const data = await response.json();
-    setMessage(data.message);
+      if (response.ok) {
+        const data = await response.json();
+        setMessage(data.message); // Set success message
+        setIsSuccess(true); // Set success flag
+        setExpenseAmount(''); // Clear the expense amount after submission
+      } else {
+        setMessage('Error adding expense. Please try again.');
+        setIsSuccess(false); // Set error flag
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setMessage('Failed to add expense. Please check the server.');
+      setIsSuccess(false); // Set error flag
+    }
   };
 
   return (
@@ -82,18 +110,17 @@ export default function Finance() {
             <label className="block text-gray-700 mb-2">Amount</label>
             <input
               type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              value={incomeAmount}
+              onChange={(e) => setIncomeAmount(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
               required
             />
           </div>
-          <button
-            type="submit"
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700"
-          >
-            Add Income
-          </button>
+          <div className="w-full flex justify-end">
+            <Button type="submit" gradientDuoTone="purpleToBlue">
+              Add Income
+            </Button>
+          </div>
         </form>
       </div>
 
@@ -118,23 +145,26 @@ export default function Finance() {
             <label className="block text-gray-700 mb-2">Amount</label>
             <input
               type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              value={expenseAmount}
+              onChange={(e) => setExpenseAmount(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
               required
             />
           </div>
-          <button
-            type="submit"
-            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
-          >
-            Add Expense
-          </button>
+          <div className="flex justify-end">
+            <Button type="submit" gradientDuoTone="pinkToOrange">
+              Add Expense
+            </Button>
+          </div>
         </form>
       </div>
 
-      {/* Success Message */}
-      {message && <p className="mt-4 text-green-600">{message}</p>}
+      {/* Success/Error Message */}
+      {message && (
+        <p className={`mt-4 ${isSuccess ? 'text-green-600' : 'text-red-600'}`}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }
