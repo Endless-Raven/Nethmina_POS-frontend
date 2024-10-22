@@ -164,18 +164,23 @@ function Product() {
           </div>
         </div>
         <div className="w-2/3">
+        <div className="table-container">
           <table className="bg-slate-50 mt-16">
-            <thead>
+            <thead className="sticky top-0 bg-white">
               <tr>
-                <th className="border border-gray-300 p-2">No</th>
-                <th className="border border-gray-300 p-2">Name</th>
-                <th className="border border-gray-300 p-2">Brand</th>
-                <th className="border border-gray-300 p-2">Type</th>
-                <th className="border border-gray-300 p-2">Price</th>
-                <th className="border border-gray-300 p-2">Warranty</th>
-                <th className="border border-gray-300 p-2">  </th>
+                <th className="border border-gray-300 p-2" style={{ width: '2%' }}>No</th>
+                <th className="border border-gray-300 p-2"style={{ width: '25%' }}>Name</th>
+                <th className="border border-gray-300 p-2" style={{ width: '9%' }}>Brand</th>
+                <th className="border border-gray-300 p-2" style={{ width: '13%' }}>Type</th>
+                <th className="border border-gray-300 p-2" style={{ width: '10%' }}>Price</th>
+                <th className="border border-gray-300 p-2" style={{ width: '3%' }}>Warranty</th>
+                <th className="border border-gray-300 p-2" style={{ width: '5%' }}>  </th>
+                <th className="border border-gray-300 p-2" style={{ width: '1%' }}>  </th>
               </tr>
             </thead>
+            </table>
+            <div className="overflow-y-scroll h-96">
+            <table className="bg-slate-50 w-full">
             <tbody>
               {products.length < 1 ? (
                 <tr>
@@ -184,7 +189,7 @@ function Product() {
                   </td>
                 </tr>
               ) : (
-                products.slice(0, 6).map((item, index) => (
+                products.map((item, index) => (
                   <tr
                     key={item.no}
                     className={
@@ -192,25 +197,25 @@ function Product() {
                     }
                     onClick={() => console.log("Product ID:", item.product_id)} // Add your processing logic here
                   >
-                    <td className="border border-gray-300 p-2">{index + 1}</td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{ width: '2%' }}>{index + 1}</td>
+                    <td className="border border-gray-300 p-2" style={{ width: '25%' }}>
                       {item.product_name}
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{ width: '9%' }}>
                       {item.brand_name}
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{ width: '13%' }}>
                       {item.product_type}
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{ width: '10%' }}>
                       {item.product_price}
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{ width: '3%' }}>
                       {item.warranty_period}
                     </td>
                      <td
                       className="border border-gray-300 p-2"
-                      
+                      style={{ width: '5%' }}
                     >
                       <Button
                         className="m-3 p-1 mb-3 text-lg"
@@ -227,7 +232,8 @@ function Product() {
               )}
             </tbody>
           </table>
-
+          </div>
+</div>
           <Button
             className="mt-3 p-1 mb-3"
             onClick={() => setShowModal(true)}
