@@ -1,6 +1,6 @@
 import React from "react";
 import { Sidebar } from "flowbite-react";
-import { HiChartPie } from "react-icons/hi";
+import { HiChartPie, HiOutlineLogout } from "react-icons/hi";
 import { AiFillProduct } from "react-icons/ai";
 import { AiOutlineStock } from "react-icons/ai";
 import { RiGpsLine } from "react-icons/ri";
@@ -32,6 +32,11 @@ export default function SidebarAdminPanel() {
     <Sidebar aria-label="Default sidebar example" className="shadow-md">
       <Sidebar.Items className="min-h-[95vh]">
         <Sidebar.ItemGroup>
+          <Sidebar.Logo>
+            <h1 className="font-bold text-2xl text-cyan-500">
+              Nethmina <span className="text-sky-600">Mobile</span>
+            </h1>
+          </Sidebar.Logo>
           {routes.map((route) => (
             <Sidebar.Item
               key={route.href}
@@ -42,6 +47,9 @@ export default function SidebarAdminPanel() {
               {route.label}
             </Sidebar.Item>
           ))}
+          <Sidebar.Item href="/login" icon={HiOutlineLogout}>
+            LOGOUT
+          </Sidebar.Item>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
