@@ -28,12 +28,14 @@ const Inventory = () => {
       brand_names: ["fitbit", "apple", "samsung", "garmin", "fossil"],
     },
   ];
-  
+
   const [selectedType, setSelectedType] = useState("");
-  
+  const [selectedBrand, setSelectedBrand] = useState("");
+
   useEffect(() => {
     if (productTypesAndCategories && productTypesAndCategories.length > 0) {
       setSelectedType(productTypesAndCategories[0].product_types);
+      setSelectedBrand(productTypesAndCategories[0].brand_names[0]);
     }
   }, []);
 
@@ -54,21 +56,35 @@ const Inventory = () => {
           />
 
           {/* Category Selector */}
-          <Select value={selectedType} className="w-1/4" onChange={(e)=>{setSelectedType(e.target.value)}}>
-            {productTypesAndCategories &&
-              productTypesAndCategories.length > 0 &&
-              productTypesAndCategories.map((product, index) => (
-                <option value={product.product_types} key={index}>
-                  {product.product_types}
-                </option>
-              ))}
+          <Select
+            value={selectedType}
+            className="w-1/4"
+            onChange={(e) => {
+              setSelectedType(e.target.value);
+            }}
+          >
+            {productTypesAndCategories?.map((product, index) => (
+              <option value={product.product_types} key={index}>
+                {product.product_types}
+              </option>
+            ))}
           </Select>
 
           {/* Brand Selector */}
-          <Select className="w-1/4">
-            <option value="all">All Brands</option>
-            <option value="brand1">Brand 1</option>
-            <option value="brand2">Brand 2</option>
+          <Select
+            value={selectedBrand}
+            className="w-1/4"
+            onChange={(e) => {
+              setSelectedBrand(e.target.value);
+            }}
+          >
+            {productTypesAndCategories
+              ?.find((product) => product.product_types === selectedType)
+              ?.brand_names.map((brand, index) => (
+                <option key={index} value={brand}>
+                  {brand}
+                </option>
+              ))}
           </Select>
         </div>
       </div>
