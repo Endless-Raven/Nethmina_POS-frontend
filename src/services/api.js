@@ -103,6 +103,7 @@ export function usePost() {                           // post data with form dat
   const [loading, setLoading] = useState(false);
 
   const postData = async (endpoint,formData) => {
+    setError(null);
     setLoading(true);
     try {
       const response = await axios.post(`${API_BASE_URL}/${endpoint}`,formData);
