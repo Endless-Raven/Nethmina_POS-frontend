@@ -4,21 +4,9 @@ import { IoMdSearch } from "react-icons/io";
 import { useMobileForImei } from "../services/api";
 
 function TrackPhone() {
-  
-  const data = {
-    product_id: 1,
-    product_name: "iPhone 12",
-    brand_name: "apple",
-    product_type: "mobile phone",
-    store_name: "kandy",
-    date: "2024/10/02",
-    product_price: 3000,
-    sold: false,
-  };
-
   const [imei_number, setImeiNumber] = useState("");
   const { 
-    // data, 
+    data, 
     error, 
     loading, 
     fetchMobileData 
@@ -33,7 +21,7 @@ function TrackPhone() {
       alert("IMEI number cannot be empty.");
       return;
     }
-    fetchMobileData("product/searchByImei", { imei_number });
+    fetchMobileData("product/track/ProductDetails", { imei_number });
   };
 
   const handleClear = () => {
@@ -98,7 +86,7 @@ function TrackPhone() {
           </div>
           <div className="flex">
             <div className="w-64">
-              <span className="font-semibold">Date:</span> {data.date}
+              <span className="font-semibold">Date:</span> {new Date(data.date).toLocaleDateString('en-GB')}
             </div>
             <div>
               <span className="font-semibold">Price:</span> {data.product_price}
