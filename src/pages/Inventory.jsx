@@ -4,6 +4,7 @@ import { CiSearch } from "react-icons/ci";
 import UpcommingStockInv from "../components/UpcommingStockInv";
 import RequestProduct from "../components/RequestProduct";
 import { InventoryTable } from "../components/InventoryTable";
+import  InventoryPendingRequest  from "../components/InventoryPendingRequest";
 
 const Inventory = () => {
   const productTypesAndCategories = [
@@ -31,6 +32,9 @@ const Inventory = () => {
 
   const [selectedType, setSelectedType] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
+  const [openModalRequest, setOpenModalRequest] = useState(false);
+  const [openModalPending, setOpenModalPending] = useState(false);
 
   useEffect(() => {
     if (productTypesAndCategories && productTypesAndCategories.length > 0) {
@@ -39,13 +43,9 @@ const Inventory = () => {
     }
   }, []);
 
-  const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
-  const [openModalRequest, setOpenModalRequest] = useState(false);
-
-  console.log(selectedType);
   return (
     <div className="p-6 bg-slate-100 min-h-[88vh]">
-      {/* Search Bar and  Selectors */}
+      {/* Search Bar and Selectors */}
       <div className="mb-4">
         <div className="flex items-center gap-4">
           {/* Search Bar */}
@@ -63,7 +63,7 @@ const Inventory = () => {
               setSelectedType(e.target.value);
             }}
           >
-            {productTypesAndCategories?.map((product, index) => (
+            {productTypesAndCategories.map((product, index) => (
               <option value={product.product_types} key={index}>
                 {product.product_types}
               </option>
@@ -79,7 +79,7 @@ const Inventory = () => {
             }}
           >
             {productTypesAndCategories
-              ?.find((product) => product.product_types === selectedType)
+              .find((product) => product.product_types === selectedType)
               ?.brand_names.map((brand, index) => (
                 <option key={index} value={brand}>
                   {brand}
@@ -116,7 +116,11 @@ const Inventory = () => {
           >
             Request Product
           </Button>
-          <Button gradientDuoTone="greenToBlue" outline>
+          <Button
+            gradientDuoTone="greenToBlue"
+            outline
+            onClick={() => setOpenModalPending(true)}
+          >
             Pending Request
           </Button>
         </div>
@@ -130,6 +134,10 @@ const Inventory = () => {
       <RequestProduct
         show={openModalRequest}
         close={() => setOpenModalRequest(false)}
+      />
+      <InventoryPendingRequest
+        show={openModalPending}
+        close={() => setOpenModalPending(false)}
       />
     </div>
   );
