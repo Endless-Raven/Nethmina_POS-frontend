@@ -5,149 +5,12 @@ import { useGetWithoutQuery } from "../services/api";
 import { Button, Spinner } from "flowbite-react";
 
 export default function Dashboard() {
-  const dashboardData = {
-    sales: {
-      monthly_sales: 18500,
-      monthly_profit: 3500,
-      daily_sales: 13500,
-      daily_profit: 3500,
-    },
-    top_sales: [
-      {
-        name: "samsung s2",
-        percentage: "13",
-      },
-      {
-        name: "samsung s20",
-        percentage: "20",
-      },
-      {
-        name: "samsung s21",
-        percentage: "25",
-      },
-      {
-        name: "samsung s24",
-        percentage: "25",
-      },
-      {
-        name: "samsung s25",
-        percentage: "20",
-      },
-    ],
-    last_month_sales: [
-      {
-        date: "10/7",
-        sale: 1020,
-      },
-      {
-        date: "10/8",
-        sale: 1400,
-      },
-      {
-        date: "10/9",
-        sale: 1300,
-      },
-      {
-        date: "10/10",
-        sale: 1350,
-      },
-      {
-        date: "10/11",
-        sale: 1200,
-      },
-      {
-        date: "10/12",
-        sale: 1100,
-      },
-      {
-        date: "10/13",
-        sale: 1150,
-      },
-      {
-        date: "10/14",
-        sale: 1100,
-      },
-      {
-        date: "10/15",
-        sale: 1200,
-      },
-      {
-        date: "10/16",
-        sale: 1300,
-      },
-      {
-        date: "10/17",
-        sale: 1360,
-      },
-      {
-        date: "10/18",
-        sale: 1410,
-      },
-      {
-        date: "10/19",
-        sale: 1370,
-      },
-      {
-        date: "10/20",
-        sale: 1460,
-      },
-      {
-        date: "10/21",
-        sale: 1432,
-      },
-      {
-        date: "10/22",
-        sale: 1350,
-      },
-      {
-        date: "10/23",
-        sale: 1420,
-      },
-      {
-        date: "10/24",
-        sale: 1400,
-      },
-      // Add up to 30 days as needed
-    ],
-    low_stock: [
-      {
-        product_name: "google 6",
-        product_type: "mobile phone",
-        stock_quantity: 4,
-      },
-      {
-        product_name: "google 4",
-        product_type: "mobile phone",
-        stock_quantity: 9,
-      },
-      {
-        product_name: "google 3",
-        product_type: "mobile phone",
-        stock_quantity: 2,
-      },
-    ],
-    pending_transfers: [
-      {
-        transfer_to: "kandy",
-        date: "2024/12/10",
-      },
-      {
-        transfer_to: "galle",
-        date: "2024/12/10",
-      },
-    ],
-  };
-
-  const {
-    data,
-    //  error,
-    loading,
-    fetchData,
-  } = useGetWithoutQuery();
-  const error = "";
+  const { data, error, loading, fetchData } = useGetWithoutQuery();
   useEffect(() => {
-    fetchData("report/dashboard");
+    fetchData("dashboard/getDashboard");
   }, []);
+
+  // console.log(data.sales);
 
   return (
     <div className="mt-16 cursor-default">
@@ -178,7 +41,7 @@ export default function Dashboard() {
                   <div className="text-center">
                     <p className="mb-2">Monthly Sales</p>
                     <p className="w-32 font-semibold bg-cyan-700 rounded-md p-1 cursor-pointer hover:shadow-md hover:scale-105 transition-all">
-                      {dashboardData.sales.monthly_sales || "0"}
+                      {data?.sales?.monthly_sales || "0"}
                     </p>
                   </div>
                 </div>
@@ -186,7 +49,7 @@ export default function Dashboard() {
                   <div className="text-center">
                     <p className="mb-2">Monthly Profit</p>
                     <p className="w-32 font-semibold bg-cyan-700 rounded-md p-1 cursor-pointer hover:shadow-md hover:scale-105 transition-all">
-                      {dashboardData.sales.daily_profit || "0"}
+                      {data?.sales?.monthly_profit?.total_income || "0"}
                     </p>
                   </div>
                 </div>
@@ -194,7 +57,7 @@ export default function Dashboard() {
                   <div className="text-center">
                     <p className="mb-2">Daily Sales</p>
                     <p className="w-32 font-semibold bg-cyan-700 rounded-md p-1 cursor-pointer hover:shadow-md hover:scale-105 transition-all">
-                      {dashboardData.sales.daily_sales || "0"}
+                      {data?.sales?.daily_sales || "0"}
                     </p>
                   </div>
                 </div>
@@ -202,14 +65,14 @@ export default function Dashboard() {
                   <div className="text-center">
                     <p className="mb-2">Daily Profit</p>
                     <p className="w-32 font-semibold bg-cyan-700 rounded-md p-1 cursor-pointer hover:shadow-md hover:scale-105 transition-all">
-                      {dashboardData.sales.daily_profit || "0"}
+                      {data?.sales.daily_profit?.total_income || "0"}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex-1 overflow-hidden p-3 bg-blue-200 rounded-md shadow-md h-full">
-              <TopSellingPieAdmin pieData={dashboardData.top_sales} />
+              {data?.sales && <TopSellingPieAdmin pieData={data?.top_sales} />}
             </div>
           </div>
           <div className="flex justify-between gap-4 items-center h-[41vh]">
@@ -218,8 +81,8 @@ export default function Dashboard() {
                 Low Stock
               </p>
               <ul>
-                {dashboardData.low_stock &&
-                  dashboardData.low_stock.map((itm, index) => (
+                {data?.low_stock && data.low_stock.length > 0 ? (
+                  data.low_stock.slice(0, 6).map((itm, index) => (
                     <li
                       key={index}
                       className="flex justify-between items-center cursor-pointer hover:shadow-md hover:scale-105 transition-all py-1 px-2 rounded-md border border-sky-400 bg-sky-300 mb-2"
@@ -232,7 +95,12 @@ export default function Dashboard() {
                       </span>{" "}
                       <span>{itm.stock_quantity}</span>
                     </li>
-                  ))}
+                  ))
+                ) : (
+                  <div className="text-center text-slate-500 mt-4">
+                    No items available.
+                  </div>
+                )}
               </ul>
             </div>
             <div className="w-[50%] p-3 bg-teal-200 rounded-md shadow-md h-full overflow-hidden">
@@ -240,10 +108,8 @@ export default function Dashboard() {
                 Sales Statistics
               </p>
               <div className="max-h-[85%] flex justify-center items-center">
-                {dashboardData.last_month_sales && (
-                  <SalesStaticsChartAdmin
-                    chartData={dashboardData.last_month_sales}
-                  />
+                {data?.last_month_sales && (
+                  <SalesStaticsChartAdmin chartData={data?.last_month_sales} />
                 )}
               </div>
             </div>
@@ -252,8 +118,8 @@ export default function Dashboard() {
                 Pending Transfers
               </p>
               <ul>
-                {dashboardData.pending_transfers &&
-                  dashboardData.pending_transfers.map((itm, index) => (
+                {data?.pending_transfers &&
+                  data.pending_transfers.map((itm, index) => (
                     <li
                       key={index}
                       className="flex justify-between items-center cursor-pointer hover:shadow-md hover:scale-105 transition-all py-1 px-2 rounded-md border border-indigo-400 bg-indigo-300 mb-2"
