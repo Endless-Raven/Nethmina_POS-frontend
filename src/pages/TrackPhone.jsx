@@ -5,12 +5,7 @@ import { useMobileForImei } from "../services/api";
 
 function TrackPhone() {
   const [imei_number, setImeiNumber] = useState("");
-  const { 
-    data, 
-    error, 
-    loading, 
-    fetchMobileData 
-  } = useMobileForImei();
+  const { data, error, loading, fetchMobileData } = useMobileForImei();
 
   const handleImeiChange = (e) => {
     setImeiNumber(e.target.value);
@@ -81,12 +76,15 @@ function TrackPhone() {
               {data.product_type}
             </div>
           </div>
-          <div>
-            <span className="font-semibold">Shop:</span> {data.store_name}
-          </div>
+          {data?.store_name && (
+            <div>
+              <span className="font-semibold">Shop:</span> {data.store_name}
+            </div>
+          )}
           <div className="flex">
             <div className="w-64">
-              <span className="font-semibold">Date:</span> {new Date(data.date).toLocaleDateString('en-GB')}
+              <span className="font-semibold">Date:</span>{" "}
+              {new Date(data.date).toLocaleDateString("en-GB")}
             </div>
             <div>
               <span className="font-semibold">Price:</span> {data.product_price}
