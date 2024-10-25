@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "flowbite-react";
 import { useSelector } from "react-redux";
-import {usePost} from "../services/api"
+import { usePost } from "../services/api";
 
 export default function Finance() {
   const [incomeAmount, setIncomeAmount] = useState("");
@@ -17,12 +17,26 @@ export default function Finance() {
     income_amount: "",
     user_id: "",
     store_id: "",
-    income_type: "income",
+    income_type: "Selling",
     approval_status: "pending",
+  });
+
+  const [formDataExpence, setFormDataExpence] = useState({
+    expense_category: "Utilities",
+    expense_amount: "",
+    user_id: "",
+    store_id: "",
+    expense_type: "Utilities",
+    approval_status: "approved",
   });
 
   useEffect(() => {
     setFormData((prev) => ({
+      ...prev,
+      user_id: userData.user_id,
+      store_id: userData.store_id,
+    }));
+    setFormDataExpence((prev) => ({
       ...prev,
       user_id: userData.user_id,
       store_id: userData.store_id,
@@ -34,13 +48,36 @@ export default function Finance() {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+    if (e.target.name === "income_category") {
+      setFormData((prev) => ({
+        ...prev,
+        income_type: e.target.value,
+      }));
+    }
   };
 
-  const handleAddIncome = async (e)=>{
-    e.preventDefault();
-    await postData("income/AddIncome",formData);
-  }
+  const handleChangeExpence = (e) => {
+    setFormDataExpence((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+    if (e.target.name === "income_category") {
+      setFormData((prev) => ({
+        ...prev,
+        income_type: e.target.value,
+      }));
+    }
+  };
 
+  const handleAddIncome = async (e) => {
+    e.preventDefault();
+    await postData("income/AddIncome", formData);
+  };
+
+  const handleAddExpence = async (e) => {
+    e.preventDefault();
+    await postData("expense/AddExpense", formDataExpence);
+  };
   // console.log(formData);
   // console.log(data?.message);
   // console.log(error);
@@ -52,9 +89,7 @@ export default function Finance() {
       {/* Add Income Form */}
       <div className="mb-6">
         <h3 className="text-xl mb-2">Add New Income</h3>
-        <form
-        onSubmit={handleAddIncome}
-        >
+        <form onSubmit={handleAddIncome}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Income Type</label>
             <select
@@ -67,6 +102,7 @@ export default function Finance() {
               <option value="selling">Selling</option>
               <option value="phone repair">Phone repair</option>
               <option value="service charge">Service Charge</option>
+              <option value="service charge">Other</option>
             </select>
           </div>
           <div className="mb-4">
@@ -81,7 +117,11 @@ export default function Finance() {
             />
           </div>
           <div className="w-full flex justify-end">
-            <Button type="submit" gradientDuoTone="purpleToBlue" disabled={loading} >
+            <Button
+              type="submit"
+              gradientDuoTone="purpleToBlue"
+              disabled={loading}
+            >
               Add Income
             </Button>
           </div>
@@ -91,28 +131,29 @@ export default function Finance() {
       {/* Add Expense Form */}
       <div>
         <h3 className="text-xl mb-2">Add New Expense</h3>
-        <form
-        // onSubmit={handleAddExpense}
-        >
+        <form onSubmit={handleAddExpence}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Expense Type</label>
             <select
-              // value={expenseType}
-              // onChange={(e) => setExpenseType(e.target.value)}
+              value={formDataExpence.expense_category}
+              onChange={handleChangeExpence}
+              name="expense_category"
               className="w-full p-2 border border-gray-300 rounded"
               required
             >
               <option value="inventory cost">Inventory Cost</option>
               <option value="emp_salaries">Employee Salaries</option>
               <option value="utilities">Utilities</option>
+              <option value="service charge">Other</option>
             </select>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Amount</label>
             <input
               type="number"
-              // value={expenseAmount}
-              // onChange={(e) => setExpenseAmount(e.target.value)}
+              value={formDataExpence.expense_amount}
+              onChange={handleChangeExpence}
+              name="expense_amount"
               className="w-full p-2 border border-gray-300 rounded"
               required
             />
@@ -127,15 +168,9 @@ export default function Finance() {
 
       {/* Success/Error Message */}
       {data?.message && (
-        <p className={`my-2 text-green-600 `}>
-          {data.message}
-        </p>
+        <p className={`my-2 text-green-600 `}>{data.message}</p>
       )}
-      {error && (
-        <p className={`my-2 text-red-600 `}>
-          {error}
-        </p>
-      )}
+      {error && <p className={`my-2 text-red-600 `}>{error}</p>}
     </div>
   );
 }
