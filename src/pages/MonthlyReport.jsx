@@ -8,37 +8,37 @@ import { useReactToPrint } from "react-to-print";
 
 export default function MonthlyReport() {
   const {
-    // data,                                              need to uncomment after connecting to the backend
-    // error,
+    data,          
+    error,
     loading,
     fetchMobileData,
   } = useMobileForImei();
 
-  const data = {
-    total_income: 123000,
-    total_expense: 23000,
-    is_profit: true,
-    difference: 10000,
-    report: [
-      {
-        store: "kurunegala",
-        sales: [
-          { date: "2024/10/1", income: 20000, expense: 12000 },
-          { date: "2024/10/2", income: 20000, expense: 12000 },
-          { date: "2024/10/30", income: 20000, expense: 12000 },
-        ],
-      },
-      {
-        store: "kandy",
-        sales: [
-          { date: "2024/10/1", income: 20000, expense: 12000 },
-          { date: "2024/10/2", income: 20000, expense: 12000 },
-          { date: "2024/10/30", income: 20000, expense: 12000 },
-        ],
-      },
-    ],
-  }; // need to remove after connect
-  const error = "";
+  // const data = {
+  //   total_income: 123000,
+  //   total_expense: 23000,
+  //   is_profit: true,
+  //   difference: 10000,
+  //   report: [
+  //     {
+  //       store: "kurunegala",
+  //       sales: [
+  //         { date: "2024/10/1", income: 20000, expense: 12000 },
+  //         { date: "2024/10/2", income: 20000, expense: 12000 },
+  //         { date: "2024/10/30", income: 20000, expense: 12000 },
+  //       ],
+  //     },
+  //     {
+  //       store: "kandy",
+  //       sales: [
+  //         { date: "2024/10/1", income: 20000, expense: 12000 },
+  //         { date: "2024/10/2", income: 20000, expense: 12000 },
+  //         { date: "2024/10/30", income: 20000, expense: 12000 },
+  //       ],
+  //     },
+  //   ],
+  // }; // need to remove after connect
+  // const error = "";
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
@@ -51,7 +51,7 @@ export default function MonthlyReport() {
   const year = selectedMonth.getFullYear();
 
   useEffect(() => {
-    fetchMobileData("report/get_month_report", { month, year });
+    fetchMobileData("report/monthly-report", { month, year });
   }, [selectedMonth]);
 
   const handleClick = (sale) => {
