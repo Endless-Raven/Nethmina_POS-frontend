@@ -8,7 +8,54 @@ function ShareStockAdminInventory() {
     shops: ["kurunegal", "kandy", "polonnaruwa"],
     product_types: ["mobile phone", "mobile accessories", "spekaers"],
   };
+
   const brands = ["apple", "samsung", "google"];
+
+  const products = [
+    {
+      product_id: 1,
+      product_name: "iPhone 12",
+      stock_quantity: 34,
+    },
+    {
+      product_id: 2,
+      product_name: "Samsung Galaxy S21",
+      stock_quantity: 50,
+    },
+    {
+      product_id: 3,
+      product_name: "Google Pixel 6",
+      stock_quantity: 25,
+    },
+    {
+      product_id: 4,
+      product_name: "OnePlus 9",
+      stock_quantity: 40,
+    },
+    {
+      product_id: 5,
+      product_name: "Xiaomi Mi 11",
+      stock_quantity: 60,
+    },
+    {
+      product_id: 6,
+      product_name: "Sony Xperia 5",
+      stock_quantity: 15,
+    },
+  ];
+
+  const openModal = () => setModalOpen(true);
+
+  const [newItem, setNewItem] = useState({
+    shopName: "",
+    category: "",
+    brand: "",
+    product: "",
+    qty: "1",
+    imeiNumbers: [],
+  });
+
+  console.log(newItem);
 
   const samplePending = [
     {
@@ -48,20 +95,6 @@ function ShareStockAdminInventory() {
   const [modalOpen, setModalOpen] = useState(false);
   const [cancelTransfer, setCancelTransfer] = useState(false);
   const [items, setItems] = useState([]);
-  const [newItem, setNewItem] = useState({
-    shopName: "",
-    category: "",
-    brand: "",
-    product: "",
-    qty: "1",
-    imeiNumbers: [],
-  });
-
-  // Open modal
-  const openModal = () => setModalOpen(true);
-
-  // Close modal
-  const closeModal = () => setModalOpen(false);
 
   // Handle adding item with validation
   const handleAddItem = () => {
@@ -138,13 +171,13 @@ function ShareStockAdminInventory() {
       </div>
 
       {/* Modal for Adding Items */}
-      <Modal show={modalOpen} onClose={closeModal}>
+      <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
         <Modal.Header>Add Item</Modal.Header>
         <Modal.Body>
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             {/* Show Category Selector after selecting Shop */}
             {toShop && (
-              <>
+              <div>
                 <Label htmlFor="category">Category</Label>
                 <Select
                   id="category"
@@ -160,12 +193,12 @@ function ShareStockAdminInventory() {
                     </option>
                   ))}
                 </Select>
-              </>
+              </div>
             )}
 
             {/* Show Brand Selector after selecting Category */}
             {newItem.category && (
-              <>
+              <div>
                 <Label htmlFor="brand">Brand</Label>
                 <Select
                   id="brand"
@@ -174,18 +207,19 @@ function ShareStockAdminInventory() {
                     setNewItem({ ...newItem, brand: e.target.value })
                   }
                 >
+                  <option value="">Select Brand</option>
                   {brands.map((brand, index) => (
                     <option key={index} value={brand}>
                       {brand}
                     </option>
                   ))}
                 </Select>
-              </>
+              </div>
             )}
 
             {/* Show Product Selector after selecting Brand */}
             {newItem.brand && (
-              <>
+              <div>
                 <Label htmlFor="product">Product</Label>
                 <Select
                   id="product"
@@ -195,31 +229,44 @@ function ShareStockAdminInventory() {
                   }
                 >
                   <option value="">Select Product</option>
-                  <option value="iPhone 12">iPhone 12</option>
-                  <option value="Samsung Galaxy A21s">
-                    Samsung Galaxy A21s
-                  </option>
+                  {products.map((product, index) => (
+                    <option key={index} value={product.product_name}>
+                      {product.product_name}
+                    </option>
+                  ))}
                 </Select>
-              </>
+              </div>
             )}
 
             {/* Quantity Input */}
             {newItem.product && (
-              <>
+              <div>
                 <Label htmlFor="qty">Quantity</Label>
                 <TextInput
                   id="qty"
                   type="number"
                   min={1}
                   value={newItem.qty}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, qty: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const maxQty = products.filter(
+                      (p) => p.product_name === newItem.product
+                    )[0].stock_quantity;
+                    if (e.target.value !== "") {
+                      const inputQty = parseInt(e.target.value, 10);
+                      if (inputQty <= maxQty) {
+                        setNewItem({ ...newItem, qty: inputQty });
+                      } else {
+                        setNewItem({ ...newItem, qty: maxQty });
+                      }
+                    } else {
+                      setNewItem({ ...newItem, qty: 1 });
+                    }
+                  }}
                 />
 
                 {/* IMEI Numbers if Category is Mobile Phone */}
                 {newItem.category === "mobile phone" && (
-                  <>
+                  <div className="mt-4">
                     <Label>IMEI Numbers</Label>
                     {[...Array(Number(newItem.qty))].map((_, index) => (
                       <TextInput
@@ -233,18 +280,27 @@ function ShareStockAdminInventory() {
                         }}
                       />
                     ))}
-                  </>
+                  </div>
                 )}
-              </>
+              </div>
             )}
           </div>
         </Modal.Body>
-
         <Modal.Footer>
           <Button
             className="left-96"
             gradientDuoTone="pinkToOrange"
-            onClick={closeModal}
+            onClick={() => {
+              setModalOpen(false);
+              setNewItem({
+                shopName: "",
+                category: "",
+                brand: "",
+                product: "",
+                qty: "1",
+                imeiNumbers: [],
+              });
+            }}
           >
             Cancel
           </Button>
