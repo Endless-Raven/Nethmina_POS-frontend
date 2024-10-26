@@ -102,7 +102,7 @@ export default function Finance() {
               <option value="selling">Selling</option>
               <option value="phone repair">Phone repair</option>
               <option value="service charge">Service Charge</option>
-              <option value="service charge">Other</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div className="mb-4">

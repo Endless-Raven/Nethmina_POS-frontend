@@ -4,6 +4,12 @@ import PendingRequestList from "../components/admin_inventory/PendingRequestList
 import { ProductTable } from "../components/admin_inventory/ProductTable";
 
 function ShareStockAdminInventory() {
+  const shopsAndCategories = {
+    shops: ["kurunegal", "kandy", "polonnaruwa"],
+    product_types: ["mobile phone", "mobile accessories", "spekaers"],
+  };
+  const brands = ["apple", "samsung", "google"];
+
   const samplePending = [
     {
       from: "bgd",
@@ -115,9 +121,12 @@ function ShareStockAdminInventory() {
           value={toShop}
           onChange={(e) => setToShop(e.target.value)}
         >
-          <option value="Kurunegala">Kurunegala</option>
-          <option value="Kandy">Kandy</option>
-          <option value="Polonnaruwa">Polonnaruwa</option>
+          <option value="">Select Shop</option>
+          {shopsAndCategories.shops.map((shop, index) => (
+            <option key={index} value={shop}>
+              {shop}
+            </option>
+          ))}
         </Select>
       </div>
 
@@ -133,22 +142,8 @@ function ShareStockAdminInventory() {
         <Modal.Header>Add Item</Modal.Header>
         <Modal.Body>
           <div className="space-y-4">
-            {/* Shop Name Selector */}
-            <Label htmlFor="shopName">Shop Name</Label>
-            <Select
-              id="shopName"
-              value={newItem.shopName}
-              onChange={(e) =>
-                setNewItem({ ...newItem, shopName: e.target.value })
-              }
-            >
-              <option value="">Select Shop Name</option>
-              <option value="Kandy">Kandy</option>
-              <option value="Polonnaruwa">Polonnaruwa</option>
-            </Select>
-
             {/* Show Category Selector after selecting Shop */}
-            {newItem.shopName && (
+            {toShop && (
               <>
                 <Label htmlFor="category">Category</Label>
                 <Select
@@ -159,8 +154,11 @@ function ShareStockAdminInventory() {
                   }
                 >
                   <option value="">Select Category</option>
-                  <option value="mobile phone">Mobile Phone</option>
-                  <option value="mobile accessories">Mobile Accessories</option>
+                  {shopsAndCategories.product_types.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
+                    </option>
+                  ))}
                 </Select>
               </>
             )}
@@ -176,9 +174,11 @@ function ShareStockAdminInventory() {
                     setNewItem({ ...newItem, brand: e.target.value })
                   }
                 >
-                  <option value="">Select Brand</option>
-                  <option value="Apple">Apple</option>
-                  <option value="Samsung">Samsung</option>
+                  {brands.map((brand, index) => (
+                    <option key={index} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
                 </Select>
               </>
             )}

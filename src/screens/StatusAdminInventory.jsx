@@ -1,95 +1,148 @@
-import React from 'react';
+import React, { useEffect } from "react";
+import { useGetWithoutQuery } from "../services/api";
 
 function StatusAdminInventory() {
-  const pendingTransfers = [
-    { from: 'Kurunegala', to: 'Kandy', products: [
-      { category: 'Phone', brand: 'Samsung', productName: 'Galaxy S21', qty: 5 },
-      { category: 'Accessory', brand: 'Sony', productName: 'Headphones', qty: 10 },
-    ]},
-    { from: 'Kurunegala', to: 'Polonnaruwa', products: [
-      { category: 'Phone', brand: 'Xiaomi', productName: 'Redmi Note 10', qty: 8 },
-      { category: 'Accessory', brand: 'JBL', productName: 'Speaker', qty: 6 },
-    ]}
-  ];
+  const { data, error, loading, fetchData } = useGetWithoutQuery();
+  // const data = [
+  //   {
+  //     products: [
+  //       {
+  //         product_id: 1,
+  //         product_name: "iPhone 12",
+  //         stock_quantity: 34,
+  //         transfer_quantity: 3,
+  //         imei_number: [123456789012345, 123456789012345, 123456789012345],
+  //       },
+  //       {
+  //         product_id: 2,
+  //         product_name: "back-cover",
+  //         stock_quantity: 34,
+  //         transfer_quantity: 14,
+  //       },
+  //     ],
+  //     from: "kurunegala",
+  //     to: "kandy",
+  //     date: "2024/10/02",
+  //     time: "10:50",
+  //     completed: false,
+  //   },
+  //   {
+  //     products: [
+  //       {
+  //         product_id: 1,
+  //         product_name: "iPhone 12",
+  //         stock_quantity: 34,
+  //         transfer_quantity: 3,
+  //         imei_number: [123456789012345, 123456789012345, 123456789012345],
+  //       },
+  //       {
+  //         product_id: 2,
+  //         product_name: "back-cover",
+  //         stock_quantity: 34,
+  //         transfer_quantity: 14,
+  //       },
+  //     ],
+  //     from: "kurunegala",
+  //     to: "kandy",
+  //     date: "2024/10/02",
+  //     time: "10:50",
+  //     completed: true,
+  //   },
+  // ];
 
-  const confirmedTransfers = [
-    { from: 'Kurunegala', to: 'Polonnaruwa', products: [
-      { category: 'Phone', brand: 'Apple', productName: 'iPhone 12', qty: 3 },
-      { category: 'Accessory', brand: 'Anker', productName: 'Charger', qty: 15 },
-    ]},
-    { from: 'Kurunegala', to: 'Kandy', products: [
-      { category: 'Phone', brand: 'OnePlus', productName: 'OnePlus 9', qty: 4 },
-      { category: 'Accessory', brand: 'Belkin', productName: 'Power Bank', qty: 7 },
-    ]}
-  ];
+  useEffect(() => {
+    fetchData("stock/getTransferDetails");
+  }, []);
+
+  console.log(data);
 
   return (
     <div className="p-4">
       <div className="flex gap-4">
         {/* Pending Transfer Section */}
         <div className="w-1/2">
-          <h2 className="text-lg font-bold mb-2 text-green-500">Pending Transfers</h2>
-          {pendingTransfers.map((transfer, index) => (
-            <div key={index} className="mb-6">
-              <div className="p-2 mb-4 flex justify-start gap-4 bg-green-100 text-green-400 ">
-                <strong>From:</strong> {transfer.from}
-                <strong>To:</strong> {transfer.to}
-              </div>
-              <table className="min-w-full border-collapse bg-green-100 hover:bg-green-50">
-                <thead>
-                  <tr>
-                    <th className="border px-4 py-2">Category</th>
-                    <th className="border px-4 py-2">Brand</th>
-                    <th className="border px-4 py-2">Product Name</th>
-                    <th className="border px-4 py-2">Qty</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transfer.products.map((item, i) => (
-                    <tr key={i}>
-                      <td className="border px-4 py-2">{item.category}</td>
-                      <td className="border px-4 py-2">{item.brand}</td>
-                      <td className="border px-4 py-2">{item.productName}</td>
-                      <td className="border px-4 py-2">{item.qty}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
+          <h2 className="text-lg font-bold mb-10 text-green-500">
+            Pending Transfers
+          </h2>
+          {data &&
+            data
+              .filter((t) => !t.completed)
+              .slice(-10)
+              .map((transfer, index) => (
+                <div key={index} className="mb-6">
+                  <div className="p-2 flex justify-start gap-4 bg-green-200 text-green-600">
+                    <strong>From:</strong> {transfer.from}
+                    <strong>To:</strong> {transfer.to}
+                  </div>
+                  <table className="min-w-full border-collapse bg-green-100 hover:bg-green-50">
+                    <thead>
+                      <tr>
+                        <th className="border px-4 py-2">Product ID</th>
+                        <th className="border px-4 py-2">Product Name</th>
+                        <th className="border px-4 py-2">Transfer Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transfer.products.map((item, i) => (
+                        <tr key={i}>
+                          <td className="border px-4 py-2">
+                            {item.product_id}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {item.product_name}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {item.transfer_quantity}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
         </div>
 
         {/* Confirmed Transfer Section */}
         <div className="w-1/2">
-          <h2 className="text-lg font-bold mb-2 text-blue-500">Confirmed Transfers</h2>
-          {confirmedTransfers.map((transfer, index) => (
-            <div key={index} className="mb-6">
-              <div className="p-2 mb-4 flex justify-start gap-4 bg-blue-100 text-blue-400">
-                <strong>From:</strong> {transfer.from}
-                <strong>To:</strong> {transfer.to}
-              </div>
-              <table className="min-w-full border-collapse bg-blue-100 hover:bg-blue-50">
-                <thead>
-                  <tr>
-                    <th className="border px-4 py-2">Category</th>
-                    <th className="border px-4 py-2">Brand</th>
-                    <th className="border px-4 py-2">Product Name</th>
-                    <th className="border px-4 py-2">Qty</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transfer.products.map((item, i) => (
-                    <tr key={i}>
-                      <td className="border px-4 py-2">{item.category}</td>
-                      <td className="border px-4 py-2">{item.brand}</td>
-                      <td className="border px-4 py-2">{item.productName}</td>
-                      <td className="border px-4 py-2">{item.qty}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
+          <h2 className="text-lg font-bold mb-10 text-blue-500">
+            Confirmed Transfers
+          </h2>
+          {data &&
+            data
+              .filter((t) => t.completed)
+              .slice(-10)
+              .map((transfer, index) => (
+                <div key={index} className="mb-6">
+                  <div className="p-2 flex justify-start gap-4 bg-blue-200 text-blue-600">
+                    <strong>From:</strong> {transfer.from}
+                    <strong>To:</strong> {transfer.to}
+                  </div>
+                  <table className="min-w-full border-collapse bg-blue-100 hover:bg-blue-50">
+                    <thead>
+                      <tr>
+                        <th className="border px-4 py-2">Product ID</th>
+                        <th className="border px-4 py-2">Product Name</th>
+                        <th className="border px-4 py-2">Transfer Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transfer.products.map((item, i) => (
+                        <tr key={i}>
+                          <td className="border px-4 py-2">
+                            {item.product_id}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {item.product_name}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {item.transfer_quantity}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
         </div>
       </div>
     </div>

@@ -14,32 +14,6 @@ export default function MonthlyReport() {
     fetchMobileData,
   } = useMobileForImei();
 
-  // const data = {
-  //   total_income: 123000,
-  //   total_expense: 23000,
-  //   is_profit: true,
-  //   difference: 10000,
-  //   report: [
-  //     {
-  //       store: "kurunegala",
-  //       sales: [
-  //         { date: "2024/10/1", income: 20000, expense: 12000 },
-  //         { date: "2024/10/2", income: 20000, expense: 12000 },
-  //         { date: "2024/10/30", income: 20000, expense: 12000 },
-  //       ],
-  //     },
-  //     {
-  //       store: "kandy",
-  //       sales: [
-  //         { date: "2024/10/1", income: 20000, expense: 12000 },
-  //         { date: "2024/10/2", income: 20000, expense: 12000 },
-  //         { date: "2024/10/30", income: 20000, expense: 12000 },
-  //       ],
-  //     },
-  //   ],
-  // }; // need to remove after connect
-  // const error = "";
-
   const [openModal, setOpenModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -55,8 +29,8 @@ export default function MonthlyReport() {
   }, [selectedMonth]);
 
   const handleClick = (sale) => {
-    setOpenModal(true);
     setSelectedDate(sale.date);
+    setOpenModal(true);
   };
 
   const componentRef = React.useRef(null);
