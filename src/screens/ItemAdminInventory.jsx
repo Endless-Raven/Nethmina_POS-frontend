@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal , Spinner } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import UpdateItemModel from "../components/admin/UpdateItemModel";
 
@@ -11,7 +11,8 @@ const API_BASE_URL = process.env.API_BASE_URL;
 function ItemAdminInventory() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState("");
+  const [qty, setqty] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [stores, setStores] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -21,6 +22,8 @@ function ItemAdminInventory() {
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStores();
@@ -88,6 +91,7 @@ function ItemAdminInventory() {
 
   // Fetch filtered product data
   const fetchProductData = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/product/getFiltered/ProductDetails`,
@@ -101,6 +105,8 @@ function ItemAdminInventory() {
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -110,7 +116,22 @@ function ItemAdminInventory() {
 
   return (
     <div>
-
+{loading ? (
+        <div className="min-h-[60vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <Spinner size="lg" />
+            <span className="pl-3 text-slate-400 text-3xl">Loading...</span>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="min-h-[60vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <span className="pl-3 text-red-400 text-3xl">
+              Something went wrong
+            </span>
+          </div>
+        </div>
+      ) : (
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
@@ -193,7 +214,7 @@ function ItemAdminInventory() {
               ) : (
                 products.map((item, index) => (
                   <tr
-                    key={item.no}
+                    key={index}
                     className={
                       item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200" 
                     }
@@ -219,6 +240,7 @@ function ItemAdminInventory() {
                       <Button
                         className="m-3 p-1 mb-3 text-lg"
                         onClick={() => {
+                          setqty(item.stock_quantity);
                           setShowEditModal(true);
                           setselectedProductName(item.product_name);
                           console.log(item.product_name);
@@ -238,12 +260,12 @@ function ItemAdminInventory() {
           </div>
         </div>
       </div>
-     
+      )}
         <UpdateItemModel
-        
+        stockqty={qty}
           productName={selectedProductName}
           showModel={showEditModal}
-          close={() => setShowEditModal(false)}
+          close={() => {setShowEditModal(false)} }
         />
       
     </div>
