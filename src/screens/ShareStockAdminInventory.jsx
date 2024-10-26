@@ -1,276 +1,328 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal, Label, Select, TextInput } from "flowbite-react";
 import PendingRequestList from "../components/admin_inventory/PendingRequestList";
 import { ProductTable } from "../components/admin_inventory/ProductTable";
+import axios from "axios";
+
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
 
 function ShareStockAdminInventory() {
-  const samplePending = [
-    {
-      from: "bgd",
-      time: "23.55",
-      date: "25/10/24",
-      products: [
-        {
-          category: "greer",
-          brand: "fwrg",
-          product: "asggg",
-          qty: "45",
-        },
-        {
-          category: "greer",
-          brand: "fwrg",
-          product: "asggg",
-          qty: "45",
-        },
-      ],
-    },
-    {
-      from: "mjkyli7u",
-      time: "23.55",
-      date: "25/10/24",
-      products: [
-        {
-          category: "greer",
-          brand: "fwrg",
-          product: "asggg",
-          qty: "45",
-        },
-      ],
-    },
-  ];
-  const [toShop, setToShop] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [cancelTransfer, setCancelTransfer] = useState(false);
-  const [items, setItems] = useState([]);
-  const [newItem, setNewItem] = useState({
-    shopName: "",
-    category: "",
-    brand: "",
-    product: "",
-    qty: "1",
-    imeiNumbers: [],
+  // Backend data
+  const [shopsAndCategories, setShopsAndCategories] = useState({
+    shops: [],
+    product_types: [],
   });
+  const [samplePending, setSamplePending] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message,setMessage] = useState("");
 
-  // Open modal
+  const getCategories = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/getProductTypes/get`
+      );
+      setShopsAndCategories((prev) => ({
+        ...prev,
+        product_types: response.data,
+      }));
+    } catch (error) {
+      console.error("Error fetching Categories:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getShops = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/stores/getstore/names`);
+      setShopsAndCategories((prev) => ({ ...prev, shops: response.data }));
+    } catch (error) {
+      console.error("Error fetching Shops:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPending = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/stock/getAllPendingRequests`
+      );
+      setSamplePending(response.data);
+    } catch (error) {
+      console.error("Error fetching pending data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getModels = async (type) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/brands/byproducttype?product_type=${type}`
+      );
+      setBrands(response.data);
+    } catch (error) {
+      console.error("Error fetching brands data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getProducts = async (type, brand) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/product/getFiltered/ProductDetails`,
+        {
+          brand_name: brand,
+          product_type: type,
+        }
+      );
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+    getShops();
+    getPending();
+  }, []);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [toShop, setToShop] = useState("");
+  const [newItem, setNewItem] = useState({
+    product_id: 0,
+    transfer_quantity: 1,
+    imei_number: [],
+  });
+  const [items, setItems] = useState([]);
+
   const openModal = () => setModalOpen(true);
 
-  // Close modal
-  const closeModal = () => setModalOpen(false);
-
-  // Handle adding item with validation
   const handleAddItem = () => {
-    if (!newItem.product) {
-      alert("Please enter a product name.");
-      return; // Prevent adding item if no product name is entered
+    if (!newItem.product_id) {
+      alert("Please add a product");
+      return;
     }
 
-    // Validate IMEI numbers if the category is mobile phone
     if (newItem.category === "mobile phone") {
       const imeiNumbersFilled =
-        newItem.imeiNumbers.length === Number(newItem.qty) &&
-        newItem.imeiNumbers.every((imei) => imei.trim() !== "");
+        newItem.imei_number.length === Number(newItem.transfer_quantity) &&
+        newItem.imei_number.every((imei) => imei.trim() !== "");
 
       if (!imeiNumbersFilled) {
         alert("Please enter all required IMEI numbers.");
-        return; // Prevent adding item if IMEI numbers are not fully filled
+        return;
       }
     }
 
-    // Add new item to items list
     setItems([...items, newItem]);
-
-    // Close modal after adding
     setModalOpen(false);
 
-    // Reset form
     setNewItem({
-      shopName: "",
-      category: "",
-      brand: "",
-      product: "",
-      qty: "1",
-      imeiNumbers: [],
+      product_id: 0,
+      transfer_quantity: 1,
+      imei_number: [],
     });
+  };
+
+  const handleTransfer = async () => {
+    const req = {
+      products: items,
+      from: "Tech_Haven",
+      to: toShop,
+    };
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/stock/transferStock`,req
+      );
+      setMessage("Transfer Send Successfully");
+      setItems([]);
+    } catch (error) {
+      console.error("Error fetching transfer data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+      setTimeout(() => setMessage(""), 4000);
+    }
   };
 
   return (
     <div className="share-stock-container p-5 min-h-screen max-w-5xl mx-auto">
-      {/* Pending Request List */}
       <PendingRequestList data={samplePending} />
 
-      {/* From Input - Top Left Corner */}
       <div className="absolute left-9 mt-2">
         <Label htmlFor="fromShop">From:</Label>
         <TextInput id="fromShop" value={"Admin"} readOnly />
       </div>
 
-      {/* Dropdown - Top Right Corner */}
-      <div className="absolute right-9 mt-2 ">
-        <div className="">
-          <Label htmlFor="Shops">To:</Label>
-        </div>
+      <div className="absolute right-9 mt-2">
+        <Label htmlFor="Shops">To:</Label>
         <Select
           id="Shops"
-          required={true}
+          required
           value={toShop}
           onChange={(e) => setToShop(e.target.value)}
         >
-          <option value="Kurunegala">Kurunegala</option>
-          <option value="Kandy">Kandy</option>
-          <option value="Polonnaruwa">Polonnaruwa</option>
+          <option value="">Select Shop</option>
+          {shopsAndCategories?.shops?.map((shop, index) => (
+            <option key={index} value={shop}>
+              {shop}
+            </option>
+          ))}
         </Select>
       </div>
 
-      {/* Add Item Button */}
-      <div className="text-center mt-36 mx-1 ">
+      <div className="text-center mt-36 mx-1">
         <Button gradientDuoTone="purpleToBlue" onClick={openModal}>
           Add Item
         </Button>
       </div>
 
-      {/* Modal for Adding Items */}
-      <Modal show={modalOpen} onClose={closeModal}>
+      <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
         <Modal.Header>Add Item</Modal.Header>
         <Modal.Body>
-          <div className="space-y-4">
-            {/* Shop Name Selector */}
-            <Label htmlFor="shopName">Shop Name</Label>
-            <Select
-              id="shopName"
-              value={newItem.shopName}
-              onChange={(e) =>
-                setNewItem({ ...newItem, shopName: e.target.value })
-              }
-            >
-              <option value="">Select Shop Name</option>
-              <option value="Kandy">Kandy</option>
-              <option value="Polonnaruwa">Polonnaruwa</option>
-            </Select>
-
-            {/* Show Category Selector after selecting Shop */}
-            {newItem.shopName && (
-              <>
+          <div className="flex flex-col gap-4">
+            {toShop && (
+              <div>
                 <Label htmlFor="category">Category</Label>
                 <Select
                   id="category"
                   value={newItem.category}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, category: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setSelectedType(e.target.value);
+                    getModels(e.target.value);
+                  }}
                 >
                   <option value="">Select Category</option>
-                  <option value="mobile phone">Mobile Phone</option>
-                  <option value="mobile accessories">Mobile Accessories</option>
+                  {shopsAndCategories.product_types.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
+                    </option>
+                  ))}
                 </Select>
-              </>
+              </div>
             )}
 
-            {/* Show Brand Selector after selecting Category */}
-            {newItem.category && (
-              <>
+            {selectedType && (
+              <div>
                 <Label htmlFor="brand">Brand</Label>
                 <Select
                   id="brand"
                   value={newItem.brand}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, brand: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setSelectedBrand(e.target.value);
+                    getProducts(selectedType, e.target.value);
+                  }}
                 >
                   <option value="">Select Brand</option>
-                  <option value="Apple">Apple</option>
-                  <option value="Samsung">Samsung</option>
+                  {brands.map((brand, index) => (
+                    <option key={index} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
                 </Select>
-              </>
+              </div>
             )}
 
-            {/* Show Product Selector after selecting Brand */}
-            {newItem.brand && (
-              <>
+            {selectedBrand && (
+              <div>
                 <Label htmlFor="product">Product</Label>
                 <Select
                   id="product"
-                  value={newItem.product}
+                  value={newItem.product_id}
                   onChange={(e) =>
-                    setNewItem({ ...newItem, product: e.target.value })
+                    setNewItem({ ...newItem, product_id: e.target.value })
                   }
                 >
                   <option value="">Select Product</option>
-                  <option value="iPhone 12">iPhone 12</option>
-                  <option value="Samsung Galaxy A21s">
-                    Samsung Galaxy A21s
-                  </option>
+                  {products.map((product) => (
+                    <option key={product.product_id} value={product.product_id}>
+                      {product.product_name}
+                    </option>
+                  ))}
                 </Select>
-              </>
+              </div>
             )}
 
-            {/* Quantity Input */}
-            {newItem.product && (
-              <>
+            {newItem.product_id !== 0 && (
+              <div>
                 <Label htmlFor="qty">Quantity</Label>
                 <TextInput
                   id="qty"
                   type="number"
                   min={1}
-                  value={newItem.qty}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, qty: e.target.value })
-                  }
+                  value={newItem.transfer_quantity}
+                  onChange={(e) => {
+                    setNewItem({
+                      ...newItem,
+                      transfer_quantity : e.target.value ,
+                    });
+                  }}
                 />
 
-                {/* IMEI Numbers if Category is Mobile Phone */}
-                {newItem.category === "mobile phone" && (
-                  <>
+                {selectedType === "mobile phone" && (
+                  <div className="mt-4">
                     <Label>IMEI Numbers</Label>
-                    {[...Array(Number(newItem.qty))].map((_, index) => (
-                      <TextInput
-                        key={index}
-                        type="text"
-                        placeholder={`IMEI ${index + 1}`}
-                        onChange={(e) => {
-                          const imeiNumbers = [...newItem.imeiNumbers];
-                          imeiNumbers[index] = e.target.value;
-                          setNewItem({ ...newItem, imeiNumbers });
-                        }}
-                      />
-                    ))}
-                  </>
+                    {[...Array(Number(newItem.transfer_quantity))].map(
+                      (_, index) => (
+                        <TextInput
+                          key={index}
+                          type="text"
+                          placeholder={`IMEI ${index + 1}`}
+                          onChange={(e) => {
+                            const updatedIMEIs = [...newItem.imei_number];
+                            updatedIMEIs[index] = e.target.value;
+                            setNewItem({
+                              ...newItem,
+                              imei_number: updatedIMEIs,
+                            });
+                          }}
+                        />
+                      )
+                    )}
+                  </div>
                 )}
-              </>
+              </div>
             )}
           </div>
         </Modal.Body>
-
         <Modal.Footer>
-          <Button
-            className="left-96"
-            gradientDuoTone="pinkToOrange"
-            onClick={closeModal}
-          >
+          <Button onClick={handleAddItem}>Add</Button>
+          <Button color="gray" onClick={() => setModalOpen(false)}>
             Cancel
-          </Button>
-          <Button
-            className="left-96"
-            gradientDuoTone="purpleToBlue"
-            onClick={handleAddItem}
-          >
-            Add Item
           </Button>
         </Modal.Footer>
       </Modal>
 
-      {/* ProductTable to display added items */}
-      <div className="mt-10">
-        <ProductTable items={items} />{" "}
-        {/* Pass items as a prop to ProductTable */}
-      </div>
-
-      {/* Transfer Button */}
-      <div className="text-center mt-10 flex justify-end gap-2 ">
-        <Button gradientDuoTone="pinkToOrange" onClick={cancelTransfer}>
-          Cancel
+      {items.length > 0 && <ProductTable p={products} items={items} />}
+      <div className="flex justify-center mt-10">
+        <Button gradientDuoTone="purpleToBlue" onClick={handleTransfer}>
+          Transfer
         </Button>
-        <Button gradientDuoTone="purpleToBlue">Transfer</Button>
       </div>
+      {message && <div className="fixed right-8 bottom-8 text-xl font-semibold text-green-500">{message}</div>}
+      {error && <div className="fixed right-8 bottom-8 text-xl font-semibold text-red-500">{error}</div>}
     </div>
   );
 }

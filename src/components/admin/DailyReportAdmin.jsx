@@ -5,71 +5,71 @@ import { Table } from "flowbite-react";
 import { useReactToPrint } from "react-to-print";
 
 export default function DailyReportAdmin({ show, onClose, date }) {
-  const data = {
-    total_income: 123000,
-    total_expense: 23000, // Fixed the typo from "expence" to "expense"
-    is_profit: true,
-    difference: 100000,
-    report: [
-      {
-        store: "kurunegala",
-        sales: [
-          {
-            time: "10:20",
-            category: "sales",
-            is_income: true,
-            amount: 12000,
-          },
-          {
-            time: "11:10",
-            category: "transport",
-            is_income: false,
-            amount: 12000,
-          },
-          {
-            time: "12:30",
-            category: "sales",
-            is_income: true,
-            amount: 12000,
-          },
-        ],
-      },
-      {
-        store: "kandy",
-        sales: [
-          {
-            time: "10:20",
-            category: "sales",
-            is_income: true,
-            amount: 12000,
-          },
-          {
-            time: "11:10",
-            category: "transport",
-            is_income: false,
-            amount: 12000,
-          },
-          {
-            time: "12:30",
-            category: "sales",
-            is_income: true,
-            amount: 12000,
-          },
-        ],
-      },
-    ],
-  };
-  const error = "";
+  // const data = {
+  //   total_income: 123000,
+  //   total_expense: 23000, // Fixed the typo from "expence" to "expense"
+  //   is_profit: true,
+  //   difference: 100000,
+  //   report: [
+  //     {
+  //       store: "kurunegala",
+  //       sales: [
+  //         {
+  //           time: "10:20",
+  //           category: "sales",
+  //           is_income: true,
+  //           amount: 12000,
+  //         },
+  //         {
+  //           time: "11:10",
+  //           category: "transport",
+  //           is_income: false,
+  //           amount: 12000,
+  //         },
+  //         {
+  //           time: "12:30",
+  //           category: "sales",
+  //           is_income: true,
+  //           amount: 12000,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       store: "kandy",
+  //       sales: [
+  //         {
+  //           time: "10:20",
+  //           category: "sales",
+  //           is_income: true,
+  //           amount: 12000,
+  //         },
+  //         {
+  //           time: "11:10",
+  //           category: "transport",
+  //           is_income: false,
+  //           amount: 12000,
+  //         },
+  //         {
+  //           time: "12:30",
+  //           category: "sales",
+  //           is_income: true,
+  //           amount: 12000,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // };
+  // const error = "";
 
   const {
-    // data,                                              need to uncomment after connecting to the backend
-    // error,
+    data,                                             // need to uncomment after connecting to the backend
+    error,
     loading,
     fetchMobileData,
   } = useMobileForImei();
 
   useEffect(() => {
-    fetchMobileData("report/get_daily_report", { date });
+    fetchMobileData("report/daily-report", { date });
   }, [date]);
 
   const componentRef = React.useRef(null);
@@ -101,7 +101,7 @@ export default function DailyReportAdmin({ show, onClose, date }) {
         ) : data ? (
           <div className="overflow-x-auto" ref={componentRef}>
             <Table hoverable>
-              <Table.Head>
+              <Table.Head >
                 <Table.HeadCell>Time</Table.HeadCell>
                 <Table.HeadCell>Category</Table.HeadCell>
                 <Table.HeadCell>Income</Table.HeadCell>

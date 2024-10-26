@@ -1,6 +1,6 @@
 import {Checkbox,Table,TableBody,TableCell,TableHead,TableHeadCell,TableRow,}from "flowbite-react";
 
-export function ProductTable({ items }) {
+export function ProductTable({ items , p }) {
   return (
     <div className="overflow-x-auto border border-collapse rounded-lg">
       <Table hoverable>
@@ -15,10 +15,10 @@ export function ProductTable({ items }) {
               className=" bg-slate-200 hover:bg-slate-300"
             >
               <TableCell className="">
-                {item.product}
+                {item.product_id}
               </TableCell>
               <TableCell className="">
-                {item.qty}
+                {item.transfer_quantity}
               </TableCell>
             </TableRow>
           ))}
