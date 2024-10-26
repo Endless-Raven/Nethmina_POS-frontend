@@ -193,7 +193,7 @@ function ItemAdminInventory() {
               ) : (
                 products.map((item, index) => (
                   <tr
-                    key={item.no}
+                    key={index}
                     className={
                       item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200" 
                     }

@@ -54,7 +54,7 @@ function StatusAdminInventory() {
     fetchData("stock/getTransferDetails");
   }, []);
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="p-4">

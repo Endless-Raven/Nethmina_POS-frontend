@@ -32,7 +32,7 @@ const UpdateItemModel = ({ productName, showModel, close }) => {
           `${API_BASE_URL}/product/${productName}`
         );
         const product = response.data;
-        console.log(productName);
+        // console.log(productName);
         setNewItem({
           name: product.product_name,
             brand: product.brand_name,
@@ -48,7 +48,7 @@ const UpdateItemModel = ({ productName, showModel, close }) => {
         setSelectedModel(product.product_model);
         setSelectedBrand(product.brand_name);
         setItemNames({ name: product.product_name });
-        console.log(product.brand_name);
+        // console.log(product.brand_name);
         setFooterMessage("");
       } catch (error) {
         console.error("Error fetching product details:", error);

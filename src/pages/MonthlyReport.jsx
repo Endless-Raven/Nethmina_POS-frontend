@@ -99,7 +99,7 @@ export default function MonthlyReport() {
                       >
                         <Table.Cell>{sale.date}</Table.Cell>
                         <Table.Cell>{sale.income}</Table.Cell>
-                        <Table.Cell>{sale.expense}</Table.Cell>
+                        <Table.Cell>{sale.expence}</Table.Cell>
                       </Table.Row>
                     ))}
                   </React.Fragment>
@@ -107,7 +107,7 @@ export default function MonthlyReport() {
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900 font-bold">
                   <Table.Cell>Total</Table.Cell>
                   <Table.Cell>{data.total_income}</Table.Cell>
-                  <Table.Cell>{data.total_expense}</Table.Cell>
+                  <Table.Cell>{data.total_expence}</Table.Cell>
                 </Table.Row>
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900 font-bold">
                   <Table.Cell className="bg-slate-300 text-center" colSpan={2}>
