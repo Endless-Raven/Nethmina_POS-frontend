@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal , Spinner } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import Add_item_Model from "../components/Add_item_Model";
 import Edit_Item_Model from "../components/Edit_Item_Model";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
 function Product() {
   const [selectedBrand, setSelectedBrand] = useState("");
+  const navigate=useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -20,6 +22,8 @@ function Product() {
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedProductName,setselectedProductName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStores();
@@ -87,6 +91,7 @@ function Product() {
 
   // Fetch filtered product data
   const fetchProductData = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/product/getFiltered/ProductDetails`,
@@ -100,6 +105,8 @@ function Product() {
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -109,7 +116,24 @@ function Product() {
 
   return (
     <div>
+       {loading ? (
+        <div className="min-h-[60vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <Spinner size="lg" />
+            <span className="pl-3 text-slate-400 text-3xl">Loading...</span>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="min-h-[60vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <span className="pl-3 text-red-400 text-3xl">
+              Something went wrong
+            </span>
+          </div>
+        </div>
+      ) : (
       <div className="flex justify-between items-center mb-4 gap-3">
+        
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
             <div className="relative">
@@ -191,7 +215,7 @@ function Product() {
               ) : (
                 products.map((item, index) => (
                   <tr
-                    key={item.no}
+                    key={index}
                     className={
                        "bg-green-200"
                     }
@@ -243,8 +267,8 @@ function Product() {
             Add Item
           </Button>
         </div>
-      </div>
-      <Modal show={showModal} onClose={() => setShowModal(false)}>
+      </div>)}
+      <Modal show={showModal} onClose={() => {setShowModal(false),navigate(0)} }>
         <Modal.Header>
           {editIndex !== null ? "Edit Item" : "Add Item"}
         </Modal.Header>
@@ -252,9 +276,9 @@ function Product() {
           <Add_item_Model />
         </Modal.Body>
       </Modal>
-      <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
+      <Modal show={showEditModal} onClose={() =>{ setShowEditModal(false),navigate(0)}}>
         <Modal.Header>
-          {editIndex !== null ? "Edit Item" : "Add Item"}
+          {editIndex !== null ? "Update Item" : "Update Item"}
         </Modal.Header>
         <Modal.Body>
         <Edit_Item_Model productName={selectedProductName} />
