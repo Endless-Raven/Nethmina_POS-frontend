@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
+import { useMobileForImei } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function PendingRequestList({ data }) {
-  
+  const { error, loading, fetchMobileData } = useMobileForImei();
+  const navigate = useNavigate();
+  const handleMarkAsRead = async (id) => {
+    await fetchMobileData("stock/markRequestAsRead", { request_id: id });
+    navigate(0);
+  };
+
   return (
     <div className="mb-4 border rounded-xl bg-green-50 text-green-700">
       <h3 className="font-bold text-2xl mb-2 mt-4 mx-4">Pending Request</h3>
-
       {data && data.length > 0 ? (
         <div>
           {data.map((pending, index) => (
@@ -24,13 +31,33 @@ export default function PendingRequestList({ data }) {
                 </div>
               </div>
               {pending.products.map((product, index2) => (
-                <div className=" flex gap-3 text-sm" key={index2}>
-                  <strong>Category:</strong> {product.product_type}
-                  <strong>Brand:</strong> {product.brand_name}
-                  <strong>Product Name:</strong> {product.product_name}
-                  <strong>Quantity:</strong> {product.request_quantity}
+                <div
+                  className=" flex gap-3 text-sm justify-between"
+                  key={index2}
+                >
+                  <div>
+                    <strong>Category:</strong> {product.product_type}
+                  </div>
+                  <div>
+                    {" "}
+                    <strong>Brand:</strong> {product.brand_name}
+                  </div>
+                  <div>
+                    <strong>Product Name:</strong> {product.product_name}
+                  </div>
+                  <div>
+                    {" "}
+                    <strong>Quantity:</strong> {product.request_quantity}
+                  </div>
                 </div>
               ))}
+              <button
+                onClick={() => handleMarkAsRead(pending.request_id)}
+                className="bg-green-700 text-white px-3 py-1 mt-2 rounded-md hover:bg-green-600"
+              >
+                Mark As Read
+              </button>
+              {error && <p>{error}</p>}
             </div>
           ))}
         </div>
