@@ -56,7 +56,7 @@ const Add_item_Model = () => {
     const trimmedBrand = newItem.brand?.trim();
     const trimmedModel = newItem.model?.trim();
     const trimmedWholesalePrice = newItem.wholesale_price?.toString().trim();
-    const trimmedQty = newItem.qty?.toString().trim();
+   const trimmedQty = newItem.qty;
   
     if (
       !trimmedName ||
@@ -65,8 +65,8 @@ const Add_item_Model = () => {
       !trimmedCategory ||
       !trimmedBrand ||
       !trimmedModel ||
-      !trimmedWholesalePrice ||
-      !trimmedQty
+      !trimmedWholesalePrice 
+
     ) {
       setFooterMessage("All fields are required and cannot be empty or contain only spaces.");
       setLoading(false);
