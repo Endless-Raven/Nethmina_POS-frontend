@@ -68,8 +68,8 @@ export default function Billing() {
     warranty_period: "",
   });
   const addProduct = () => {
-    const { warranty_period, ...productWithoutWarranty } = product;
-    setOrderedList((prevData) => [...prevData, productWithoutWarranty]);
+    // const { warranty_period, ...productWithoutWarranty } = product;
+    setOrderedList((prevData) => [...prevData, product]);
   };
 
   // about customer data
