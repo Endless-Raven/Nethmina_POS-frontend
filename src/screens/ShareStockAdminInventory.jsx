@@ -190,29 +190,28 @@ function ShareStockAdminInventory() {
 
   return (
     <div className="share-stock-container p-5 min-h-screen max-w-5xl mx-auto">
-      
       {samplePending.length > 0 && <PendingRequestList data={samplePending} />}
-
-      <div className="absolute left-9 mt-2">
-        <Label htmlFor="fromShop">From:</Label>
-        <TextInput id="fromShop" value={"Admin"} readOnly />
-      </div>
-
-      <div className="absolute right-9 mt-2">
-        <Label htmlFor="Shops">To:</Label>
-        <Select
-          id="Shops"
-          required
-          value={toShop}
-          onChange={(e) => setToShop(e.target.value)}
-        >
-          <option value="">Select Shop</option>
-          {shopsAndCategories?.shops?.map((shop, index) => (
-            <option key={index} value={shop}>
-              {shop}
-            </option>
-          ))}
-        </Select>
+      <div className="absolute left-25 mt-2 w-[40vw] flex justify-between">
+        <div className="">
+          <Label htmlFor="fromShop">From:</Label>
+          <TextInput id="fromShop" value={"Admin"} readOnly />
+        </div>
+        <div className="">
+          <Label htmlFor="Shops">To:</Label>
+          <Select
+            id="Shops"
+            required
+            value={toShop}
+            onChange={(e) => setToShop(e.target.value)}
+          >
+            <option value="">Select Shop</option>
+            {shopsAndCategories?.shops?.map((shop, index) => (
+              <option key={index} value={shop}>
+                {shop}
+              </option>
+            ))}
+          </Select>
+        </div>
       </div>
 
       <div className="text-center mt-36 mb-10 mx-1">
@@ -224,119 +223,125 @@ function ShareStockAdminInventory() {
       <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
         <Modal.Header>Add Item</Modal.Header>
         <Modal.Body>
-          <div className="flex flex-col gap-4">
-            {toShop && (
-              <div>
-                <Label htmlFor="category">Category</Label>
-                <Select
-                  id="category"
-                  value={newItem.category}
-                  onChange={(e) => {
-                    setSelectedType(e.target.value);
-                    getModels(e.target.value);
-                  }}
-                >
-                  <option value="">Select Category</option>
-                  {shopsAndCategories.product_types.map((type, index) => (
-                    <option key={index} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            )}
+          <form onSubmit={handleAddItem}>
+            <div className="flex flex-col gap-4">
+              {toShop && (
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    id="category"
+                    value={newItem.category}
+                    onChange={(e) => {
+                      setSelectedType(e.target.value);
+                      getModels(e.target.value);
+                    }}
+                  >
+                    <option value="">Select Category</option>
+                    {shopsAndCategories.product_types.map((type, index) => (
+                      <option key={index} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              )}
 
-            {selectedType && (
-              <div>
-                <Label htmlFor="brand">Brand</Label>
-                <Select
-                  id="brand"
-                  value={newItem.brand}
-                  onChange={(e) => {
-                    setSelectedBrand(e.target.value);
-                    getProducts(selectedType, e.target.value);
-                  }}
-                >
-                  <option value="">Select Brand</option>
-                  {brands.map((brand, index) => (
-                    <option key={index} value={brand}>
-                      {brand}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            )}
+              {selectedType && (
+                <div>
+                  <Label htmlFor="brand">Brand</Label>
+                  <Select
+                    id="brand"
+                    value={newItem.brand}
+                    onChange={(e) => {
+                      setSelectedBrand(e.target.value);
+                      getProducts(selectedType, e.target.value);
+                    }}
+                  >
+                    <option value="">Select Brand</option>
+                    {brands.map((brand, index) => (
+                      <option key={index} value={brand}>
+                        {brand}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              )}
 
-            {selectedBrand && (
-              <div>
-                <Label htmlFor="product">Product</Label>
-                <Select
-                  id="product"
-                  value={newItem.product_id}
-                  onChange={(e) => {
-                    setNewItem({
-                      ...newItem,
-                      product_id: e.target.value,
-                    });
-                  }}
-                >
-                  <option value="">Select Product</option>
-                  {products.map((product) => (
-                    <option key={product.product_id} value={product.product_id}>
-                      {product.product_name}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            )}
-            {newItem.product_id !== 0 && (
-              <div>
-                <Label htmlFor="qty">Quantity</Label>
-                <TextInput
-                  id="qty"
-                  type="number"
-                  min={1}
-                  value={newItem.transfer_quantity}
-                  onChange={(e) => {
-                    setNewItem({
-                      ...newItem,
-                      transfer_quantity: e.target.value,
-                    });
-                  }}
-                />
+              {selectedBrand && (
+                <div>
+                  <Label htmlFor="product">Product</Label>
+                  <Select
+                    id="product"
+                    value={newItem.product_id}
+                    onChange={(e) => {
+                      setNewItem({
+                        ...newItem,
+                        product_id: e.target.value,
+                      });
+                    }}
+                  >
+                    <option value="">Select Product</option>
+                    {products.map((product) => (
+                      <option
+                        key={product.product_id}
+                        value={product.product_id}
+                      >
+                        {product.product_name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              )}
+              {newItem.product_id !== 0 && (
+                <div>
+                  <Label htmlFor="qty">Quantity</Label>
+                  <TextInput
+                    id="qty"
+                    type="number"
+                    min={1}
+                    value={newItem.transfer_quantity}
+                    onChange={(e) => {
+                      setNewItem({
+                        ...newItem,
+                        transfer_quantity: e.target.value,
+                      });
+                    }}
+                  />
 
-                {selectedType === "Mobile Phone" && (
-                  <div className="mt-4">
-                    <Label>IMEI Numbers</Label>
-                    {[...Array(Number(newItem.transfer_quantity))].map(
-                      (_, index) => (
-                        <TextInput
-                          key={index}
-                          type="text"
-                          placeholder={`IMEI ${index + 1}`}
-                          onChange={(e) => {
-                            const updatedIMEIs = [...newItem.imei_number];
-                            updatedIMEIs[index] = e.target.value;
-                            setNewItem({
-                              ...newItem,
-                              imei_number: updatedIMEIs,
-                            });
-                          }}
-                        />
-                      )
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+                  {selectedType === "Mobile Phone" && (
+                    <div className="mt-4">
+                      <Label>IMEI Numbers</Label>
+                      {[...Array(Number(newItem.transfer_quantity))].map(
+                        (_, index) => (
+                          <TextInput
+                            key={index}
+                            type="text"
+                            placeholder={`IMEI ${index + 1}`}
+                            required
+                            onChange={(e) => {
+                              const updatedIMEIs = [...newItem.imei_number];
+                              updatedIMEIs[index] = e.target.value;
+                              setNewItem({
+                                ...newItem,
+                                imei_number: updatedIMEIs,
+                              });
+                            }}
+                          />
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end gap-4 mt-6">
+              <Button type="submit">Add</Button>
+              <Button color="gray" onClick={() => setModalOpen(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleAddItem}>Add</Button>
-          <Button color="gray" onClick={() => setModalOpen(false)}>
-            Cancel
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       {items.length > 0 && <ProductTable items={items} />}
