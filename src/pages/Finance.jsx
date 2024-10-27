@@ -18,7 +18,7 @@ export default function Finance() {
     user_id: "",
     store_id: "",
     income_type: "Selling",
-    approval_status: "pending",
+    approval_status: "confirmed",
   });
 
   const [formDataExpence, setFormDataExpence] = useState({
@@ -27,7 +27,7 @@ export default function Finance() {
     user_id: "",
     store_id: "",
     expense_type: "Utilities",
-    approval_status: "approved",
+    approval_status: "confirmed",
   });
 
   useEffect(() => {
