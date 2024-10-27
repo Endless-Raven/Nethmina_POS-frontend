@@ -7,6 +7,7 @@ import axios from "axios";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function ProductBilling({ product, setProduct, addProduct }) {
+  
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
@@ -110,6 +111,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
     }
   };
   console.log(validEmi);
+  console.log(product)
   // Function to reset product data
   const resetProduct = () => {
     setProduct({
