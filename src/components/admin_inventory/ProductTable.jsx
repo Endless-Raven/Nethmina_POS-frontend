@@ -1,6 +1,9 @@
-import {Checkbox,Table,TableBody,TableCell,TableHead,TableHeadCell,TableRow,}from "flowbite-react";
+import {Table,TableBody,TableCell,TableHead,TableHeadCell,TableRow,}from "flowbite-react";
 
-export function ProductTable({ items , p }) {
+export function ProductTable({ items }) {
+
+  console.log(items);
+
   return (
     <div className="overflow-x-auto border border-collapse rounded-lg">
       <Table hoverable>
