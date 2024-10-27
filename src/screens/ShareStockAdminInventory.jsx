@@ -19,7 +19,8 @@ function ShareStockAdminInventory() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [message,setMessage] = useState("");
+  const [message, setMessage] = useState("");
+  const [product_name,setProductName] = useState("");
 
   const getCategories = async () => {
     setLoading(true);
@@ -111,6 +112,7 @@ function ShareStockAdminInventory() {
   const [toShop, setToShop] = useState("");
   const [newItem, setNewItem] = useState({
     product_id: 0,
+    product_name: "",
     transfer_quantity: 1,
     imei_number: [],
   });
@@ -140,6 +142,7 @@ function ShareStockAdminInventory() {
 
     setNewItem({
       product_id: 0,
+      product_name: "",
       transfer_quantity: 1,
       imei_number: [],
     });
@@ -154,7 +157,8 @@ function ShareStockAdminInventory() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/stock/transferStock`,req
+        `${API_BASE_URL}/stock/transferStock`,
+        req
       );
       setMessage("Transfer Send Successfully");
       setItems([]);
@@ -193,7 +197,7 @@ function ShareStockAdminInventory() {
         </Select>
       </div>
 
-      <div className="text-center mt-36 mx-1">
+      <div className="text-center mt-36 mb-10 mx-1">
         <Button gradientDuoTone="purpleToBlue" onClick={openModal}>
           Add Item
         </Button>
@@ -251,9 +255,12 @@ function ShareStockAdminInventory() {
                 <Select
                   id="product"
                   value={newItem.product_id}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, product_id: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setNewItem({
+                      ...newItem,
+                      product_id: e.target.value,
+                    });
+                  }}
                 >
                   <option value="">Select Product</option>
                   {products.map((product) => (
@@ -264,7 +271,6 @@ function ShareStockAdminInventory() {
                 </Select>
               </div>
             )}
-
             {newItem.product_id !== 0 && (
               <div>
                 <Label htmlFor="qty">Quantity</Label>
@@ -276,12 +282,12 @@ function ShareStockAdminInventory() {
                   onChange={(e) => {
                     setNewItem({
                       ...newItem,
-                      transfer_quantity : e.target.value ,
+                      transfer_quantity: e.target.value,
                     });
                   }}
                 />
 
-                {selectedType === "mobile phone" && (
+                {selectedType === "Mobile Phone" && (
                   <div className="mt-4">
                     <Label>IMEI Numbers</Label>
                     {[...Array(Number(newItem.transfer_quantity))].map(
@@ -315,14 +321,23 @@ function ShareStockAdminInventory() {
         </Modal.Footer>
       </Modal>
 
-      {items.length > 0 && <ProductTable p={products} items={items} />}
+      {items.length > 0 && <ProductTable items={items} />}
+
       <div className="flex justify-center mt-10">
         <Button gradientDuoTone="purpleToBlue" onClick={handleTransfer}>
           Transfer
         </Button>
       </div>
-      {message && <div className="fixed right-8 bottom-8 text-xl font-semibold text-green-500">{message}</div>}
-      {error && <div className="fixed right-8 bottom-8 text-xl font-semibold text-red-500">{error}</div>}
+      {message && (
+        <div className="fixed right-8 bottom-8 text-xl font-semibold text-green-500">
+          {message}
+        </div>
+      )}
+      {error && (
+        <div className="fixed right-8 bottom-8 text-xl font-semibold text-red-500">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
