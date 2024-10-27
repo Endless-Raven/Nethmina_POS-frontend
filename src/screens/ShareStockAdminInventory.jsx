@@ -20,7 +20,7 @@ function ShareStockAdminInventory() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [product_name,setProductName] = useState("");
+  const [product_name, setProductName] = useState("");
 
   const getCategories = async () => {
     setLoading(true);
@@ -171,9 +171,27 @@ function ShareStockAdminInventory() {
     }
   };
 
+  const handleMarkAsRead = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/stock/transferStock`,
+        req
+      );
+      setMessage("Transfer Send Successfully");
+      setItems([]);
+    } catch (error) {
+      console.error("Error fetching transfer data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="share-stock-container p-5 min-h-screen max-w-5xl mx-auto">
-      <PendingRequestList data={samplePending} />
+      
+      {samplePending.length > 0 && <PendingRequestList data={samplePending} />}
 
       <div className="absolute left-9 mt-2">
         <Label htmlFor="fromShop">From:</Label>
@@ -334,7 +352,7 @@ function ShareStockAdminInventory() {
         </div>
       )}
       {error && (
-        <div className="fixed right-8 bottom-8 text-xl font-semibold text-red-500">
+        <div className="fixed right-8 bottom-8 font-semibold text-red-500">
           {error}
         </div>
       )}
