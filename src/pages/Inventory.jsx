@@ -7,7 +7,6 @@ import { InventoryTable } from "../components/InventoryTable";
 import InventoryPendingRequest from "../components/InventoryPendingRequest";
 
 const Inventory = () => {
-  
   const [productTypes, setProductTypes] = useState([
     "Mobile Accessory",
     "Mobile Phone",
@@ -31,34 +30,6 @@ const Inventory = () => {
       product_wholesale_price: "0.00",
       imei_numbers: "123456789012345,987654321098765",
       imei_number: [
-        "182734659900876",
-        "888776954345695",
-        "445623456886954",
-        "754456758844321",
-        "182734659900876",
-        "888776954345695",
-        "445623456886954",
-        "754456758844321",
-        "182734659900876",
-        "888776954345695",
-        "445623456886954",
-        "754456758844321",
-        "182734659900876",
-        "888776954345695",
-        "445623456886954",
-        "754456758844321",
-        "182734659900876",
-        "888776954345695",
-        "445623456886954",
-        "754456758844321",
-        "182734659900876",
-        "888776954345695",
-        "445623456886954",
-        "754456758844321",
-        "182734659900876",
-        "888776954345695",
-        "445623456886954",
-        "754456758844321",
         "182734659900876",
         "888776954345695",
         "445623456886954",
@@ -112,24 +83,30 @@ const Inventory = () => {
     },
   ];
 
-  const [filterdProducts, setFilterdProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
   const [openModalRequest, setOpenModalRequest] = useState(false);
   const [openModalPending, setOpenModalPending] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  
-
 
   useEffect(() => {
     if (productTypes && productTypes.length > 0) {
       setSelectedType(productTypes[0]);
     }
     if (products && products.length > 0) {
-      setFilterdProducts(products);
+      setFilteredProducts(products);
     }
   }, []);
+
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((p) =>
+        p.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery]);
 
   return (
     <div className="p-6 bg-slate-100 min-h-[88vh]">
@@ -143,7 +120,6 @@ const Inventory = () => {
             className="w-1/3"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            
           />
 
           {/* Category Selector */}
@@ -184,11 +160,11 @@ const Inventory = () => {
           id="low-stock"
           onChange={(e) => {
             if (e.target.checked) {
-              setFilterdProducts(
+              setFilteredProducts(
                 products.filter((p) => parseFloat(p.product_stock) < 10)
               );
             } else {
-              setFilterdProducts(products);
+              setFilteredProducts(products);
             }
           }}
         />
@@ -196,9 +172,9 @@ const Inventory = () => {
           Show only low stock items
         </Label>
       </div>
-      
+
       {/* Stock table */}
-      <InventoryTable productList={filterdProducts} />
+      <InventoryTable productList={filteredProducts} />
 
       {/* Bottom Buttons */}
       <div className="flex justify-between fixed bottom-2 left-0 w-full px-6">
