@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Ensure axios is imported
+import { TextInput } from "flowbite-react";
 
 
 const API_BASE_URL = process.env.API_BASE_URL;
@@ -90,14 +91,13 @@ export default function Model({onSelectModel , reset, model}) {
 
   return (
     <div className="relative"> {/* Add relative positioning to the parent */}
-      <input
+      <TextInput
         type="text"
         id="model"
         value={itemNames.Model}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         required
-        className="border p-2 w-full rounded-md"
         placeholder="Search Model..."
       />
       {itemNames.Model !== "" &&

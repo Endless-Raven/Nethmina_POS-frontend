@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal, Spinner } from "flowbite-react";
+import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import Add_item_Model from "../components/Add_item_Model";
 import Edit_Item_Model from "../components/Edit_Item_Model";
@@ -115,9 +115,9 @@ function Product() {
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4 gap-3">
-        <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
+    <div className="mt-20">
+      <div className="flex justify-between items-start mb-4 gap-3">
+        <div className="flex justify-between items-center w-1/4 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
             <div className="relative">
               <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
@@ -167,171 +167,84 @@ function Product() {
                   </option>
                 ))}
               </select>
+              <Button
+                className="mt-3 p-1 mb-3"
+                onClick={() => setShowModal(true)}
+                size="sm"
+                gradientDuoTone="purpleToBlue"
+              >
+                Add Item
+              </Button>
             </div>
           </div>
         </div>
-        <div className="w-2/3">
-          <div className="table-container">
-            <div>
-                <table className="bg-slate-50 mt-16">
-                  <thead className="sticky top-0 bg-white">
-                    <tr>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "2%" }}
-                        >
-                        No
-                      </th>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "25%" }}
-                      >
-                        Name
-                      </th>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "9%" }}
-                        >
-                        Brand
-                      </th>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "13%" }}
-                        >
-                        Type
-                      </th>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "10%" }}
-                        >
-                        Price
-                      </th>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "3%" }}
-                        >
-                        Warranty
-                      </th>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "5%" }}
-                        >
-                        {" "}
-                      </th>
-                      <th
-                        className="border border-gray-300 p-2"
-                        style={{ width: "1%" }}
-                        >
-                        {" "}
-                      </th>
-                    </tr>
-                  </thead>
-                </table>
-            <div className="overflow-y-scroll h-96">
-              <table className="bg-slate-50 w-full">
-                  {loading ? (
-                    <div className="min-h-[60vh] flex justify-center items-center">
-                      <div className="flex items-center gap-4">
-                        <Spinner size="lg" />
-                        <span className="pl-3 text-slate-400 text-3xl">
-                          Loading...
-                        </span>
-                      </div>
-                    </div>
-                  ) : error ? (
-                    <div className="min-h-[60vh] flex justify-center items-center">
-                      <div className="flex items-center gap-4">
-                        <span className="pl-3 text-red-400 text-3xl">
-                          Something went wrong
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                <tbody>
-                  {products.length < 1 ? (
-                    <tr>
-                      <td colSpan="8">
-                        <center>No products</center>
-                      </td>
-                    </tr>
-                  ) : (
-                    products.map((item, index) => (
-                      <tr
+        <div className="w-3/4">
+          <div className="overflow-x-auto max-h-[79vh]">
+            <Table hoverable>
+              <Table.Head>
+                <Table.HeadCell className="bg-sky-300">No</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Name</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Brand</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Type</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Price</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Warranty</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Edite</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {loading ? (
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-sky-50">
+                    <Table.Cell
+                      colSpan={7}
+                      className="text-red-500 text-center h-48"
+                    >
+                      <Spinner size="md" />
+                      <span className="pl-3 text-slate-400 text-xl">
+                        Loading...
+                      </span>
+                    </Table.Cell>
+                  </Table.Row>
+                ) : products.length < 1 ? (
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-sky-50">
+                    <Table.Cell
+                      colSpan={7}
+                      className="text-red-500 text-center h-48"
+                    >
+                      No Products Found
+                    </Table.Cell>
+                  </Table.Row>
+                ) : (
+                  products?.map((item, index) => (
+                    <Table.Row
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-sky-50"
                       key={index}
-                        className={"bg-green-200"}
-                        onClick={() =>
-                          console.log("Product ID:", item.product_id)
-                        } // Add your processing logic here
-                      >
-                        <td
-                          className="border border-gray-300 p-2"
-                          style={{ width: "2%" }}
+                    >
+                      <Table.Cell>{index + 1}</Table.Cell>
+                      <Table.Cell>
+                        <strong>{item.product_name}</strong>
+                      </Table.Cell>
+                      <Table.Cell> {item.brand_name}</Table.Cell>
+                      <Table.Cell>{item.product_type}</Table.Cell>
+                      <Table.Cell>{item.product_price}</Table.Cell>
+                      <Table.Cell>{item.warranty_period}</Table.Cell>
+                      <Table.Cell>
+                        <Button
+                          className="m-3 p-1 mb-3 text-lg font-bold"
+                          onClick={() => {
+                            setShowEditModal(true),
+                              setselectedProductName(item.product_name);
+                          }}
+                          size="m"
+                          gradientDuoTone="Transparent"
                         >
-                          {index + 1}
-                        </td>
-                        <td
-                          className="border border-gray-300 p-2"
-                          style={{ width: "25%" }}
-                        >
-                          {item.product_name}
-                        </td>
-                        <td
-                          className="border border-gray-300 p-2"
-                          style={{ width: "9%" }}
-                        >
-                          {item.brand_name}
-                        </td>
-                        <td
-                          className="border border-gray-300 p-2"
-                          style={{ width: "13%" }}
-                        >
-                          {item.product_type}
-                        </td>
-                        <td
-                          className="border border-gray-300 p-2"
-                          style={{ width: "10%" }}
-                        >
-                          {item.product_price}
-                        </td>
-                        <td
-                          className="border border-gray-300 p-2"
-                          style={{ width: "3%" }}
-                        >
-                          {item.warranty_period}
-                        </td>
-                        <td
-                          className="border border-gray-300 p-2"
-                          style={{ width: "5%" }}
-                        >
-                          <Button
-                            className="m-3 p-1 mb-3 text-lg"
-                            onClick={() => {
-                              setShowEditModal(true),
-                                setselectedProductName(item.product_name);
-                              }}
-                              size="m"
-                              gradientDuoTone="Transparent"
-                              >
-                            ...
-                          </Button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              )}
-              </table>
-                  </div>
-            </div>
+                          ...
+                        </Button>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))
+                )}
+              </Table.Body>
+            </Table>
           </div>
-          <Button
-            className="mt-3 p-1 mb-3"
-            onClick={() => setShowModal(true)}
-            size="sm"
-            gradientDuoTone="purpleToBlue"
-          >
-            Add Item
-          </Button>
         </div>
       </div>
       <Modal

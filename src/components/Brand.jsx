@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Ensure axios is imported
 import { SiTruenas } from "react-icons/si";
+import { TextInput } from "flowbite-react";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export default function Brand({onSelectBrand , reset , brand}) {
-  
+export default function Brand({ onSelectBrand, reset, brand }) {
   const [itemNames, setItemNames] = useState({ Brand: "" });
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1); // To track the active suggestion
 
   useEffect(() => {
-    if (itemNames.Brand === ""  && brand) {
+    if (itemNames.Brand === "" && brand) {
       setItemNames({ Brand: brand }); // Reset brand input field
     }
   }, [brand]);
@@ -30,9 +30,6 @@ export default function Brand({onSelectBrand , reset , brand}) {
         setSuggestions(response.data);
         console.log(queryValue);
         setShowSuggestions(true); // Show the suggestions only if there is data
-        // if (e.key === "Enter") {
-        //   setShowSuggestions(false); // Hide suggestions after selection
-        // }
       } catch (err) {
         console.error("Error fetching suggestions:", err);
       }
@@ -41,7 +38,6 @@ export default function Brand({onSelectBrand , reset , brand}) {
       setShowSuggestions(false);
     }
   };
-  
 
   const handleKeyDown = (e) => {
     try {
@@ -63,20 +59,18 @@ export default function Brand({onSelectBrand , reset , brand}) {
   };
 
   const handleInputChange = async (e) => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
+    const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
     setItemNames({ ...itemNames, Brand: value }); // Update the input value
     await fetchSuggestions(itemNames.Brand); // Fetch suggestions based on input value
     setActiveIndex(-1); // Reset the active suggestion index
     onSelectBrand(value);
   };
-//in hear devlop back end new rout for get name
+  //in hear devlop back end new rout for get name
   const handleSuggestionClick = (suggestion) => {
     setItemNames({ ...itemNames, Brand: suggestion }); // Set the selected suggestion to input value
     setShowSuggestions(false); // Hide the suggestions after selection
     onSelectBrand(suggestion);
   };
-
-
 
   useEffect(() => {
     if (reset) {
@@ -86,26 +80,21 @@ export default function Brand({onSelectBrand , reset , brand}) {
       setActiveIndex(-1); // Reset the active suggestion index
     }
   }, [reset]);
-  // useEffect(() => {
-  //   if (query) {
-  //     fetchSuggestions(query); // Fetch suggestions based on the passed query
-  //   }
-  // }, [query]);
 
   return (
-    <div className="relative"> {/* Add relative positioning to the parent */}
-      <input
+    <div className="relative">
+      {" "}
+      {/* Add relative positioning to the parent */}
+      <TextInput
         type="text"
         id="brand"
         value={itemNames.Brand}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         required
-        className="border p-2 w-full rounded-md"
         placeholder="Search Brand..."
       />
-      {itemNames.Brand !== "" &&
-      showSuggestions && suggestions.length > 0 && (
+      {itemNames.Brand !== "" && showSuggestions && suggestions.length > 0 && (
         <ul className="absolute top-full left-0 rounded-md z-20 bg-white w-full border">
           {suggestions.map((suggestion, index) => (
             <li

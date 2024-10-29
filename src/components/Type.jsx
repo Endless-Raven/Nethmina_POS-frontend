@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Ensure axios is imported
+import { TextInput } from "flowbite-react";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
@@ -83,14 +84,14 @@ export default function Type({ onSelectType , reset , type}) {
 
   return (
     <div className="relative">
-      <input
+      <TextInput
         type="text"
         id="category"
         value={itemNames.Type} // Bind to the category property in newItem
         onChange={handleInputChangecategory}
         onKeyDown={handleKeyDown}
         required
-        className="border p-2 w-full rounded-md"
+        className=""
         placeholder="Search categories..."
       />
       {itemNames.Type !== "" &&
