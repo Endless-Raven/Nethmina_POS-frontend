@@ -1,391 +1,237 @@
 import React, { useEffect, useState } from "react";
+import { Button, Checkbox, Label, Select, Spinner, TextInput } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
-import { Button, Modal, Label, TextInput } from "flowbite-react";
-
+import UpcommingStockInv from "../components/UpcommingStockInv";
+import RequestProduct from "../components/RequestProduct";
+import { InventoryTable } from "../components/InventoryTable";
+import InventoryPendingRequest from "../components/InventoryPendingRequest";
 import axios from "axios";
-
-
+import { useSelector } from "react-redux";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 const Inventory = () => {
-  const [items, setItems] = useState([]);
-
-  const [searchTerm, setSearchTerm] = useState("");
-  // const [showAccessoriesModal, setShowAccessoriesModal] = useState(false);
-
-  const [selectedStore, setSelectedStore] = useState("All");
-  const [selectedBrand, setSelectedBrand] = useState("All");
-  const [selectedcategory, setSelectedcategory] = useState("All");
-  const [searchitems, setsearchitems] = useState("");
-  // const [selectedAccessories, setSelectedAccessories] = useState([]);
-
- 
-  const [stores, setStores] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const userData = useSelector((state) => state.user.data);
+  const [productTypes, setProductTypes] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [products, setprodcuts] = useState([]);
-  const [loading, setloading] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
+  const [openModalRequest, setOpenModalRequest] = useState(false);
+  const [openModalPending, setOpenModalPending] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [editIndex, setEditIndex] = useState(null);
-  // const[loading,setLoding]=useState(true);
-
-  // const[error,setError]=useState(null);
-
-  useEffect(() => {
-    fetchCategoris();
-    fetchStores();
-    fetchBrands();
-    fetchproductdata();
-    fetchsetsearchitems();
-  }, []);
-
-  useEffect(() => {
-    fetchproductdata();
-  }, [searchTerm, selectedStore, selectedBrand, selectedcategory]);
-  
-
-  useEffect(() => {
-    fetchBrands();
-    fetchproductdata();
-  }, [selectedcategory]);
-
-  useEffect(() => {
-    fetchproductdata();
-  }, [selectedBrand]);
-
-  useEffect(() => {
-    fetchproductdata();
-  }, [searchTerm]);
-
-  useEffect(() => {
-    fetchproductdata();
-  }, [selectedStore]);
-
-  // async function fetchproductdata() {
-  //   // let params = {};
-
-  //   // if (searchTerm) {
-  //   //   params.product_name = searchTerm;
-  //   // }
-  //   // if (selectedStore) {
-  //   //   params.store_name = selectedStore;
-  //   // }
-  //   // if (selectedBrand) {
-  //   //   params.brand_name = selectedBrand;
-  //   // }
-  //   // if (selectedcategory) {
-  //   //   params.product_type = selectedcategory;
-  //   // }
-
-  //   try {
-  //     const response = await axios.get(
-  //       `${API_BASE_URL}/product/getFiltered/ProductDetails`,
-  //       {
-  //         product_name: searchTerm,
-  //         store_name: selectedStore,
-  //         brand_name: selectedBrand,
-  //         product_type: selectedcategory,
-  //       }
-  //     );
-  //     console.log("response.data", response.data);
-  //     console.log(
-  //       "req.data",
-  //       searchTerm,
-  //       selectedStore,
-  //       selectedBrand,
-  //       selectedcategory
-  //     );
-  //     // Save the response data in an array or object
-  //     // setprodcuts(response.data); // Assuming you are storing the final data in a state
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-
-
-  async function fetchproductdata() {
-    try {
-      let product_name;
-      let store_name;
-      let brand_name;
-      let product_type;
-
-      const response = await axios.post(
-        `${API_BASE_URL}/product/getFiltered/ProductDetails`,
-        {
-          product_name: searchTerm,
-          store_name: selectedStore,
-          brand_name: selectedBrand,
-          product_type: selectedcategory,
-        }
-      );
-      console.log(response);
-      console.log("ss", product_name, store_name, brand_name, product_type);
-      setprodcuts(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  //serch bar
-  async function fetchsetsearchitems() {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/stores/getstore/names`);
-      console.log("response.data", response.data);
-      setsearchitems(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function fetchStores() {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/stores/getstore/names`);
-      console.log("response.data", response.data);
-      setStores(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function fetchCategoris() {
+  async function getAllTypes() {
+    setLoading(true);
+    setError(null);
     try {
       const response = await axios.get(
         `${API_BASE_URL}/product/getProductTypes/get`
       );
-      console.log("responseeee", response.data);
-      setCategories(response.data);
+      setProductTypes(response.data);
+      setSelectedType(response.data[0]);
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
-  // async function fetchBrands() {
-  //   try {
-  //     const response = await axios.get(`${API_BASE_URL}/product/getFilteredProductDetails/get`,{
-  //       product_type:newItem.category
-  //     });
-  //     console.log("response12345",response);
-  //    // setBrands(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-  async function fetchBrands() {
+  async function getBrandsByType() {
+    setLoading(true);
+    setError(null);
     try {
-      console.log("sjds");
       const response = await axios.get(
         `${API_BASE_URL}/product/brands/byproducttype`,
         {
-          params: { product_type: selectedcategory }, // Correctly sending the product type
+          params: {
+            product_type: selectedType,
+          },
         }
       );
-      console.log("Brands response:", response.data);
-      setBrands(response.data); // Uncommented this line to set brands
+      setBrands(response.data);
+      setSelectedBrand(response.data[0]);
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  async function getProductsByTypeBrand() {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/models/bybrand`,
+        {
+          params: {
+            product_type: selectedType,
+            brand_name: selectedBrand,
+          },
+        }
+      );
+      setProducts(response.data);
+      setFilteredProducts(response.data);
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  // const filteredItems = items.filter(
-  //   (item) =>
-  //     (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       item.brand.toLowerCase().includes(searchTerm.toLowerCase())) &&
-  //     (selectedStore === "All" || item.store === selectedStore) &&
-  //     (selectedBrand === "All" || item.brand === selectedBrand)
-  // );
+  useEffect(() => {
+    getAllTypes();
+  }, []);
 
-  const filteredItems = items.filter(
-    (item) =>
-      (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.brand.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (selectedStore === "All" || item.store === selectedStore) &&
-      (selectedBrand === "All" || item.brand === selectedBrand)
-  );
+  useEffect(() => {
+    getBrandsByType();
+  }, [selectedType]);
 
-  const handleEditItem = (index) => {
-    setNewItem(items[index]);
-    setEditIndex(index);
-    setShowModal(true);
-  };
+  useEffect(() => {
+    getProductsByTypeBrand();
+  }, [selectedType, selectedBrand]);
 
-  const handleDeleteItem = (index) => {
-    const updatedItems = items.filter((_, i) => i !== index);
-    setItems(updatedItems);
-  };
-
-  const handleShowAccessories = (index) => {
-    // setSelectedAccessories(items[index].accessories);
-    // setShowAccessoriesModal(true);
-  };
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((p) =>
+        p.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery]);
 
   return (
-    <div className="p-6 bg-slate-100 min-h-[88vh]">
-      <div className="flex justify-between items-center mb-4 gap-3">
-        <div className="relative w-1/2 mx-auto">
-          <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search Item by Name or Brand"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-              }}
-              className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
-            />
-            {/* <ul className="absolute rounded-md z-20 bg-white w-full ">
-              <li className="border-b-2 p-2"></li>
-            </ul> */}
+    <div className="relative min-h-[88vh]">
+      {loading ? (
+        <div className="min-h-[50vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <Spinner size="lg" />
+            <span className="pl-3 text-slate-400 text-3xl">Loading...</span>
           </div>
         </div>
-        <select
-          value={selectedStore}
-          onChange={(e) => {
-            setSelectedStore(e.target.value);
-          }}
-          className="p-2 border rounded-lg bg-white"
-        >
-          <option value="All">All Stores</option>
-          {stores.map((store) => (
-            <option key={store} value={store}>
-              {store}
-            </option>
-          ))}
-        </select>
-        <select
-          value={selectedcategory}
-          onChange={async (e) => {
-            setSelectedcategory(e.target.value);
-          }}
-          className="p-2 border rounded-lg bg-white"
-        >
-          <option value="All">All Category</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
+      ) : error ? (
+        <div className="min-h-[50vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <span className="pl-3 text-red-400 text-3xl">
+              Something went wrong
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="p-6 bg-slate-100 min-h-[88vh]">
+          {/* Search Bar and Selectors */}
+          <div className="mb-4">
+            <div className="flex items-center gap-4">
+              {/* Search Bar */}
+              <TextInput
+                icon={CiSearch}
+                placeholder="Search Item"
+                className="w-1/3"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
 
-        <select
-          value={selectedBrand}
-          onChange={(e) => {
-            setSelectedBrand(e.target.value);
-          }}
-          className="p-2 border rounded-lg bg-white"
-        >
-          <option value="All">All Brands</option>
-          {brands.map((brand, index) => (
-            <option key={index} value={brand}>
-              {brand}
-            </option>
-          ))}
-        </select>
-      </div>
-
-     
-      <table className="w-full  bg-slate-50">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 p-2">No</th>
-            <th className="border border-gray-300 p-2">Name</th>
-            <th className="border border-gray-300 p-2">Brand</th>
-            <th className="border border-gray-300 p-2">Category</th>
-            <th className="border border-gray-300 p-2">Qty</th>
-            <th className="border border-gray-300 p-2">Wholesale Price</th>
-            <th className="border border-gray-300 p-2">Retail Price</th>
-            <th className="border border-gray-300 p-2">Store</th>
-            <th className="border border-gray-300 p-2 hidden">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.length < 1 ? (
-            <div>
-              <center> No products </center>
-            </div>
-          ) : (
-            products.map((item, index) => (
-              <tr
-                key={item.no}
-                className={
-                  item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200"
-                }
+              {/* Category Selector */}
+              <Select
+                value={selectedType}
+                className="w-1/4"
+                onChange={(e) => {
+                  setSelectedType(e.target.value);
+                }}
               >
-                <td className="border border-gray-300 p-2">{index + 1}</td>
-                <td
-                // className="border border-gray-300 p-2 cursor-pointer text-blue-600 underline"
-                // onClick={() => handleShowAccessories(index)}
-                >
-                  {item.product_name}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {item.brand_name}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {item.product_type}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {item.stock_quantity}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {item.product_wholesale_price}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {item.product_price}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {item.store_name}
-                </td>
-                {/* <td className="border border-gray-300 p-2 flex gap-1 hiddenz">
-                  <Button
-                    onClick={() => handleEditItem(index)}
-                    gradientDuoTone="purpleToBlue"
-                    size={"xs"}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDeleteItem(index)}
-                    outline
-                    size={"xs"}
-                    gradientDuoTone="pinkToOrange"
-                  >
-                    Delete
-                  </Button>
-                </td> */}
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+                {productTypes.map((product, index) => (
+                  <option value={product} key={index}>
+                    {product}
+                  </option>
+                ))}
+              </Select>
 
-      
-      {/* Accessories Modal 
-      <Modal
-        show={showAccessoriesModal}
-        onClose={() => setShowAccessoriesModal(false)}
-      >
-        <Modal.Header>Accessories</Modal.Header>
-        <Modal.Body>
-          <ul>
-            {selectedAccessories.map((accessory) => (
-              <li key={accessory.name}>
-                {accessory.name}: ${accessory.price}
-              </li>
-            ))}
-          </ul>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setShowAccessoriesModal(false)}>Close</Button>
-        </Modal.Footer>
-      </Modal> */}
+              {/* Brand Selector */}
+              <Select
+                value={selectedBrand}
+                className="w-1/4"
+                onChange={(e) => {
+                  setSelectedBrand(e.target.value);
+                }}
+              >
+                {brands.map((brand, index) => (
+                  <option key={index} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
+
+          {/* Checkbox and Paragraph */}
+          <div className="mb-6 flex items-center gap-2">
+            <Checkbox
+              id="low-stock"
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setFilteredProducts(
+                    products.filter((p) => parseFloat(p.product_stock) < 10)
+                  );
+                } else {
+                  setFilteredProducts(products);
+                }
+              }}
+            />
+            <Label htmlFor="low-stock" className="cursor-pointer">
+              Show only low stock items
+            </Label>
+          </div>
+
+          {/* Stock table */}
+          <InventoryTable productList={filteredProducts} />
+
+          {/* Bottom Buttons */}
+          <div className="flex justify-between fixed bottom-2 left-0 w-full px-6">
+            <Button
+              gradientDuoTone="purpleToBlue"
+              outline
+              onClick={() => setOpenModalUpcomming(true)}
+            >
+              Upcoming Stocks
+            </Button>
+            <div className="flex gap-4">
+              <Button
+                gradientDuoTone="purpleToBlue"
+                onClick={() => setOpenModalRequest(true)}
+              >
+                Request Product
+              </Button>
+              <Button
+                gradientDuoTone="greenToBlue"
+                outline
+                onClick={() => setOpenModalPending(true)}
+              >
+                Pending Request
+              </Button>
+            </div>
+          </div>
+
+          {/* Modals */}
+          <UpcommingStockInv
+            show={openModalUpcomming}
+            close={() => setOpenModalUpcomming(false)}
+          />
+          <RequestProduct
+            show={openModalRequest}
+            close={() => setOpenModalRequest(false)}
+          />
+          <InventoryPendingRequest
+            show={openModalPending}
+            close={() => setOpenModalPending(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -136,6 +136,6 @@ export default function Dashboard() {
         </div>
       )}
     </div>
-    // mama oyata kamathi .oya mata kamthida.adrei mn.ummmmmmmmmmma.
+  
   );
 }

@@ -14,9 +14,7 @@ export default function NavigationBar() {
   const [active, setActive] = useState("billing");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  console.log(userData.role);
-
+  
   const handleLogout = () => {
     dispatch(signOut());
     navigate("/login");

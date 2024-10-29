@@ -73,6 +73,29 @@ export function useUpdateWithData() {                   // update database with 
   return { data, error, loading, fetchData }; 
 }
 
+export function useUpdateWithQuery() {                   // update database (state)
+    
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const updateStatus = async (endpoint,data) => {
+    setLoading(true);
+    try {
+      const response = await axios.put(`${API_BASE_URL}/${endpoint}`,{data});
+      setData(response.data);
+    } catch (error) {
+      console.error("Error updating data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data, error, loading, updateStatus }; 
+}
+
+
 
 export function useDelete() {                           // delete
     
