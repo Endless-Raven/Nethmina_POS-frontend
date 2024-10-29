@@ -42,7 +42,6 @@ export default function RequestProduct({ show, close }) {
         products: selectedProducts,
         store_id: userData.store_id,
       };
-      console.log(req);
       const response = await axios.post(
         `${API_BASE_URL}/stock/requestproduct`,
         req
@@ -50,7 +49,6 @@ export default function RequestProduct({ show, close }) {
       setSuccess(response.data.message);
       setSelectedProducts([]);
     } catch (error) {
-      console.log(error);
       setError(error.message);
     } finally {
       setLoading(false);

@@ -83,7 +83,7 @@ export default function UpcommingStockInv({ show, close }) {
               >
                 <p className="flex justify-between pb-1 mb-2 border-b-2 border-blue-200">
                   <span className="font-semibold">{transfer.from}</span>
-                  <span className="text-sm">{transfer.date}</span>
+                  <span className="text-sm">{new Date(transfer.date).toLocaleDateString()}</span>
                 </p>
                 {transfer.products.map((product, index2) => (
                   <p
