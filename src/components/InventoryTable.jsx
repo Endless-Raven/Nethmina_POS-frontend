@@ -6,6 +6,7 @@ import {
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
+import { useEffect, useState } from "react";
 
 export function InventoryTable({productList}) {
 
@@ -20,25 +21,24 @@ export function InventoryTable({productList}) {
           <TableHeadCell>Qty</TableHeadCell>
           <TableHeadCell>Wholesale Price</TableHeadCell>
           <TableHeadCell>Retail Price</TableHeadCell>
-          
         </TableHead>
         <TableBody className="divide-y">
-          {productList.map((product, index) => (
-            <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                {index +1}
-              </TableCell>
-              <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                {product.product_name}
-              </TableCell>
-              <TableCell>{product.brand_name}</TableCell>
-              <TableCell>{product.product_type}</TableCell>
-              <TableCell>{product.product_stock}</TableCell>
-              <TableCell>{product.product_wholesale_price}</TableCell>
-              <TableCell>{product.product_price}</TableCell>
-              
-            </TableRow>
-          ))}
+          {filtered &&
+            filtered.map((product, index) => (
+              <TableRow key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {index + 1}
+                </TableCell>
+                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {product.product_name}
+                </TableCell>
+                <TableCell>{product.brand_name}</TableCell>
+                <TableCell>{product.product_type}</TableCell>
+                <TableCell>{product.product_stock}</TableCell>
+                <TableCell>{product.product_wholesale_price}</TableCell>
+                <TableCell>{product.product_price}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

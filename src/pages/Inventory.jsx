@@ -118,6 +118,9 @@ const Inventory = () => {
   const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
   const [openModalRequest, setOpenModalRequest] = useState(false);
   const [openModalPending, setOpenModalPending] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  
+
 
   useEffect(() => {
     if (productTypes && productTypes.length > 0) {
@@ -138,6 +141,9 @@ const Inventory = () => {
             icon={CiSearch}
             placeholder="Search Item"
             className="w-1/3"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            
           />
 
           {/* Category Selector */}
