@@ -22,6 +22,7 @@ const Add_item_Model = () => {
   const [newItem, setNewItem] = useState({
     name: "",
     brand: "",
+    code:"",
     qty: "",
     warranty_period: "",
     imei_number: "",
@@ -50,6 +51,7 @@ const Add_item_Model = () => {
   
     // Trim and validate required fields
     const trimmedName = itemNames.name.trim();
+    const trimmedCode = newItem.code.trim();
     const trimmedRetailPrice = newItem.retailPrice?.toString().trim();
     const trimmedWarrantyPeriod = newItem.warranty_period.trim();
     const trimmedCategory = newItem.category?.trim();
@@ -65,7 +67,8 @@ const Add_item_Model = () => {
       !trimmedCategory ||
       !trimmedBrand ||
       !trimmedModel ||
-      !trimmedWholesalePrice 
+      !trimmedWholesalePrice ||
+      !trimmedCode
 
     ) {
       setFooterMessage("All fields are required and cannot be empty or contain only spaces.");
@@ -80,6 +83,7 @@ const Add_item_Model = () => {
   
       const response = await axios.post(`${API_BASE_URL}/product`, {
         product_name: trimmedName,
+        product_code: trimmedCode,
         product_price: trimmedRetailPrice,
         warranty_period: trimmedWarrantyPeriod,
         imei_numbers: imeiNumbers,
@@ -170,6 +174,7 @@ const Add_item_Model = () => {
 
   const resetForm = () => {
     setNewItem({
+        code:"",
       warranty_period: "",
       imei_number: "",
       qty: "",
@@ -192,11 +197,8 @@ const Add_item_Model = () => {
           type="text"
           id="name"
           value={itemNames.name}
-          onChange={(e) =>
-            setItemNames({
-              ...itemNames,
-              name: e.target.value.replace(/^\s+|\s+$/g, "").replace(/\s{2,}/g, " ")
-            })
+          onChange={handleInputChange
+            
           }
           onKeyDown={handleKeyDown}
           required
@@ -219,6 +221,21 @@ const Add_item_Model = () => {
           </ul>
         )}
       </div>
+      <Label htmlFor="code" value="Code" />
+        <input
+          type="text"
+          id="code"
+          value={newItem.code}
+          onChange={(e) =>
+            setNewItem({
+              ...newItem,
+              code: e.target.value.replace(/^\s+|\s+$/g, "").replace(/\s{2,}/g, " ")
+            })
+          }
+          onKeyDown={handleKeyDown}
+          required
+          className="border p-2 w-full rounded-md"
+        />
   
       <Label htmlFor="warranty_period" value="Warranty Period" />
       <TextInput

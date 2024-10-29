@@ -116,22 +116,7 @@ function ItemAdminInventory() {
 
   return (
     <div>
-{loading ? (
-        <div className="min-h-[60vh] flex justify-center items-center">
-          <div className="flex items-center gap-4">
-            <Spinner size="lg" />
-            <span className="pl-3 text-slate-400 text-3xl">Loading...</span>
-          </div>
-        </div>
-      ) : error ? (
-        <div className="min-h-[60vh] flex justify-center items-center">
-          <div className="flex items-center gap-4">
-            <span className="pl-3 text-red-400 text-3xl">
-              Something went wrong
-            </span>
-          </div>
-        </div>
-      ) : (
+
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
@@ -204,6 +189,22 @@ function ItemAdminInventory() {
             </table>
             <div className="overflow-y-scroll h-96"> {/* Scrollable body */}
             <table className="bg-slate-50 w-full">
+            {loading ? (
+        <div className="min-h-[60vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <Spinner size="lg" />
+            <span className="pl-3 text-slate-400 text-3xl">Loading...</span>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="min-h-[60vh] flex justify-center items-center">
+          <div className="flex items-center gap-4">
+            <span className="pl-3 text-red-400 text-3xl">
+              Something went wrong
+            </span>
+          </div>
+        </div>
+      ) : (
             <tbody>
               {products.length < 1 ? (
                 <tr>
@@ -254,13 +255,13 @@ function ItemAdminInventory() {
                   </tr>
                 ))
               )}
-            </tbody>
+              </tbody>
+            )}
           </table>
           </div>
           </div>
         </div>
       </div>
-      )}
         <UpdateItemModel
         stockqty={qty}
           productName={selectedProductName}

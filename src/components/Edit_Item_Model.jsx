@@ -155,13 +155,14 @@ const Edit_Item_Model = ({ productName }) => {
 
   return (
     <div>
-    <Label htmlFor="name" value="Name" />
-    <TextInput
-      id="name"
-      value={newItem.name}
-      onChange={(e) => setNewItem({ ...newItem, name: e.target.value.trim() })} // Trimmed
-      required
-    />
+   <Label htmlFor="name" value="Name" />
+<TextInput
+  id="name"
+  value={newItem.name}
+  onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} // Allow spaces
+  onBlur={(e) => setNewItem({ ...newItem, name: e.target.value.trim() })} // Trim when focus leaves
+  required
+/>
     <Label htmlFor="warranty_period" value="Warranty Period" />
     <TextInput
       id="warranty_period"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal , Spinner } from "flowbite-react";
+import { Button, Modal, Spinner } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import Add_item_Model from "../components/Add_item_Model";
 import Edit_Item_Model from "../components/Edit_Item_Model";
@@ -10,7 +10,7 @@ const API_BASE_URL = process.env.API_BASE_URL;
 
 function Product() {
   const [selectedBrand, setSelectedBrand] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -21,7 +21,7 @@ function Product() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedProductName,setselectedProductName] = useState("");
+  const [selectedProductName, setselectedProductName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -105,7 +105,7 @@ function Product() {
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
-    } finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -116,24 +116,7 @@ function Product() {
 
   return (
     <div>
-       {loading ? (
-        <div className="min-h-[60vh] flex justify-center items-center">
-          <div className="flex items-center gap-4">
-            <Spinner size="lg" />
-            <span className="pl-3 text-slate-400 text-3xl">Loading...</span>
-          </div>
-        </div>
-      ) : error ? (
-        <div className="min-h-[60vh] flex justify-center items-center">
-          <div className="flex items-center gap-4">
-            <span className="pl-3 text-red-400 text-3xl">
-              Something went wrong
-            </span>
-          </div>
-        </div>
-      ) : (
       <div className="flex justify-between items-center mb-4 gap-3">
-        
         <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
             <div className="relative">
@@ -188,76 +171,159 @@ function Product() {
           </div>
         </div>
         <div className="w-2/3">
-        <div className="table-container">
-          <table className="bg-slate-50 mt-16">
-            <thead className="sticky top-0 bg-white">
-              <tr>
-                <th className="border border-gray-300 p-2" style={{ width: '2%' }}>No</th>
-                <th className="border border-gray-300 p-2"style={{ width: '25%' }}>Name</th>
-                <th className="border border-gray-300 p-2" style={{ width: '9%' }}>Brand</th>
-                <th className="border border-gray-300 p-2" style={{ width: '13%' }}>Type</th>
-                <th className="border border-gray-300 p-2" style={{ width: '10%' }}>Price</th>
-                <th className="border border-gray-300 p-2" style={{ width: '3%' }}>Warranty</th>
-                <th className="border border-gray-300 p-2" style={{ width: '5%' }}>  </th>
-                <th className="border border-gray-300 p-2" style={{ width: '1%' }}>  </th>
-              </tr>
-            </thead>
-            </table>
-            <div className="overflow-y-scroll h-96">
-            <table className="bg-slate-50 w-full">
-            <tbody>
-              {products.length < 1 ? (
-                <tr>
-                  <td colSpan="8">
-                    <center>No products</center>
-                  </td>
-                </tr>
-              ) : (
-                products.map((item, index) => (
-                  <tr
-                    key={index}
-                    className={
-                       "bg-green-200"
-                    }
-                    onClick={() => console.log("Product ID:", item.product_id)} // Add your processing logic here
-                  >
-                    <td className="border border-gray-300 p-2" style={{ width: '2%' }}>{index + 1}</td>
-                    <td className="border border-gray-300 p-2" style={{ width: '25%' }}>
-                      {item.product_name}
-                    </td>
-                    <td className="border border-gray-300 p-2" style={{ width: '9%' }}>
-                      {item.brand_name}
-                    </td>
-                    <td className="border border-gray-300 p-2" style={{ width: '13%' }}>
-                      {item.product_type}
-                    </td>
-                    <td className="border border-gray-300 p-2" style={{ width: '10%' }}>
-                      {item.product_price}
-                    </td>
-                    <td className="border border-gray-300 p-2" style={{ width: '3%' }}>
-                      {item.warranty_period}
-                    </td>
-                     <td
-                      className="border border-gray-300 p-2"
-                      style={{ width: '5%' }}
-                    >
-                      <Button
-                        className="m-3 p-1 mb-3 text-lg"
-                        onClick={() => {setShowEditModal(true),setselectedProductName(item.product_name)} }
-                        size="m"
-                        
-                        gradientDuoTone="Transparent"
+          <div className="table-container">
+            <div>
+                <table className="bg-slate-50 mt-16">
+                  <thead className="sticky top-0 bg-white">
+                    <tr>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "2%" }}
+                        >
+                        No
+                      </th>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "25%" }}
                       >
-                        ...
-                      </Button>
-                    </td>
-                  </tr>
-                ))
+                        Name
+                      </th>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "9%" }}
+                        >
+                        Brand
+                      </th>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "13%" }}
+                        >
+                        Type
+                      </th>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "10%" }}
+                        >
+                        Price
+                      </th>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "3%" }}
+                        >
+                        Warranty
+                      </th>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "5%" }}
+                        >
+                        {" "}
+                      </th>
+                      <th
+                        className="border border-gray-300 p-2"
+                        style={{ width: "1%" }}
+                        >
+                        {" "}
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+            <div className="overflow-y-scroll h-96">
+              <table className="bg-slate-50 w-full">
+                  {loading ? (
+                    <div className="min-h-[60vh] flex justify-center items-center">
+                      <div className="flex items-center gap-4">
+                        <Spinner size="lg" />
+                        <span className="pl-3 text-slate-400 text-3xl">
+                          Loading...
+                        </span>
+                      </div>
+                    </div>
+                  ) : error ? (
+                    <div className="min-h-[60vh] flex justify-center items-center">
+                      <div className="flex items-center gap-4">
+                        <span className="pl-3 text-red-400 text-3xl">
+                          Something went wrong
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                <tbody>
+                  {products.length < 1 ? (
+                    <tr>
+                      <td colSpan="8">
+                        <center>No products</center>
+                      </td>
+                    </tr>
+                  ) : (
+                    products.map((item, index) => (
+                      <tr
+                      key={index}
+                        className={"bg-green-200"}
+                        onClick={() =>
+                          console.log("Product ID:", item.product_id)
+                        } // Add your processing logic here
+                      >
+                        <td
+                          className="border border-gray-300 p-2"
+                          style={{ width: "2%" }}
+                        >
+                          {index + 1}
+                        </td>
+                        <td
+                          className="border border-gray-300 p-2"
+                          style={{ width: "25%" }}
+                        >
+                          {item.product_name}
+                        </td>
+                        <td
+                          className="border border-gray-300 p-2"
+                          style={{ width: "9%" }}
+                        >
+                          {item.brand_name}
+                        </td>
+                        <td
+                          className="border border-gray-300 p-2"
+                          style={{ width: "13%" }}
+                        >
+                          {item.product_type}
+                        </td>
+                        <td
+                          className="border border-gray-300 p-2"
+                          style={{ width: "10%" }}
+                        >
+                          {item.product_price}
+                        </td>
+                        <td
+                          className="border border-gray-300 p-2"
+                          style={{ width: "3%" }}
+                        >
+                          {item.warranty_period}
+                        </td>
+                        <td
+                          className="border border-gray-300 p-2"
+                          style={{ width: "5%" }}
+                        >
+                          <Button
+                            className="m-3 p-1 mb-3 text-lg"
+                            onClick={() => {
+                              setShowEditModal(true),
+                                setselectedProductName(item.product_name);
+                              }}
+                              size="m"
+                              gradientDuoTone="Transparent"
+                              >
+                            ...
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
               )}
-            </tbody>
-          </table>
+              </table>
+                  </div>
+            </div>
           </div>
-</div>
           <Button
             className="mt-3 p-1 mb-3"
             onClick={() => setShowModal(true)}
@@ -267,8 +333,13 @@ function Product() {
             Add Item
           </Button>
         </div>
-      </div>)}
-      <Modal show={showModal} onClose={() => {setShowModal(false),navigate(0)} }>
+      </div>
+      <Modal
+        show={showModal}
+        onClose={() => {
+          setShowModal(false), navigate(0);
+        }}
+      >
         <Modal.Header>
           {editIndex !== null ? "Edit Item" : "Add Item"}
         </Modal.Header>
@@ -276,12 +347,17 @@ function Product() {
           <Add_item_Model />
         </Modal.Body>
       </Modal>
-      <Modal show={showEditModal} onClose={() =>{ setShowEditModal(false),navigate(0)}}>
+      <Modal
+        show={showEditModal}
+        onClose={() => {
+          setShowEditModal(false), navigate(0);
+        }}
+      >
         <Modal.Header>
           {editIndex !== null ? "Update Item" : "Update Item"}
         </Modal.Header>
         <Modal.Body>
-        <Edit_Item_Model productName={selectedProductName} />
+          <Edit_Item_Model productName={selectedProductName} />
         </Modal.Body>
       </Modal>
     </div>
