@@ -1,69 +1,54 @@
-import { Button, Checkbox, Label, Modal, Spinner, TextInput } from "flowbite-react";
-import { useState } from "react";
+import { Button, Modal, Spinner } from "flowbite-react";
+import { useEffect, useState } from "react";
 import React from "react";
-import { useUpdateWithQuery } from "../services/api";
+import { useSelector } from "react-redux";
+import axios from "axios";
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function UpcommingStockInv({ show, close }) {
-  const {
-    // data,
-    error,
-    loading,
-    updateStatus,
-  } = useUpdateWithQuery();
+  const userData = useSelector((state) => state.user.data);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
+  const [error, setError] = useState(null);
 
-  const data = [
-    {
-      transfer_id: 1,
-      from: "kurunegala",
-      date: "2024/10/02",
-      time: "10:50",
-      products: [
+  async function getUpcomming() {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/stock/getallTransfers`,
         {
-          product_id: 1,
-          product_name: "iPhone 12",
-          brand_name: "samsung",
-          product_type: "mobile phone",
-          transfer_quantity: 3,
-        },
-        {
-          product_id: 2,
-          product_name: "back-cover",
-          brand_name: "samsung",
-          product_type: "mobile phone",
-          transfer_quantity: 14,
-        },
-      ],
-    },
-    {
-      transfer_id: 2,
-      from: "kandy",
-      date: "2024/10/03",
-      time: "10:50",
-      products: [
-        {
-          product_id: 1,
-          product_name: "iPhone 12",
-          brand_name: "samsung",
-          product_type: "mobile phone",
-          transfer_quantity: 3,
-        },
-        {
-          product_id: 2,
-          product_name: "back-cover",
-          brand_name: "samsung",
-          product_type: "mobile phone",
-          transfer_quantity: 14,
-        },
-      ],
-    },
-  ];
+          params: {
+            store_id: userData.store_id,
+          },
+        }
+      );
+      setData(response.data);
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getUpcomming();
+  }, []);
 
   const handleRecived = async (e, id) => {
     e.preventDefault();
     try {
-      await updateStatus("transfer/update", id);
+      setLoading1(true);
+      const response = await axios.put(
+        `${API_BASE_URL}/stock/markTransferAsRead?transfer_id=${id}`
+      );
+      setData(data.filter((p) => p.transfer_id !== id));
     } catch (error) {
-      console.log(error);
+      setError(error.response.data.message);
+    } finally {
+      setLoading1(false);
     }
   };
 
@@ -117,6 +102,7 @@ export default function UpcommingStockInv({ show, close }) {
                     onClick={(e) => {
                       handleRecived(e, transfer.transfer_id);
                     }}
+                    disabled={loading1}
                   >
                     Recived parcel
                   </Button>

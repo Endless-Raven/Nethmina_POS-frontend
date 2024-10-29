@@ -70,7 +70,7 @@ export default function RequestProduct({ show, close }) {
           <div className="min-h-[50vh]">
             {/* Search Bar */}
             <div className="relative pt-2">
-              <CiSearch className="text-gray-600 mr-2 absolute left-2 top-3 text-xl" />
+              <CiSearch className="text-gray-600 mr-2 absolute left-2 top-5 text-xl" />
               <input
                 type="search"
                 placeholder="Search product"
