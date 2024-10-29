@@ -7,72 +7,7 @@ import {
   TableRow,
 } from "flowbite-react";
 
-export function InventoryTable() {
-  const productList = [
-    {
-      product_id: 1,
-      product_name: "Samsung Galaxy S23",
-      brand_name: "Samsung",
-      product_type: "Mobile Phone",
-      product_stock: 30,
-      product_wholesale_price: 30000,
-      product_price: 50000,
-    },
-    {
-      product_id: 2,
-      product_name: "Samsung Galaxy S23",
-      brand_name: "Samsung",
-      product_type: "Mobile Phone",
-      product_stock: 30,
-      product_wholesale_price: 30000,
-      product_price: 50000,
-    },
-    {
-      product_id: 3,
-      product_name: "iPhone 14",
-      brand_name: "Apple",
-      product_type: "Mobile Phone",
-      product_stock: 50,
-      product_wholesale_price: 45000,
-      product_price: 75000,
-    },
-    {
-      product_id: 4,
-      product_name: "Google Pixel 7",
-      brand_name: "Google",
-      product_type: "Mobile Phone",
-      product_stock: 20,
-      product_wholesale_price: 35000,
-      product_price: 60000,
-    },
-    {
-      product_id: 5,
-      product_name: "OnePlus 11",
-      brand_name: "OnePlus",
-      product_type: "Mobile Phone",
-      product_stock: 40,
-      product_wholesale_price: 28000,
-      product_price: 55000,
-    },
-    {
-      product_id: 6,
-      product_name: "Sony Xperia 5 IV",
-      brand_name: "Sony",
-      product_type: "Mobile Phone",
-      product_stock: 25,
-      product_wholesale_price: 32000,
-      product_price: 52000,
-    },
-    {
-      product_id: 7,
-      product_name: "Xiaomi Mi 13",
-      brand_name: "Xiaomi",
-      product_type: "Mobile Phone",
-      product_stock: 60,
-      product_wholesale_price: 25000,
-      product_price: 48000,
-    },
-  ];
+export function InventoryTable({productList}) {
 
   return (
     <div className="overflow-x-auto">
