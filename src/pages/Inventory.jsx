@@ -7,6 +7,7 @@ import { InventoryTable } from "../components/InventoryTable";
 import  InventoryPendingRequest  from "../components/InventoryPendingRequest";
 
 const Inventory = () => {
+
   const productTypesAndCategories = [
     {
       product_types: "mobile phone",
@@ -35,6 +36,9 @@ const Inventory = () => {
   const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
   const [openModalRequest, setOpenModalRequest] = useState(false);
   const [openModalPending, setOpenModalPending] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  
+
 
   useEffect(() => {
     if (productTypesAndCategories && productTypesAndCategories.length > 0) {
@@ -53,6 +57,9 @@ const Inventory = () => {
             icon={CiSearch}
             placeholder="Search Item"
             className="w-1/3"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            
           />
 
           {/* Category Selector */}
@@ -85,6 +92,7 @@ const Inventory = () => {
                   {brand}
                 </option>
               ))}
+              <InventoryTable selectQuery={selectQuery} />
           </Select>
         </div>
       </div>
@@ -98,7 +106,7 @@ const Inventory = () => {
       </div>
 
       {/* Stock table */}
-      <InventoryTable />
+      <InventoryTable searchQuery={searchQuery} />
 
       {/* Bottom Buttons */}
       <div className="flex justify-between fixed bottom-2 left-0 w-full px-6">

@@ -6,8 +6,10 @@ import {
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
+import { useEffect, useState } from "react";
 
-export function InventoryTable() {
+export function InventoryTable({ searchQuery,selectQuery, })
+{
   const productList = [
     {
       product_id: 1,
@@ -72,7 +74,42 @@ export function InventoryTable() {
       product_wholesale_price: 25000,
       product_price: 48000,
     },
+  
   ];
+  const [filtered, setFilterd] = useState([]);
+  const [selected,setselected] = useState([]);
+  
+  
+  useEffect(() => {
+    setFilterd(productList);
+  }, []);
+
+  useEffect(() => {
+    setselected(productList);
+  }, []);
+
+  const handleSearch = () => {
+    if (searchQuery !== "" && searchQuery) {
+      setFilterd(
+        productList.filter((product) =>
+          product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }else{
+      setFilterd(productList);
+    }
+  };
+
+   handleSelect () ;
+   [selectQuery,productList];
+
+  console.log("select list:", selected);
+
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery]);
+
 
   return (
     <div className="overflow-x-auto">
@@ -85,25 +122,24 @@ export function InventoryTable() {
           <TableHeadCell>Qty</TableHeadCell>
           <TableHeadCell>Wholesale Price</TableHeadCell>
           <TableHeadCell>Retail Price</TableHeadCell>
-          
         </TableHead>
         <TableBody className="divide-y">
-          {productList.map((product, index) => (
-            <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                {index +1}
-              </TableCell>
-              <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                {product.product_name}
-              </TableCell>
-              <TableCell>{product.brand_name}</TableCell>
-              <TableCell>{product.product_type}</TableCell>
-              <TableCell>{product.product_stock}</TableCell>
-              <TableCell>{product.product_wholesale_price}</TableCell>
-              <TableCell>{product.product_price}</TableCell>
-              
-            </TableRow>
-          ))}
+          {filtered &&
+            filtered.map((product, index) => (
+              <TableRow key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {index + 1}
+                </TableCell>
+                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {product.product_name}
+                </TableCell>
+                <TableCell>{product.brand_name}</TableCell>
+                <TableCell>{product.product_type}</TableCell>
+                <TableCell>{product.product_stock}</TableCell>
+                <TableCell>{product.product_wholesale_price}</TableCell>
+                <TableCell>{product.product_price}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>
