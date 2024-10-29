@@ -171,23 +171,6 @@ function ShareStockAdminInventory() {
     }
   };
 
-  const handleMarkAsRead = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/stock/transferStock`,
-        req
-      );
-      setMessage("Transfer Send Successfully");
-      setItems([]);
-    } catch (error) {
-      console.error("Error fetching transfer data:", error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="share-stock-container p-5 min-h-screen max-w-5xl mx-auto">
       {samplePending.length > 0 && <PendingRequestList data={samplePending} />}
