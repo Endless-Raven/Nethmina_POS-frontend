@@ -171,27 +171,10 @@ function ShareStockAdminInventory() {
     }
   };
 
-  const handleMarkAsRead = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/stock/transferStock`,
-        req
-      );
-      setMessage("Transfer Send Successfully");
-      setItems([]);
-    } catch (error) {
-      console.error("Error fetching transfer data:", error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="share-stock-container p-5 min-h-screen max-w-5xl mx-auto">
       {samplePending.length > 0 && <PendingRequestList data={samplePending} />}
-      <div className="absolute left-25 mt-2 w-[40vw] flex justify-between">
+      <div className=" flex gap-8 items-end my-8">
         <div className="">
           <Label htmlFor="fromShop">From:</Label>
           <TextInput id="fromShop" value={"Admin"} readOnly />
@@ -212,12 +195,16 @@ function ShareStockAdminInventory() {
             ))}
           </Select>
         </div>
-      </div>
-
-      <div className="text-center mt-36 mb-10 mx-1">
-        <Button gradientDuoTone="purpleToBlue" onClick={openModal}>
-          Add Item
-        </Button>
+        {toShop && (
+          <Button gradientDuoTone="greenToBlue" onClick={openModal}>
+            Add Item
+          </Button>
+        )}
+        {items.length > 0 && (
+          <Button gradientDuoTone="greenToBlue" onClick={handleTransfer}>
+            Transfer
+          </Button>
+        )}
       </div>
 
       <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
@@ -346,11 +333,6 @@ function ShareStockAdminInventory() {
 
       {items.length > 0 && <ProductTable items={items} />}
 
-      <div className="flex justify-center mt-10">
-        <Button gradientDuoTone="purpleToBlue" onClick={handleTransfer}>
-          Transfer
-        </Button>
-      </div>
       {message && (
         <div className="fixed right-8 bottom-8 text-xl font-semibold text-green-500">
           {message}

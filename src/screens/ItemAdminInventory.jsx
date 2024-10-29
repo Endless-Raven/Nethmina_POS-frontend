@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal , Spinner } from "flowbite-react";
+import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import UpdateItemModel from "../components/admin/UpdateItemModel";
 
-
 const API_BASE_URL = process.env.API_BASE_URL;
-
 
 function ItemAdminInventory() {
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -105,7 +103,7 @@ function ItemAdminInventory() {
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -115,10 +113,9 @@ function ItemAdminInventory() {
   };
 
   return (
-    <div>
-
-      <div className="flex justify-between items-center mb-4 gap-3">
-        <div className="flex justify-between items-center w-1/3 mb-4 gap-3">
+    <div className="mt-4">
+      <div className="flex justify-between items-start mb-4 gap-3">
+        <div className="flex justify-between items-center w-1/4 mb-4 gap-3">
           <div className="relative w-4/5 mx-auto">
             <div className="relative">
               <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
@@ -171,104 +168,93 @@ function ItemAdminInventory() {
             </div>
           </div>
         </div>
-        <div className="w-2/3">
-        <div className="table-container">
-          <table className="bg-slate-50 mt-16">
-            <thead className="sticky top-0 bg-white">
-              <tr>
-                <th className="border border-gray-300 p-2" style={{ width: '5%' }}>No</th>
-                <th className="border border-gray-300 p-2" style={{ width: '16%' }}>Store Name</th>
-                <th className="border border-gray-300 p-2" style={{ width: '10%' }}>Brand</th>
-                <th className="border border-gray-300 p-2" style={{ width: '15%' }}>Type</th>
-                <th className="border border-gray-300 p-2" style={{ width: '35%' }}>Product</th>
-                <th className="border border-gray-300 p-2" style={{ width: '10%' }}>Stock</th>
-                <th className="border border-gray-300 p-2" style={{ width: '8%' }}></th>
-                <th className="border border-gray-300 p-2" style={{ width: '10%' }}></th>
-              </tr>
-            </thead>
-            </table>
-            <div className="overflow-y-scroll h-96"> {/* Scrollable body */}
-            <table className="bg-slate-50 w-full">
-            {loading ? (
-        <div className="min-h-[60vh] flex justify-center items-center">
-          <div className="flex items-center gap-4">
-            <Spinner size="lg" />
-            <span className="pl-3 text-slate-400 text-3xl">Loading...</span>
-          </div>
-        </div>
-      ) : error ? (
-        <div className="min-h-[60vh] flex justify-center items-center">
-          <div className="flex items-center gap-4">
-            <span className="pl-3 text-red-400 text-3xl">
-              Something went wrong
-            </span>
-          </div>
-        </div>
-      ) : (
-            <tbody>
-              {products.length < 1 ? (
-                <tr>
-                  <td colSpan="8">
-                    <center>No products</center>
-                  </td>
-                </tr>
-              ) : (
-                products.map((item, index) => (
-                  <tr
-                    key={index}
-                    className={
-                      item.stock_quantity < 20 ? "bg-red-200" : "bg-green-200" 
-                    }
-                    onClick={() => console.log("Product ID:", item.product_id)} // Add your processing logic here
-                  >
-                    <td className="border border-gray-300 p-2"  style={{ width: '6%' }}>{index + 1}</td>
-                    <td className="border border-gray-300 p-2"  style={{ width: '17%' }}>
-                      {item.store_name}
-                    </td>
-                    <td className="border border-gray-300 p-2"  style={{ width: '11%' }}>
-                      {item.brand_name}
-                    </td>
-                    <td className="border border-gray-300 p-2"  style={{ width: '10%' }}>
-                      {item.product_type}
-                    </td>
-                    <td className="border border-gray-300 p-2"  style={{ width: '36%' }}>
-                      {item.product_name}
-                    </td>
-                    <td className="border border-gray-300 p-2" style={{ width: '11%' }}>
-                      {item.stock_quantity}
-                    </td>
-                    <td className="border border-gray-300 p-2"  style={{ width: '9%' }}>
-                      <Button
-                        className="m-3 p-1 mb-3 text-lg"
-                        onClick={() => {
-                          setqty(item.stock_quantity);
-                          setShowEditModal(true);
-                          setselectedProductName(item.product_name);
-                          console.log(item.product_name);
-                        }}
-                        size="m"
-                        gradientDuoTone="Transparent"
-                      >
-                        ...
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              )}
-              </tbody>
-            )}
-          </table>
-          </div>
+        <div className="w-3/4">
+          <div className="table-container overflow-x-auto max-h-[79vh]">
+            <Table hoverable>
+              <Table.Head className="">
+                <Table.HeadCell className="bg-emerald-300">No</Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Store Name
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Brand
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">Type</Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Product
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Stock
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Edite
+                </Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {loading ? (
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-sky-50">
+                    <Table.Cell
+                      colSpan={7}
+                      className="text-red-500 text-center h-48"
+                    >
+                      <Spinner size="md" />
+                      <span className="pl-3 text-slate-400 text-xl">
+                        Loading...
+                      </span>
+                    </Table.Cell>
+                  </Table.Row>
+                ) : products.length < 1 ? (
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-sky-50">
+                    <Table.Cell
+                      colSpan={7}
+                      className="text-red-500 text-center h-48"
+                    >
+                      No Products Found
+                    </Table.Cell>
+                  </Table.Row>
+                ) : (
+                  products?.map((item, index) => (
+                    <Table.Row
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-emerald-50"
+                      key={index}
+                    >
+                      <Table.Cell>{index + 1}</Table.Cell>
+                      <Table.Cell>={item.store_name}</Table.Cell>
+                      <Table.Cell> {item.brand_name}</Table.Cell>
+                      <Table.Cell>{item.product_type}</Table.Cell>
+                      <Table.Cell>{item.product_name}</Table.Cell>
+                      <Table.Cell>{item.stock_quantity}</Table.Cell>
+                      <Table.Cell>
+                        <Button
+                          className="m-3 p-1 mb-3 text-lg"
+                          onClick={() => {
+                            setqty(item.stock_quantity);
+                            setShowEditModal(true);
+                            setselectedProductName(item.product_name);
+                            console.log(item.product_name);
+                          }}
+                          size="m"
+                          gradientDuoTone="Transparent"
+                        >
+                          ...
+                        </Button>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))
+                )}
+              </Table.Body>
+            </Table>
           </div>
         </div>
       </div>
-        <UpdateItemModel
+      <UpdateItemModel
         stockqty={qty}
-          productName={selectedProductName}
-          showModel={showEditModal}
-          close={() => {setShowEditModal(false)} }
-        />
-      
+        productName={selectedProductName}
+        showModel={showEditModal}
+        close={() => {
+          setShowEditModal(false);
+        }}
+      />
     </div>
   );
 }

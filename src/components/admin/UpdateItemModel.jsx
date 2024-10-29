@@ -94,58 +94,58 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
 
   return (
     <Modal
-    show={showModel}
-    onClose={() => {
-      close, navigate(0);
-    }}
-  >
-    <Modal.Header>
-      {/* {editIndex !== null ? "Edit Item" : "Add Stock"} */}
-    </Modal.Header>
-    <Modal.Body>
-      <div className="flex flex-col gap-6">
-        <Label htmlFor="name" value={`Name: ${newItem.name}`} />
-        <Label htmlFor="qty" value={`Current Quantity: ${newItem.qty}`} />
-  
-        <Label htmlFor="new_qty" value="New Quantity" />
-        <TextInput
-          type="text"
-          id="new_qty"
-          onChange={(e) => setNewItem({ ...newItem, newqty: e.target.value.trim() })} // Trimmed
-          required
-        />
-  
-        <Label htmlFor="imei_number" value="IMEI Number" />
-        <TextInput
-          id="imei_number"
-          onChange={(e) =>
-            setNewItem({
-              ...newItem,
-              imei_number: e.target.value.trim(), // Trimmed
-            })
-          }
-          required
-        />
-      </div>
-  
-      <Modal.Footer>
-        <Button
-          onClick={updateProduct} // Update product instead of adding
-          outline
-          size={"sm"}
-          gradientDuoTone="purpleToBlue"
-          disabled={loading}
-        >
-          {loading ? "Updating..." : "Update Stock"}
-        </Button>
-        {footerMessage && (
-          <p className="text-sm text-green-500">{footerMessage}</p>
-        )}
-      </Modal.Footer>
-    </Modal.Body>
-  </Modal>
-  
-  
+      show={showModel}
+      onClose={() => {
+        close, navigate(0);
+      }}
+    >
+      <Modal.Header>Add Stock</Modal.Header>
+      <Modal.Body>
+        <div className="flex flex-col gap-4">
+          <Label htmlFor="name" value={`Name: ${newItem.name}`} />
+          <Label htmlFor="qty" value={`Current Quantity: ${newItem.qty}`} />
+          <div className="space-y-2">
+            <Label htmlFor="new_qty" value="New Quantity" />
+            <TextInput
+              type="text"
+              id="new_qty"
+              onChange={(e) =>
+                setNewItem({ ...newItem, newqty: e.target.value.trim() })
+              } // Trimmed
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="imei_number" value="IMEI Number" />
+            <TextInput
+              id="imei_number"
+              onChange={(e) =>
+                setNewItem({
+                  ...newItem,
+                  imei_number: e.target.value.trim(), // Trimmed
+                })
+              }
+              required
+            />
+          </div>
+        </div>
+
+        <Modal.Footer>
+          <Button
+            onClick={updateProduct} // Update product instead of adding
+            outline
+            size={"sm"}
+            gradientDuoTone="purpleToBlue"
+            disabled={loading}
+          >
+            {loading ? "Updating..." : "Update Stock"}
+          </Button>
+          {footerMessage && (
+            <p className="text-sm text-green-500">{footerMessage}</p>
+          )}
+        </Modal.Footer>
+      </Modal.Body>
+    </Modal>
   );
 };
 

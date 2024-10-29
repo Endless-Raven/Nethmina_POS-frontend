@@ -22,7 +22,7 @@ const Add_item_Model = () => {
   const [newItem, setNewItem] = useState({
     name: "",
     brand: "",
-    code:"",
+    code: "",
     qty: "",
     warranty_period: "",
     imei_number: "",
@@ -48,7 +48,7 @@ const Add_item_Model = () => {
   const fetchAddNewItems = async () => {
     // Start loading
     setLoading(true);
-  
+
     // Trim and validate required fields
     const trimmedName = itemNames.name.trim();
     const trimmedCode = newItem.code.trim();
@@ -58,8 +58,8 @@ const Add_item_Model = () => {
     const trimmedBrand = newItem.brand?.trim();
     const trimmedModel = newItem.model?.trim();
     const trimmedWholesalePrice = newItem.wholesale_price?.toString().trim();
-   const trimmedQty = newItem.qty;
-  
+    const trimmedQty = newItem.qty;
+
     if (
       !trimmedName ||
       !trimmedRetailPrice ||
@@ -69,18 +69,19 @@ const Add_item_Model = () => {
       !trimmedModel ||
       !trimmedWholesalePrice ||
       !trimmedCode
-
     ) {
-      setFooterMessage("All fields are required and cannot be empty or contain only spaces.");
+      setFooterMessage(
+        "All fields are required and cannot be empty or contain only spaces."
+      );
       setLoading(false);
       return;
     }
-  
+
     try {
       const imeiNumbers = Array.isArray(newItem.imei_number)
         ? newItem.imei_number.map((imei) => imei.trim())
         : [newItem.imei_number.trim()];
-  
+
       const response = await axios.post(`${API_BASE_URL}/product`, {
         product_name: trimmedName,
         product_code: trimmedCode,
@@ -94,7 +95,7 @@ const Add_item_Model = () => {
         product_wholesale_price: trimmedWholesalePrice,
         user: 1,
       });
-  
+
       if (response.status === 200) {
         setFooterMessage("Item added successfully!");
         resetForm();
@@ -108,7 +109,6 @@ const Add_item_Model = () => {
       setLoading(false);
     }
   };
-  
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -174,7 +174,7 @@ const Add_item_Model = () => {
 
   const resetForm = () => {
     setNewItem({
-        code:"",
+      code: "",
       warranty_period: "",
       imei_number: "",
       qty: "",
@@ -193,16 +193,13 @@ const Add_item_Model = () => {
     <div>
       <Label htmlFor="name" value="Name" />
       <div className="relative">
-        <input
+        <TextInput
           type="text"
           id="name"
           value={itemNames.name}
-          onChange={handleInputChange
-            
-          }
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           required
-          className="border p-2 w-full rounded-md"
           placeholder="Search products..."
         />
         {itemNames.name !== "" && showSuggestions && suggestions.length > 0 && (
@@ -222,21 +219,22 @@ const Add_item_Model = () => {
         )}
       </div>
       <Label htmlFor="code" value="Code" />
-        <input
-          type="text"
-          id="code"
-          value={newItem.code}
-          onChange={(e) =>
-            setNewItem({
-              ...newItem,
-              code: e.target.value.replace(/^\s+|\s+$/g, "").replace(/\s{2,}/g, " ")
-            })
-          }
-          onKeyDown={handleKeyDown}
-          required
-          className="border p-2 w-full rounded-md"
-        />
-  
+      <TextInput
+        type="text"
+        id="code"
+        value={newItem.code}
+        onChange={(e) =>
+          setNewItem({
+            ...newItem,
+            code: e.target.value
+              .replace(/^\s+|\s+$/g, "")
+              .replace(/\s{2,}/g, " "),
+          })
+        }
+        onKeyDown={handleKeyDown}
+        required
+      />
+
       <Label htmlFor="warranty_period" value="Warranty Period" />
       <TextInput
         id="warranty_period"
@@ -244,12 +242,14 @@ const Add_item_Model = () => {
         onChange={(e) =>
           setNewItem({
             ...newItem,
-            warranty_period: e.target.value.replace(/[^a-zA-Z0-9\s]/g, "").trim()
+            warranty_period: e.target.value
+              .replace(/[^a-zA-Z0-9\s]/g, "")
+              .trim(),
           })
         }
         required
       />
-  
+
       <div className="flex flex-col mt-4 mb-4 w-full gap-4">
         <Type
           value={selectedType}
@@ -279,29 +279,35 @@ const Add_item_Model = () => {
           required
         />
       </div>
-  
+
       <Label htmlFor="retailPrice" value="Retail Price" />
       <TextInput
         type="text"
         id="retailPrice"
         value={newItem.retailPrice}
         onChange={(e) =>
-          setNewItem({ ...newItem, retailPrice: e.target.value.replace(/^\s+|\s+$/g, "") })
+          setNewItem({
+            ...newItem,
+            retailPrice: e.target.value.replace(/^\s+|\s+$/g, ""),
+          })
         }
         required
       />
-  
+
       <Label htmlFor="wholesale_price" value="Wholesale Price" />
       <TextInput
         type="text"
         id="wholesale_price"
         value={newItem.wholesale_price}
         onChange={(e) =>
-          setNewItem({ ...newItem, wholesale_price: e.target.value.replace(/^\s+|\s+$/g, "") })
+          setNewItem({
+            ...newItem,
+            wholesale_price: e.target.value.replace(/^\s+|\s+$/g, ""),
+          })
         }
         required
       />
-  
+
       <Modal.Footer>
         <Button
           onClick={fetchAddNewItems}
@@ -310,16 +316,26 @@ const Add_item_Model = () => {
           gradientDuoTone="purpleToBlue"
           disabled={loading}
         >
-          {loading ? "Adding..." : editIndex !== null ? "Update Item" : "Add Item"}
+          {loading
+            ? "Adding..."
+            : editIndex !== null
+            ? "Update Item"
+            : "Add Item"}
         </Button>
-        <Button onClick={resetForm} outline size="sm" gradientDuoTone="pinkToOrange">
+        <Button
+          onClick={resetForm}
+          outline
+          size="sm"
+          gradientDuoTone="pinkToOrange"
+        >
           Cancel
         </Button>
-        {footerMessage && <p className="text-sm text-red-500">{footerMessage}</p>}
+        {footerMessage && (
+          <p className="text-sm text-red-500">{footerMessage}</p>
+        )}
       </Modal.Footer>
     </div>
   );
-  
 };
 
 export default Add_item_Model;

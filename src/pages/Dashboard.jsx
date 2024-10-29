@@ -76,13 +76,13 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex justify-between gap-4 items-center h-[41vh]">
-            <div className="flex-1 p-3 bg-sky-200 rounded-md shadow-md h-full overflow-hidden">
+            <div className="flex-1 p-3 bg-sky-200 rounded-md shadow-md h-full overflow-hidden overflow-y-scroll">
               <p className="text-xl font-semibold text-sky-700 mb-4">
                 Low Stock
               </p>
               <ul>
                 {data?.low_stock && data.low_stock.length > 0 ? (
-                  data.low_stock.slice(0, 6).map((itm, index) => (
+                  data.low_stock.slice(0, 5).map((itm, index) => (
                     <li
                       key={index}
                       className="flex justify-between items-center cursor-pointer hover:shadow-md hover:scale-105 transition-all py-1 px-2 rounded-md border border-sky-400 bg-sky-300 mb-2"
@@ -113,7 +113,7 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
-            <div className="flex-1 p-3 bg-indigo-200 rounded-md shadow-md h-full">
+            <div className="flex-1 p-3 bg-indigo-200 rounded-md shadow-md h-full overflow-y-scroll">
               <p className="text-xl font-semibold text-indigo-700 mb-4">
                 Pending Transfers
               </p>

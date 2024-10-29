@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Label, TextInput, Select, Modal, Spinner } from "flowbite-react";
+import {
+  Button,
+  Label,
+  TextInput,
+  Select,
+  Modal,
+  Spinner,
+} from "flowbite-react";
 import TableBilling from "../components/TableBilling";
 import ProductBilling from "../components/ProductBilling";
 import CustomerBilling from "../components/CustomerBilling";
@@ -20,6 +27,7 @@ export default function Billing() {
   const [showToastDone, setShowToastDone] = useState(false);
   const [showToastPrint, setShowToastPrint] = useState(false);
   const userData = useSelector((state) => state.user.data);
+  const [print, setPrint] = useState(false);
 
   useEffect(() => {
     if (showToastPrint || showToastDone) {
@@ -157,6 +165,7 @@ export default function Billing() {
       try {
         const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
         setInvoiceId(response.data.sales_id);
+        setPrint(true);
         setShowToastPrint(true);
         printFn();
         handleReset();
@@ -170,6 +179,14 @@ export default function Billing() {
       setOpenModal(true);
     }
   };
+
+  useEffect(() => {
+    if (invoiceId && print) {
+      printFn();
+      setPrint(false);
+      setInvoiceId(null);
+    }
+  }, [invoiceId,print]);
 
   // validate all forms
   const validate = () => {

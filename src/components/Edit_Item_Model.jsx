@@ -95,13 +95,21 @@ const Edit_Item_Model = ({ productName }) => {
     const brandName = newItem.brand?.trim();
     const productModel = newItem.model?.trim();
     const wholesalePrice = newItem.wholesale_price?.trim();
-  
+
     // Check for missing fields
-    if (!productName || !productPrice || !warrantyPeriod || !productType || !brandName || !productModel || !wholesalePrice) {
+    if (
+      !productName ||
+      !productPrice ||
+      !warrantyPeriod ||
+      !productType ||
+      !brandName ||
+      !productModel ||
+      !wholesalePrice
+    ) {
       setFooterMessage("Please fill in all required fields.");
       return;
     }
-  
+
     setLoading(true);
     try {
       const response = await axios.put(
@@ -116,7 +124,7 @@ const Edit_Item_Model = ({ productName }) => {
           product_wholesale_price: wholesalePrice,
         }
       );
-  
+
       if (response.status === 200) {
         setFooterMessage("Product updated successfully!");
       } else {
@@ -129,8 +137,6 @@ const Edit_Item_Model = ({ productName }) => {
       setLoading(false);
     }
   };
-  
-  
 
   const deleteProduct = async () => {
     setLoading(true);
@@ -155,130 +161,112 @@ const Edit_Item_Model = ({ productName }) => {
 
   return (
     <div>
-   <Label htmlFor="name" value="Name" />
-<TextInput
-  id="name"
-  value={newItem.name}
-  onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} // Allow spaces
-  onBlur={(e) => setNewItem({ ...newItem, name: e.target.value.trim() })} // Trim when focus leaves
-  required
-/>
-    <Label htmlFor="warranty_period" value="Warranty Period" />
-    <TextInput
-      id="warranty_period"
-      value={newItem.warranty_period}
-      onChange={(e) =>
-        setNewItem({
-          ...newItem,
-          warranty_period: e.target.value.trim(), // Trimmed
-        })
-      }
-      required
-    />
-  
-    {/* <Label htmlFor="imei_number" value="IMEI Number" />
-    <TextInput
-      id="imei_number"
-      value={newItem.imei_number}
-      onChange={(e) =>
-        setNewItem({
-          ...newItem,
-          imei_number: e.target.value.trim(), // Trimmed
-        })
-      }
-      required
-    />
-    <Label htmlFor="qty" value="Quantity" />
-    <TextInput
-      type="number"
-      id="qty"
-      value={newItem.qty}
-      onChange={(e) => setNewItem({ ...newItem, qty: e.target.value.trim() })} // Trimmed
-      required
-    /> */}
-  
-    <div className="flex flex-col mt-4 mb-4 w-full gap-4">
-      <Type
-        value={selectedType}
-        reset={reset}
-        onSelectType={(type) => {
-          setSelectedType(type);
-          setNewItem({ ...newItem, category: type });
-        }}
-        type={selectedType}
-        required // Optional: if you want to enforce selection
+      <Label htmlFor="name" value="Name" />
+      <TextInput
+        id="name"
+        value={newItem.name}
+        onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} // Allow spaces
+        onBlur={(e) => setNewItem({ ...newItem, name: e.target.value.trim() })} // Trim when focus leaves
+        required
+        className="mb-2"
       />
-      <Model
-        value={selectedModel}
-        reset={reset}
-        onSelectModel={(model) => {
-          setSelectedModel(model);
-          setNewItem({ ...newItem, model });
-        }}
-        model={selectedModel}
-        required // Optional: if you want to enforce selection
+      <Label htmlFor="warranty_period" value="Warranty Period" />
+      <TextInput
+        id="warranty_period"
+        value={newItem.warranty_period}
+        onChange={(e) =>
+          setNewItem({
+            ...newItem,
+            warranty_period: e.target.value.trim(), // Trimmed
+          })
+        }
+        required
+        className="mb-2"
       />
-      <Brand
-        value={selectedBrand}
-        reset={reset}
-        onSelectBrand={(brand) => {
-          setSelectedBrand(brand);
-          setNewItem({ ...newItem, brand });
-        }}
-        brand={selectedBrand}
-        required // Optional: if you want to enforce selection
+      <div className="flex flex-col mt-4 mb-4 w-full gap-6">
+        <Type
+          value={selectedType}
+          reset={reset}
+          onSelectType={(type) => {
+            setSelectedType(type);
+            setNewItem({ ...newItem, category: type });
+          }}
+          type={selectedType}
+          required // Optional: if you want to enforce selection
+          className="mb-2"
+        />
+        <Model
+          value={selectedModel}
+          reset={reset}
+          onSelectModel={(model) => {
+            setSelectedModel(model);
+            setNewItem({ ...newItem, model });
+          }}
+          model={selectedModel}
+          required // Optional: if you want to enforce selection
+        />
+        <Brand
+          value={selectedBrand}
+          reset={reset}
+          onSelectBrand={(brand) => {
+            setSelectedBrand(brand);
+            setNewItem({ ...newItem, brand });
+          }}
+          brand={selectedBrand}
+          required // Optional: if you want to enforce selection
+        />
+      </div>
+
+      <Label htmlFor="retailPrice" value="Retail Price" />
+      <TextInput
+        type="text"
+        id="retailPrice"
+        value={newItem.retailPrice}
+        onChange={
+          (e) => setNewItem({ ...newItem, retailPrice: e.target.value.trim() }) // Trimmed
+        }
+        required
+        className="mb-2"
       />
+      <Label htmlFor="wholesale_price" value="Wholesale Price" />
+      <TextInput
+        type="text"
+        id="wholesale_price"
+        value={newItem.wholesale_price}
+        onChange={
+          (e) =>
+            setNewItem({ ...newItem, wholesale_price: e.target.value.trim() }) // Trimmed
+        }
+        required
+      />
+
+      <Modal.Footer>
+        <Button
+          onClick={updateProduct} // Update product instead of adding
+          outline
+          size={"sm"}
+          gradientDuoTone="purpleToBlue"
+          disabled={loading}
+        >
+          {loading ? "Updating..." : "Update Product"}
+        </Button>
+        <Button
+          onClick={deleteProduct} // Delete product
+          outline
+          size={"sm"}
+          gradientDuoTone="pinkToOrange"
+          disabled={loading}
+        >
+          {loading ? "Deleting..." : "Delete Product"}
+        </Button>
+        {footerMessage && (
+          <p className="text-sm text-green-500">{footerMessage}</p>
+        )}
+        {deletefooterMessage && (
+          <p className="text-sm text-red-500">{deletefooterMessage}</p>
+        )}
+      </Modal.Footer>
     </div>
-  
-    <Label htmlFor="retailPrice" value="Retail Price" />
-    <TextInput
-      type="text"
-      id="retailPrice"
-      value={newItem.retailPrice}
-      onChange={(e) =>
-        setNewItem({ ...newItem, retailPrice: e.target.value.trim() }) // Trimmed
-      }
-      required
-    />
-    <Label htmlFor="wholesale_price" value="Wholesale Price" />
-    <TextInput
-      type="text"
-      id="wholesale_price"
-      value={newItem.wholesale_price}
-      onChange={(e) =>
-        setNewItem({ ...newItem, wholesale_price: e.target.value.trim() }) // Trimmed
-      }
-      required
-    />
-  
-    <Modal.Footer>
-      <Button
-        onClick={updateProduct} // Update product instead of adding
-        outline
-        size={"sm"}
-        gradientDuoTone="purpleToBlue"
-        disabled={loading}
-      >
-        {loading ? "Updating..." : "Update Product"}
-      </Button>
-      <Button
-        onClick={deleteProduct} // Delete product
-        outline
-        size={"sm"}
-        gradientDuoTone="pinkToOrange"
-        disabled={loading}
-      >
-        {loading ? "Deleting..." : "Delete Product"}
-      </Button>
-      {footerMessage && (
-        <p className="text-sm text-green-500">{footerMessage}</p>
-      )}
-      {deletefooterMessage && (
-        <p className="text-sm text-red-500">{deletefooterMessage}</p>
-      )}
-    </Modal.Footer>
-  </div>
-  
   );
 };
 
