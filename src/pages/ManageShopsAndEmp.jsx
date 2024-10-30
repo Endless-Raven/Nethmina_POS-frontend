@@ -108,15 +108,15 @@ function ManageShopsAndEmp() {
         onClose={() => setOpenModelShop(false)}
         shop={selectedShop}
       />
-      {/* <AddEmpAdmin
+      <AddEmpAdmin
         show={openModelAddEmp}
         shops={data?.shop_list}
         onClose={() => setOpenModelAddEmp(false)}
-      /> */}
-      {/* <AddShopAdmin
+      />
+      <AddShopAdmin
         show={openModelAddShop}
         onClose={() => setOpenModelAddShop(false)}
-      /> */}
+      />
     </div>
   );
 }
