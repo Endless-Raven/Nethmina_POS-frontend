@@ -219,7 +219,9 @@ function ItemAdminInventory() {
                       key={index}
                     >
                       <Table.Cell>{index + 1}</Table.Cell>
-                      <Table.Cell>={item.store_name}</Table.Cell>
+                      <Table.Cell>
+                        <strong>{item.store_name}</strong>
+                      </Table.Cell>
                       <Table.Cell> {item.brand_name}</Table.Cell>
                       <Table.Cell>{item.product_type}</Table.Cell>
                       <Table.Cell>{item.product_name}</Table.Cell>

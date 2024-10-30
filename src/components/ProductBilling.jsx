@@ -3,17 +3,19 @@ import { Button, Label, TextInput, Select } from "flowbite-react";
 import { Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import axios from "axios";
+import { useGetWithoutQuery } from "../services/api";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function ProductBilling({ product, setProduct, addProduct }) {
-  
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
   const [openModal, setOpenModal] = useState(false);
   const [validEmi, setValidEmi] = useState([]);
   const [emiAvialable, setEmiAvialable] = useState(true);
+  const [barcode, setBarcode] = useState("");
+  const { data, error, loading, fetchData } = useGetWithoutQuery();
 
   const [categories, setCategories] = useState([]);
   useEffect(() => {
@@ -94,7 +96,6 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
         (model) => model.product_id === Number(selected)
       );
       if (model) {
-        console.log(model);
         setProduct({
           product_id: model.product_id,
           product_name: model.product_name,
@@ -111,7 +112,6 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
     }
   };
   console.log(validEmi);
-  console.log(product)
   // Function to reset product data
   const resetProduct = () => {
     setProduct({
@@ -153,9 +153,52 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
     }
   };
 
+  const handleChangeBarCode = (e) => {
+    setBarcode(e.target.value);
+    fetchData(`product/productCode/${e.target.value}`);
+  };
+
+  useEffect(() => {
+    if (data?.product_type) setSelectedCategory(data.product_type);
+    if (data?.brand_name) setSelectedBrand(data.brand_name);
+    if (data?.product_id) {
+      setProduct((prev) => ({ ...prev, product_id: data.product_id }));
+      setSelectedModelId(data.product_id);
+    }
+    if (data?.product_name)
+      setProduct((prev) => ({ ...prev, product_name: data.product_name }));
+    if (data?.product_price)
+      setProduct((prev) => ({ ...prev, price: data.product_price }));
+    if (data?.warranty_period)
+      setProduct((prev) => ({
+        ...prev,
+        warranty_period: data.warranty_period,
+      }));
+    setProduct((prev) => ({
+      ...prev,
+      serial_number: "",
+      quantity: 1,
+      discount: 0.0,
+    }));
+  }, [data]);
+
   return (
     <div className="">
       <form className="mx-auto p-2 flex max-w-md flex-col gap-2">
+        {/* barcode */}
+        <div className="flex gap-4 items-center justify-between">
+          <Label htmlFor="barcode" value="Bar Code" />
+          <TextInput
+            sizing={"sm"}
+            value={barcode}
+            onChange={handleChangeBarCode}
+            name="barcode"
+            id="barcode"
+            type="text"
+            className="w-64"
+            placeholder="038678561125"
+          />
+        </div>
         {/* Product Type Selection */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="type" value="Product Type" />
@@ -308,6 +351,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
 
         {/* Buttons */}
         <div className="flex justify-end gap-2">
+          {error && <span className="text-red-500">error fetching Data</span>}
           <Button
             type="reset"
             size={"sm"}
@@ -322,6 +366,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             onClick={handleAdd}
             size={"sm"}
             gradientDuoTone="purpleToBlue"
+            disabled={loading}
           >
             Add Product
           </Button>
