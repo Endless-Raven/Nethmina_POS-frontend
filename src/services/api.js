@@ -34,6 +34,7 @@ export function useGetWithoutQuery() {                // get data without sendin
   const [loading, setLoading] = useState(false);
 
   const fetchData = async (endpoint) => {
+    setError(null);
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/${endpoint}`);

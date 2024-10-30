@@ -133,11 +133,12 @@ export default function Billing() {
         setInvoiceId(response.data.sales_id);
         setShowToastDone(true);
         setLoading(false);
-        handleReset();
       } catch (error) {
         setLoading(false);
         setError(error.message);
         console.error(error);
+      } finally {
+        handleReset();
       }
     } else {
       setOpenModal(true);
@@ -167,8 +168,6 @@ export default function Billing() {
         setInvoiceId(response.data.sales_id);
         setPrint(true);
         setShowToastPrint(true);
-        printFn();
-        handleReset();
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -182,11 +181,17 @@ export default function Billing() {
 
   useEffect(() => {
     if (invoiceId && print) {
-      printFn();
-      setPrint(false);
-      setInvoiceId(null);
+      try {
+        printFn();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setPrint(false);
+        setInvoiceId(null);
+        handleReset();
+      }
     }
-  }, [invoiceId,print]);
+  }, [invoiceId, print]);
 
   // validate all forms
   const validate = () => {
