@@ -26,6 +26,7 @@ const Edit_Item_Model = ({ productName }) => {
     model: "",
     wholesale_price: "",
     retailPrice: "",
+    max_discount: ""
   });
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const Edit_Item_Model = ({ productName }) => {
       model: "",
       wholesale_price: "",
       retailPrice: "",
+      max_discount: ""
     });
     setItemNames({ name: "" });
     setReset(true);
@@ -95,6 +97,7 @@ const Edit_Item_Model = ({ productName }) => {
     const brandName = newItem.brand?.trim();
     const productModel = newItem.model?.trim();
     const wholesalePrice = newItem.wholesale_price?.trim();
+    const max_discount =newItem.max_discount?.trim();
 
     // Check for missing fields
     if (
@@ -104,7 +107,8 @@ const Edit_Item_Model = ({ productName }) => {
       !productType ||
       !brandName ||
       !productModel ||
-      !wholesalePrice
+      !wholesalePrice ||
+      !max_discount
     ) {
       setFooterMessage("Please fill in all required fields.");
       return;
@@ -122,6 +126,7 @@ const Edit_Item_Model = ({ productName }) => {
           brand_name: brandName,
           product_model: productModel,
           product_wholesale_price: wholesalePrice,
+          max_discount:max_discount
         }
       );
 
@@ -236,6 +241,19 @@ const Edit_Item_Model = ({ productName }) => {
         onChange={
           (e) =>
             setNewItem({ ...newItem, wholesale_price: e.target.value.trim() }) // Trimmed
+        }
+        required
+      />
+         <Label htmlFor="max_discount" value="Max Discount" />
+      <TextInput
+        type="text"
+        id="max_discount"
+        value={newItem.max_discount}
+        onChange={(e) =>
+          setNewItem({
+            ...newItem,
+            max_discount:  e.target.value.trim() 
+          })
         }
         required
       />

@@ -178,7 +178,7 @@ function Product() {
             </div>
           </div>
         </div>
-        <div className="w-3/4">
+        <div className="w-3/3">
           <div className="overflow-x-auto max-h-[79vh]">
             <Table hoverable>
               <Table.Head>
@@ -188,7 +188,8 @@ function Product() {
                 <Table.HeadCell className="bg-sky-300">Type</Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Price</Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Warranty</Table.HeadCell>
-                <Table.HeadCell className="bg-sky-300">Edite</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">MAx Discount</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Edit</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
                 {loading ? (
@@ -226,6 +227,7 @@ function Product() {
                       <Table.Cell>{item.product_type}</Table.Cell>
                       <Table.Cell>{item.product_price}</Table.Cell>
                       <Table.Cell>{item.warranty_period}</Table.Cell>
+                      <Table.Cell>{item.max_discount}</Table.Cell>
                       <Table.Cell>
                         <Button
                           className="m-3 p-1 mb-3 text-lg font-bold"
