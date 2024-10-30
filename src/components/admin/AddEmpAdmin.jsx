@@ -53,7 +53,7 @@ export default function AddEmpAdmin({ show, onClose, shops }) {
     e.preventDefault();
     if (validateForm()) {
       console.log(formData);
-      postData(`employee_and_shop/add_emp`, formData);
+      postData(`users`, formData);
       setFormData({
         full_name: "",
         username: "",
@@ -65,6 +65,8 @@ export default function AddEmpAdmin({ show, onClose, shops }) {
       setErrors({});
     }
   };
+
+  console.log(formData)
 
   return (
     <div>
@@ -111,7 +113,7 @@ export default function AddEmpAdmin({ show, onClose, shops }) {
               </div>
               <TextInput
                 id="password"
-                type="password"
+                type="text"
                 value={formData.password}
                 onChange={handleChange}
                 required
