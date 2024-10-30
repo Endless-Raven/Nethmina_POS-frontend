@@ -118,7 +118,7 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
               <Button color="blue" className="flex-grow" onClick={handleUpdate}>
                 Update
               </Button>
-              <Button
+              {/* <Button
                 color="failure"
                 className="flex-grow"
                 onClick={() => {
@@ -126,7 +126,7 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
                 }}
               >
                 Delete
-              </Button>
+              </Button> */}
             </div>
           </form>
         )}

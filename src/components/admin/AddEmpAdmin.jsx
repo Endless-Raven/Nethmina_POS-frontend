@@ -66,8 +66,6 @@ export default function AddEmpAdmin({ show, onClose, shops }) {
     }
   };
 
-  console.log(formData)
-
   return (
     <div>
       <Modal show={show} size="md" onClose={onClose} popup>
