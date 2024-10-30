@@ -47,7 +47,7 @@ export default function EditeEmpAdmin({ show, onClose, emp, shops }) {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await fetchData("employee_and_shop/update_employee", employee);
+    await fetchData("users/update_employee", employee);
     if (error) {
       setShowToast(true);
     } else {
