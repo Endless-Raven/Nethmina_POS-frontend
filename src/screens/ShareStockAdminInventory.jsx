@@ -54,6 +54,7 @@ function ShareStockAdminInventory() {
   };
 
   const getPending = async () => {
+    setError(null);
     setLoading(true);
     try {
       const response = await axios.get(
@@ -62,7 +63,8 @@ function ShareStockAdminInventory() {
       setSamplePending(response.data);
     } catch (error) {
       console.error("Error fetching pending data:", error);
-      setError(error.message);
+      if (error.response?.data?.message !== "No pending requests found.")
+        setError(error.message);
     } finally {
       setLoading(false);
     }

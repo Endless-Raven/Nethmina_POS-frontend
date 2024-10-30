@@ -26,7 +26,8 @@ const InventoryPendingRequest = ({ show, close }) => {
       setRequests(response.data);
     } catch (error) {
       console.log(error);
-      setError(error.message);
+      if (error.response.data.message !== "No requests found for this store.")
+        setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -90,7 +91,7 @@ const InventoryPendingRequest = ({ show, close }) => {
                 Pending Requests
               </h2>
               {requests
-                .filter((request) => !request.is_seen)
+                ?.filter((request) => !request.is_seen)
                 .map((request) => (
                   <div
                     key={request.request_id}
@@ -121,17 +122,17 @@ const InventoryPendingRequest = ({ show, close }) => {
                           <strong>Product Type:</strong> {product.product_type}
                         </p>
                         <p>
-                          <strong>Qty:</strong> {product.request_quantity}
+                          <strong>Qty:</strong> {product.request_quentity}
                         </p>
                       </div>
                     ))}
                     <Button
                       className="absolute top-0 right-0"
                       gradientDuoTone="pinkToOrange"
-                      onClick={()=>deleteRequest(request.request_id)}
+                      onClick={() => deleteRequest(request.request_id)}
                       disabled={loading1}
                     >
-                      Cansel Request
+                      Cancel Request
                     </Button>
                   </div>
                 ))}
@@ -143,7 +144,7 @@ const InventoryPendingRequest = ({ show, close }) => {
                 Seen Requests
               </h2>
               {requests
-                .filter((request) => request.is_seen)
+                ?.filter((request) => request.is_seen)
                 .map((request) => (
                   <div
                     key={request.request_id}
@@ -174,14 +175,14 @@ const InventoryPendingRequest = ({ show, close }) => {
                           <strong>Product Type:</strong> {product.product_type}
                         </p>
                         <p>
-                          <strong>Qty:</strong> {product.request_quantity}
+                          <strong>Qty:</strong> {product.request_quentity}
                         </p>
                       </div>
                     ))}
                     <Button
                       className="absolute top-0 right-0"
                       gradientDuoTone="pinkToOrange"
-                      onClick={()=>deleteRequest(request.request_id)}
+                      onClick={() => deleteRequest(request.request_id)}
                       disabled={loading1}
                     >
                       Delete Request

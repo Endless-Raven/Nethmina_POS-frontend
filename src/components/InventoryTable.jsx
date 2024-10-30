@@ -33,7 +33,7 @@ export function InventoryTable({productList}) {
                 </TableCell>
                 <TableCell>{product.brand_name}</TableCell>
                 <TableCell>{product.product_type}</TableCell>
-                <TableCell>{product.product_stock}</TableCell>
+                <TableCell>{Number(product.product_stock).toFixed()}</TableCell>
                 <TableCell>{product.product_wholesale_price}</TableCell>
                 <TableCell>{product.product_price}</TableCell>
               </TableRow>

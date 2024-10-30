@@ -26,8 +26,12 @@ export default function UpcommingStockInv({ show, close }) {
       );
       setData(response.data);
     } catch (error) {
-      console.log(error);
-      setError(error.message);
+      if (
+        error?.response?.data?.message !== "No transfers found for this store."
+      ) {
+        console.log(error);
+        setError(error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -83,7 +87,9 @@ export default function UpcommingStockInv({ show, close }) {
               >
                 <p className="flex justify-between pb-1 mb-2 border-b-2 border-blue-200">
                   <span className="font-semibold">{transfer.from}</span>
-                  <span className="text-sm">{new Date(transfer.date).toLocaleDateString()}</span>
+                  <span className="text-sm">
+                    {new Date(transfer.date).toLocaleDateString()}
+                  </span>
                 </p>
                 {transfer.products.map((product, index2) => (
                   <p
@@ -104,7 +110,7 @@ export default function UpcommingStockInv({ show, close }) {
                     }}
                     disabled={loading1}
                   >
-                    Recived parcel
+                    Received parcel
                   </Button>
                 </div>
               </div>

@@ -56,7 +56,7 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
   
   return (
     <Modal show={show} onClose={onClose}>
-      <Modal.Header>Edit Employee</Modal.Header>
+      <Modal.Header>Edit Shop</Modal.Header>
       <Modal.Body>
         {loading ? (
           <div>Loading...</div>
@@ -144,9 +144,6 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
           </Toast>
         )}
         {error1 && <p>{error1}</p>}
-        <Button color="gray" onClick={onClose}>
-          Close
-        </Button>
       </Modal.Footer>
       <Modal
         show={openModal}
