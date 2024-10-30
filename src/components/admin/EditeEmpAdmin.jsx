@@ -5,8 +5,10 @@ import { useDelete, useUpdateWithData } from "../../services/api";
 import { Toast } from "flowbite-react";
 import { HiCheck } from "react-icons/hi";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 export default function EditeEmpAdmin({ show, onClose, emp, shops }) {
+  const navigate = useNavigate();
   const [employee, setEmployee] = useState({
     user_id: 1,
     username: "samantha",
@@ -47,21 +49,23 @@ export default function EditeEmpAdmin({ show, onClose, emp, shops }) {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await fetchData("employee_and_shop/update_employee", employee);
+    await fetchData("users/update_employee", employee);
     if (error) {
       setShowToast(true);
+      navigate(0);
     } else {
       setShowToast(false);
     }
   };
 
   const handeDelete = async () => {
-    await deleteData(`employee_and_shop/delete_employee/${employee.user_id}`);
+    await deleteData(`users/delete_employee/${employee.user_id}`);
     if (!error1) {
       setOpenModal(false);
     } else {
       setOpenModal(false);
       onClose();
+      navigate(0);
     }
   };
   

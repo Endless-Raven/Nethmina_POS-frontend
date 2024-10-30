@@ -20,7 +20,7 @@ export default function AddShopAdmin({ show, onClose, shops }) {
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value.trim() }));
+    setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
   
   const validateForm = () => {
@@ -47,7 +47,7 @@ export default function AddShopAdmin({ show, onClose, shops }) {
     e.preventDefault();
     if (validateForm()) {
       try {
-        await postData(`employee_and_shop/add_shop`, formData);
+        await postData(`stores/`, formData);
         setFormData({
           store_name: "",
           store_address: "",
