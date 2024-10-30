@@ -8,77 +8,10 @@ import AddEmpAdmin from "../components/admin/AddEmpAdmin";
 import AddShopAdmin from "../components/admin/AddShopAdmin";
 
 function ManageShopsAndEmp() {
-  const {
-    // data,
-    // error,
-    loading,
-    fetchData,
-  } = useGetWithoutQuery();
-
+  const { data, error, loading, fetchData } = useGetWithoutQuery();
   useEffect(() => {
     fetchData("employee_and_shop/get_all");
   }, []);
-
-  const data = {
-    shop_list: [
-      {
-        store_name: "kurunegala",
-        store_id: 1,
-      },
-      {
-        store_name: "kandy",
-        store_id: 2,
-      },
-    ],
-    shop_data: [
-      {
-        store_id: 1,
-        store_name: "kurunegala",
-        store_address: "periyamulla, baththaramulla",
-        store_phone_number: 371522231,
-        employees: [
-          {
-            user_id: 1,
-            username: "samantha",
-            role: "cashier",
-            phone: 712341234,
-            store_id: 1,
-          },
-          {
-            user_id: 2,
-            username: "samantha",
-            role: "manager",
-            phone: 712341234,
-            store_id: 1,
-          },
-        ],
-      },
-      {
-        store_id: 2,
-        store_name: "kandy",
-        store_address: "periyamulla, baththaramulla",
-        store_phone_number: 371522231,
-        employees: [
-          {
-            user_id: 1,
-            username: "samantha",
-            role: "cashier",
-            phone: 712341234,
-            store_id: 2,
-          },
-          {
-            user_id: 2,
-            username: "samantha",
-            role: "manager",
-            phone: 712341234,
-            store_id: 2,
-          },
-        ],
-      },
-    ],
-  };
-  const error = "";
-
   const [openModelShop, setOpenModelShop] = useState(false);
   const [selectedShop, setSelectedShop] = useState({
     store_id: 1,
@@ -90,6 +23,8 @@ function ManageShopsAndEmp() {
   const [selectedEmp, setSelectedEmp] = useState({});
   const [openModelAddEmp, setOpenModelAddEmp] = useState(false);
   const [openModelAddShop, setOpenModelAddShop] = useState(false);
+
+  // console.log(data);
 
   return (
     <div className="pt-16">
@@ -107,7 +42,7 @@ function ManageShopsAndEmp() {
               <Table.HeadCell className="bg-slate-400">Position</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-              {data.shop_data.map((shop, index) => (
+              {data?.shop_data?.map((shop, index) => (
                 <React.Fragment key={index}>
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900">
                     <Table.Cell
@@ -160,26 +95,28 @@ function ManageShopsAndEmp() {
       ) : (
         <div>Something went wrong</div>
       )}
-      <EditeEmpAdmin
-        show={openModalEmp}
-        onClose={() => setOpenModalEmp(false)}
-        emp={selectedEmp}
-        shops={data.shop_list}
-      />
+      {data?.shop_list && (
+        <EditeEmpAdmin
+          show={openModalEmp}
+          onClose={() => setOpenModalEmp(false)}
+          emp={selectedEmp}
+          shops={data?.shop_list}
+        />
+      )}
       <EditeShopAdmin
         show={openModelShop}
         onClose={() => setOpenModelShop(false)}
         shop={selectedShop}
       />
-      <AddEmpAdmin
+      {/* <AddEmpAdmin
         show={openModelAddEmp}
-        shops={data.shop_list}
+        shops={data?.shop_list}
         onClose={() => setOpenModelAddEmp(false)}
-      />
-      <AddShopAdmin
+      /> */}
+      {/* <AddShopAdmin
         show={openModelAddShop}
         onClose={() => setOpenModelAddShop(false)}
-      />
+      /> */}
     </div>
   );
 }

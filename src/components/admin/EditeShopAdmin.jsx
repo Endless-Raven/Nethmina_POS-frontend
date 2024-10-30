@@ -5,8 +5,10 @@ import { useDelete, useUpdateWithData } from "../../services/api";
 import { Toast } from "flowbite-react";
 import { HiCheck } from "react-icons/hi";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 export default function EditeShopAdmin({ show, onClose, shop}) {
+  const navigate = useNavigate();
   const [shopData, setShopData] = useState({
     store_id: 1,
     store_name: "",
@@ -20,7 +22,7 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setEmployee((prev) => ({
+    setShopData((prev) => ({
       ...prev,
       [id]: value,
     }));
@@ -33,7 +35,7 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await fetchData("employee_and_shop/update_shop", shopData);
+    await fetchData("stores/updateStore", shopData);
     if (error) {
       setShowToast(true);
     } else {
@@ -42,9 +44,10 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
   };
 
   const handeDelete = async () => {
-    await deleteData(`employee_and_shop/delete_shop/${shopData.store_id}`);
+    await deleteData(`stores/deleteStore/${shopData.store_id}`);
     if (!error1) {
       setOpenModal(false);
+      navigate(0);
     } else {
       setOpenModal(false);
       onClose();
@@ -156,7 +159,7 @@ export default function EditeShopAdmin({ show, onClose, shop}) {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to remove this employee?
+              Are you sure you want to remove this Shop?
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={handeDelete} disabled={loading1}>
