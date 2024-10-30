@@ -30,6 +30,7 @@ const Add_item_Model = () => {
     model: "",
     wholesale_price: "",
     retailPrice: "",
+    max_discount: ""
   });
 
   useEffect(() => {
@@ -59,6 +60,7 @@ const Add_item_Model = () => {
     const trimmedModel = newItem.model?.trim();
     const trimmedWholesalePrice = newItem.wholesale_price?.toString().trim();
     const trimmedQty = newItem.qty;
+    const trimmedmaxdiscount = newItem.max_discount?.toString().trim();
 
     if (
       !trimmedName ||
@@ -68,7 +70,8 @@ const Add_item_Model = () => {
       !trimmedBrand ||
       !trimmedModel ||
       !trimmedWholesalePrice ||
-      !trimmedCode
+      !trimmedCode ||
+      !trimmedmaxdiscount
     ) {
       setFooterMessage(
         "All fields are required and cannot be empty or contain only spaces."
@@ -93,6 +96,7 @@ const Add_item_Model = () => {
         brand_name: trimmedBrand,
         product_model: trimmedModel,
         product_wholesale_price: trimmedWholesalePrice,
+        max_discount: trimmedmaxdiscount,
         user: 1,
       });
 
@@ -184,6 +188,7 @@ const Add_item_Model = () => {
       brand: "",
       model: "",
       category: "",
+      max_discount:""
     });
     setItemNames({ name: "" });
     setReset(true);
@@ -303,6 +308,19 @@ const Add_item_Model = () => {
           setNewItem({
             ...newItem,
             wholesale_price: e.target.value.replace(/^\s+|\s+$/g, ""),
+          })
+        }
+        required
+      />
+       <Label htmlFor="max_discount" value="Max Discount" />
+      <TextInput
+        type="text"
+        id="max_discount"
+        value={newItem.max_discount}
+        onChange={(e) =>
+          setNewItem({
+            ...newItem,
+            max_discount: e.target.value.replace(/^\s+|\s+$/g, ""),
           })
         }
         required
