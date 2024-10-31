@@ -387,61 +387,51 @@ export default function Billing() {
       </Modal>
 
       {/* Bill */}
-      <div className="hidden">
-        <div
-          ref={componentRef}
-          className="p-3 pr-10 border-4"
-        >
-          <div className="bg-white flex flex-col gap-6 p-6 border-2 border-slate-400 ">
-          <div className="flex justify-between items-start">
-            <div className="">
-              <h1 className="text-2xl font-semibold">Nethmina Mobile</h1>
-              {/* <h4>Kurunegala</h4> */}
-              <h5>071 733 4400</h5>
-            </div>
-            <div className="text-2xl border-2 border-slate-400 p-2">
-              INVOICE
-            </div>
-          </div>
-          <div className="w-full flex gap-2">
-            <div className="flex-1">
-              <div className="flex gap-4">
-                <p className="font-semibold mr-4">Bill To </p>
-                <p>: {customer.customer_name}</p>
+      <div className="">
+        <div ref={componentRef} className="p-3 pr-10 border-4">
+          <div className="bg-white flex flex-col gap-2 p-6 ">
+            <div className="flex justify-between items-end mb-4">
+              <div className="">
+                <h1 className="text-3xl font-bold">Nethmina Mobile</h1>
+                <h4>Kurunegala Road, Nikawaratiya</h4>
+                <h5>TP : 071 733 4400</h5>
               </div>
-              <div className="flex gap-4">
-                <p className="font-semibold mr-2">Mobile </p>
-                <p>: {customer.customer_number}</p>
-              </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Address </p>
-                <p>: {customer.customer_address}</p>
+              <div className="text-sm">
+                <div className="flex gap-4">
+                  <p className="font-medium mr-1">Invoice Id </p>
+                  <p>: {invoiceId}</p>
+                </div>
+                <div className="flex gap-4">
+                  <p className="font-medium">Date </p>
+                  <p className="ml-9">: {new Date().toLocaleDateString()}</p>
+                </div>
+                <div className="flex gap-4">
+                  <p className="font-medium">Time </p>
+                  <p className="ml-9">: {new Date().toLocaleTimeString()}</p>
+                </div>
+                <div className="flex gap-4">
+                  <p className="font-medium">Salesman </p>
+                  <p className="ml-2">: {salesman}</p>
+                </div>
               </div>
             </div>
-            <div className="flex-1">
-              <div className="flex gap-4">
-                <p className="font-semibold">Invoice Id </p>
-                <p>: {invoiceId}</p>
-              </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Date </p>
-                <p className="ml-9">: {new Date().toLocaleDateString()}</p>
-              </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Time </p>
-                <p className="ml-9">: {new Date().toLocaleTimeString()}</p>
-              </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Salesman </p>
-                <p>: {salesman}</p>
-              </div>
+            <hr class="border-gray-400 border-t-2 w-full" />
+            <div className="w-full flex gap-4">
+              <p>
+                Customer <span>: {customer.customer_name}</span>
+              </p>
+              <p>
+                Mobile <span>: {customer.customer_number}</span>
+              </p>
+              <p>
+                Address <span>: {customer.customer_address}</span>
+              </p>
             </div>
-          </div>
-          <div className="">
-            <div className="overflow-x-auto my-4">
+            <hr class="border-gray-400 border-t-2 w-full" />
+            <div className="overflow-x-auto">
               <Table>
                 <Table.Head>
-                  <Table.HeadCell>No</Table.HeadCell>
+                  {/* <Table.HeadCell>No</Table.HeadCell> */}
                   <Table.HeadCell>Product name</Table.HeadCell>
                   <Table.HeadCell>Price</Table.HeadCell>
                   <Table.HeadCell>Qty</Table.HeadCell>
@@ -453,10 +443,18 @@ export default function Billing() {
                   {orderedList.map((product, index) => (
                     <Table.Row
                       key={index}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800 font-medium text-black"
                     >
-                      <Table.Cell>{index + 1}</Table.Cell>
-                      <Table.Cell>{product.product_name}</Table.Cell>
+                      {/* <Table.Cell>{index + 1}</Table.Cell> */}
+                      <Table.Cell>
+                        {product.product_name}
+                        <br />
+                        {product.serial_number && (
+                          <span className="font-semibold">
+                            code : {product.serial_number}
+                          </span>
+                        )}
+                      </Table.Cell>
                       <Table.Cell>{product.price}</Table.Cell>
                       <Table.Cell>{product.quantity}</Table.Cell>
                       <Table.Cell>{product.warranty_period}</Table.Cell>
@@ -474,13 +472,37 @@ export default function Billing() {
                 </Table.Body>
               </Table>
             </div>
-          </div>
-          <div className="flex justify-end">
-            <p className="font-semibold mr-4">Total : {total.toFixed(2)}</p>
-          </div>
-          <div className="text-center font-semibold">
-            Thank You, Come again.❤️
-          </div>
+            <div className="flex justify-end">
+              <p className="font-semibold mr-4">Total : {total.toFixed(2)}</p>
+            </div>
+            <div className="w-full flex gap-4 justify-between items-end ">
+              <div>
+                <p className="italic">
+                  {" "}
+                  <strong>Note</strong> Goods Sold are Non Refundable /
+                  NotExchangeable.{" "}
+                </p>
+                <p className="underline font-medium">
+                  Warranty does not Apply.
+                </p>
+                <ul className="pl-4 list-disc">
+                  <li>
+                    To damages caused by Accident / Abuse / Misuse / Flood
+                  </li>
+                  <li>To consumable Parts such as Batteries</li>
+                  <li>
+                    To Cosmetic Damages (Scratches / Dents / Plastic on Parts
+                    and Display)
+                  </li>
+                  <li>Modification of Software and Hardware.</li>
+                </ul>
+              </div>
+              <div>
+                <p>_ _ _ _ _ _ _ _ _ _</p>
+                <p>Customer Signature</p>
+                <p>Goods Recived in good condition</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
