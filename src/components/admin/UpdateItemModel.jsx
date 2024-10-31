@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Button, Modal, Label, TextInput } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
+  const imeiRefs = useRef([]);
   const [loading, setLoading] = useState(false);
   const [itemNames, setItemNames] = useState({ name: "", category: "" });
   const [footerMessage, setFooterMessage] = useState("");
@@ -18,12 +19,13 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
     brand: "",
     qty: "",
     warranty_period: "",
-    imei_number: "",
+    imei_number: [],
     category: "",
     model: "",
     wholesale_price: "",
     retailPrice: "",
     newqty: "",
+    newimeinumber: [],
   });
 
   // Fetch product details when the component mounts
@@ -67,12 +69,30 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
     try {
       console.log(newItem.newqty);
 
-      const imeiNumbers = Array.isArray(newItem.imei_number)
-        ? newItem.imei_number
-        : [newItem.imei_number];
+      // Check if the category is 'Mobile Phone'
+      if (newItem.category === "Mobile Phone") {
+        const imeiNumbers = Array.isArray(newItem.newimeinumber)
+          ? newItem.newimeinumber
+          : [newItem.newimeinumber];
+        console.log(imeiNumbers.length);
+        // Check if the quantity matches the count of IMEI numbers
+        if (imeiNumbers.length !== Number(newItem.newqty)) {
+          setFooterMessage(
+            "Quantity must match the number of IMEI numbers for Mobile Phones."
+          );
+          return; // Exit early if they don't match
+        }
+      }
+
+      // Prepare IMEI numbers for the request
+      const imeiNumbers = Array.isArray(newItem.newimeinumber)
+        ? newItem.newimeinumber
+        : [newItem.newimeinumber];
+
       const response = await axios.put(
         `${API_BASE_URL}/product/updateStockAndIMEI/${productName}`,
         {
+          category: newItem.category,
           imei_number: imeiNumbers,
           product_stock: newItem.newqty,
           user: 1,
@@ -80,7 +100,8 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
       );
 
       if (response.status === 200) {
-        setFooterMessage("Stock Add successfully!");
+        setFooterMessage("");
+        navigate(0);
       } else {
         setFooterMessage("Failed to update the product.");
       }
@@ -95,9 +116,7 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
   return (
     <Modal
       show={showModel}
-      onClose={() => {
-        close, navigate(0);
-      }}
+      onClose={close}
     >
       <Modal.Header>Add Stock</Modal.Header>
       <Modal.Body>
@@ -110,23 +129,43 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
               type="text"
               id="new_qty"
               onChange={(e) =>
-                setNewItem({ ...newItem, newqty: e.target.value.trim() })
+              {
+                setNewItem({ ...newItem, newqty: e.target.value.trim(),newimeinumber:[] })
               } // Trimmed
-              required
+            }
+            required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="imei_number" value="IMEI Number" />
-            <TextInput
-              id="imei_number"
-              onChange={(e) =>
-                setNewItem({
-                  ...newItem,
-                  imei_number: e.target.value.trim(), // Trimmed
-                })
-              }
-              required
-            />
+           {newItem.category==="Mobile Phone" &&
+            <Label>IMEI Numbers</Label>}
+            {newItem.category==="Mobile Phone" && newItem?.newqty &&
+              Array.from({ length: Number(newItem.newqty) }).map((_, index) => (
+                <TextInput
+                  key={index}
+                  ref={(el) => (imeiRefs.current[index] = el)}
+                  type="text"
+                  placeholder={`IMEI ${index + 1}`}
+                  required
+                  maxLength={15}
+                  onChange={(e) => {
+                    const updatedIMEIs = [...(newItem.newimeinumber || [])];
+                    updatedIMEIs[index] = e.target.value;
+
+                    setNewItem({
+                      ...newItem,
+                      newimeinumber: updatedIMEIs,
+                    });
+
+                    if (
+                      e.target.value.length === 15 &&
+                      index < imeiRefs.current.length - 1
+                    ) {
+                      imeiRefs.current[index + 1].focus();
+                    }
+                  }}
+                />
+              ))}
           </div>
         </div>
 
