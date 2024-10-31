@@ -390,8 +390,9 @@ export default function Billing() {
       <div className="hidden">
         <div
           ref={componentRef}
-          className="bg-white rounded-md flex flex-col gap-6 p-6 border-2 border-slate-400 m-1"
+          className="p-3 pr-10 border-4"
         >
+          <div className="bg-white flex flex-col gap-6 p-6 border-2 border-slate-400 ">
           <div className="flex justify-between items-start">
             <div className="">
               <h1 className="text-2xl font-semibold">Nethmina Mobile</h1>
@@ -438,7 +439,7 @@ export default function Billing() {
           </div>
           <div className="">
             <div className="overflow-x-auto my-4">
-              <Table striped>
+              <Table>
                 <Table.Head>
                   <Table.HeadCell>No</Table.HeadCell>
                   <Table.HeadCell>Product name</Table.HeadCell>
@@ -479,6 +480,7 @@ export default function Billing() {
           </div>
           <div className="text-center font-semibold">
             Thank You, Come again.❤️
+          </div>
           </div>
         </div>
       </div>

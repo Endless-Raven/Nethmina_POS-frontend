@@ -187,7 +187,7 @@ function ItemAdminInventory() {
                   Stock
                 </Table.HeadCell>
                 <Table.HeadCell className="bg-emerald-300">
-                  Edite
+                  Edit
                 </Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
