@@ -16,6 +16,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
   const [emiAvialable, setEmiAvialable] = useState(true);
   const [barcode, setBarcode] = useState("");
   const { data, error, loading, fetchData } = useGetWithoutQuery();
+  const [Max_discount, setMax_discount] = useState(null);
 
   const [categories, setCategories] = useState([]);
   useEffect(() => {
@@ -82,7 +83,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
     const { name, value } = e.target;
     setProduct((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "discount" ? Math.min(value, Max_discount) : value,
     }));
   };
 
@@ -96,7 +97,6 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
         (model) => model.product_id === Number(selected)
       );
       if (model) {
-        console.log(model);
         setProduct({
           product_id: model.product_id,
           product_name: model.product_name,
@@ -107,12 +107,14 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
           warranty_period: model.warranty_period,
         });
         setValidEmi(model.imei_number);
+        setMax_discount(model.max_discount);
       }
     } else {
       resetProduct(); // Reset product if no model is selected
     }
   };
   console.log(validEmi);
+  console.log(Max_discount);
   // Function to reset product data
   const resetProduct = () => {
     setProduct({
@@ -126,6 +128,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
     });
     setSelectedModelId(""); // Reset selected model ID
     setValidEmi([]);
+    setMax_discount(null);
   };
 
   // console.log(product);
@@ -175,6 +178,12 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
         ...prev,
         warranty_period: data.warranty_period,
       }));
+    if (data?.max_discount) {
+      setMax_discount(data.max_discount);
+    }
+    if (data?.imei_number) {
+      setValidEmi(data.imei_number);
+    }
     setProduct((prev) => ({
       ...prev,
       serial_number: "",

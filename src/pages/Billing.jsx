@@ -214,7 +214,6 @@ export default function Billing() {
     if (salesman === "") {
       return false; // If salesman is not specified, return false
     }
-
     // If all checks pass, return true
     return true;
   };
@@ -406,16 +405,16 @@ export default function Billing() {
           <div className="w-full flex gap-2">
             <div className="flex-1">
               <div className="flex gap-4">
-                <p className="font-semibold">Bill To</p>
-                <p>{customer.customer_name}</p>
+                <p className="font-semibold mr-4">Bill To </p>
+                <p>: {customer.customer_name}</p>
               </div>
               <div className="flex gap-4">
-                <p className="font-semibold">Mobile</p>
-                <p>{customer.customer_number}</p>
+                <p className="font-semibold mr-2">Mobile </p>
+                <p>: {customer.customer_number}</p>
               </div>
               <div className="flex gap-4">
-                <p className="font-semibold">Address</p>
-                <p>{customer.customer_address}</p>
+                <p className="font-semibold">Address </p>
+                <p>: {customer.customer_address}</p>
               </div>
             </div>
             <div className="flex-1">
