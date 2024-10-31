@@ -387,7 +387,7 @@ export default function Billing() {
       </Modal>
 
       {/* Bill */}
-      <div className="">
+      <div className="hidden">
         <div ref={componentRef} className="p-3 pr-10 border-4">
           <div className="bg-white flex flex-col gap-2 p-6 ">
             <div className="flex justify-between items-end mb-4">
