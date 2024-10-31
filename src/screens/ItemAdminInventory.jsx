@@ -169,7 +169,7 @@ function ItemAdminInventory() {
           </div>
         </div>
         <div className="w-3/4">
-          <div className="table-container overflow-x-auto max-h-[79vh]">
+          <div className="table-container overflow-x-auto max-h-[79vh] shadow-md">
             <Table hoverable>
               <Table.Head className="">
                 <Table.HeadCell className="bg-emerald-300">No</Table.HeadCell>

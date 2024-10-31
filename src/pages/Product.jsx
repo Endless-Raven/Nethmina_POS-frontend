@@ -179,7 +179,7 @@ function Product() {
           </div>
         </div>
         <div className="w-3/3">
-          <div className="overflow-x-auto max-h-[79vh]">
+          <div className="overflow-x-auto max-h-[79vh] shadow-md">
             <Table hoverable>
               <Table.Head>
                 <Table.HeadCell className="bg-sky-300">No</Table.HeadCell>

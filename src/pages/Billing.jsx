@@ -391,16 +391,22 @@ export default function Billing() {
       <div className="hidden">
         <div
           ref={componentRef}
-          className="bg-white rounded-md flex flex-col gap-6 p-6"
+          className="bg-white rounded-md flex flex-col gap-6 p-6 border-2 border-slate-400 m-1"
         >
-          <div className="">
-            <h1 className="text-2xl font-semibold">Nethmina Mobile</h1>
-            <h4>Kurunegala</h4>
+          <div className="flex justify-between items-start">
+            <div className="">
+              <h1 className="text-2xl font-semibold">Nethmina Mobile</h1>
+              {/* <h4>Kurunegala</h4> */}
+              <h5>071 733 4400</h5>
+            </div>
+            <div className="text-2xl border-2 border-slate-400 p-2">
+              INVOICE
+            </div>
           </div>
           <div className="w-full flex gap-2">
             <div className="flex-1">
               <div className="flex gap-4">
-                <p className="font-semibold">Invoice To</p>
+                <p className="font-semibold">Bill To</p>
                 <p>{customer.customer_name}</p>
               </div>
               <div className="flex gap-4">
@@ -414,16 +420,20 @@ export default function Billing() {
             </div>
             <div className="flex-1">
               <div className="flex gap-4">
-                <p className="font-semibold">Invoice</p>
-                <p className="ml-4">{invoiceId}</p>
+                <p className="font-semibold">Invoice Id </p>
+                <p>: {invoiceId}</p>
               </div>
               <div className="flex gap-4">
-                <p className="font-semibold">Date</p>
-                <p className="ml-9">{new Date().toLocaleDateString()}</p>
+                <p className="font-semibold">Date </p>
+                <p className="ml-9">: {new Date().toLocaleDateString()}</p>
               </div>
               <div className="flex gap-4">
-                <p className="font-semibold">Salesman</p>
-                <p>{salesman}</p>
+                <p className="font-semibold">Time </p>
+                <p className="ml-9">: {new Date().toLocaleTimeString()}</p>
+              </div>
+              <div className="flex gap-4">
+                <p className="font-semibold">Salesman </p>
+                <p>: {salesman}</p>
               </div>
             </div>
           </div>
@@ -465,9 +475,11 @@ export default function Billing() {
               </Table>
             </div>
           </div>
-          <div className="flex justify-between">
-            <p>Thank you for Your Business</p>
-            <p className="font-semibold mr-2">Total : {total.toFixed(2)}</p>
+          <div className="flex justify-end">
+            <p className="font-semibold mr-4">Total : {total.toFixed(2)}</p>
+          </div>
+          <div className="text-center font-semibold">
+            Thank You, Come again.❤️
           </div>
         </div>
       </div>
