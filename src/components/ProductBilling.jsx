@@ -96,6 +96,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
         (model) => model.product_id === Number(selected)
       );
       if (model) {
+        console.log(model);
         setProduct({
           product_id: model.product_id,
           product_name: model.product_name,
