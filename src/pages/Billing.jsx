@@ -387,27 +387,38 @@ export default function Billing() {
       </Modal>
 
       {/* Bill */}
-      <div className="hidden">
-        <div ref={componentRef} className="p-3 pr-10 border-4">
-          <div className="bg-white flex flex-col gap-2 p-6 ">
-            <div className="flex justify-between items-end mb-4">
-              <div className="">
-                <h1 className="text-3xl font-bold">Nethmina Mobile</h1>
-                <h4>Kurunegala Road, Nikawaratiya</h4>
-                <h5>TP : 071 733 4400</h5>
+      <div className="">
+        <div ref={componentRef} className="p-3 pr-6 border-4">
+          <div className="bg-white flex flex-col gap-1 px-3 py-1 ">
+            <div className="flex justify-between items-end ">
+              <div className="text-xs">
+                <h1 className="text-2xl font-bold">Nethmina Cellular</h1>
+                <div className="flex gap-3">
+                  <h4>
+                    No 9, First floor,
+                    <br /> MC Plaza, Kurunegala <br />
+                    TP : 071 733 4400
+                  </h4>
+                  <div className="border-r-2 border-slate-500"></div>
+                  <h4>
+                    Hospital Junction,
+                    <br /> Polonnaruwa (Infront of KFC) <br />
+                    TP : 070 480 4800
+                  </h4>
+                </div>
               </div>
-              <div className="text-sm">
+              <div className="text-xs">
                 <div className="flex gap-4">
                   <p className="font-medium mr-1">Invoice Id </p>
                   <p>: {invoiceId}</p>
                 </div>
                 <div className="flex gap-4">
                   <p className="font-medium">Date </p>
-                  <p className="ml-9">: {new Date().toLocaleDateString()}</p>
+                  <p className="ml-8">: {new Date().toLocaleDateString()}</p>
                 </div>
                 <div className="flex gap-4">
                   <p className="font-medium">Time </p>
-                  <p className="ml-9">: {new Date().toLocaleTimeString()}</p>
+                  <p className="ml-8">: {new Date().toLocaleTimeString()}</p>
                 </div>
                 <div className="flex gap-4">
                   <p className="font-medium">Salesman </p>
@@ -416,7 +427,7 @@ export default function Billing() {
               </div>
             </div>
             <hr class="border-gray-400 border-t-2 w-full" />
-            <div className="w-full flex gap-4">
+            <div className="w-full flex gap-4 text-xs">
               <p>
                 Customer <span>: {customer.customer_name}</span>
               </p>
@@ -431,22 +442,22 @@ export default function Billing() {
             <div className="overflow-x-auto">
               <Table>
                 <Table.Head>
-                  {/* <Table.HeadCell>No</Table.HeadCell> */}
-                  <Table.HeadCell>Product name</Table.HeadCell>
-                  <Table.HeadCell>Price</Table.HeadCell>
-                  <Table.HeadCell>Qty</Table.HeadCell>
-                  <Table.HeadCell>warranty</Table.HeadCell>
-                  <Table.HeadCell>Discount</Table.HeadCell>
-                  <Table.HeadCell>Total</Table.HeadCell>
+                  <Table.HeadCell>No</Table.HeadCell>
+                  <Table.HeadCell className="text-xs">Product name</Table.HeadCell>
+                  <Table.HeadCell className="text-xs">Price</Table.HeadCell>
+                  <Table.HeadCell className="text-xs">Qty</Table.HeadCell>
+                  <Table.HeadCell className="text-xs">warranty</Table.HeadCell>
+                  <Table.HeadCell className="text-xs">Discount</Table.HeadCell>
+                  <Table.HeadCell className="text-xs">Total</Table.HeadCell>
                 </Table.Head>
-                <Table.Body className="divide-y">
+                <Table.Body className="">
                   {orderedList.map((product, index) => (
                     <Table.Row
                       key={index}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800 font-medium text-black"
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800 font-medium text-black text-sm"
                     >
-                      {/* <Table.Cell>{index + 1}</Table.Cell> */}
-                      <Table.Cell>
+                      <Table.Cell>{index + 1}</Table.Cell>
+                      <Table.Cell className="text-xs">
                         {product.product_name}
                         <br />
                         {product.serial_number && (
@@ -455,13 +466,13 @@ export default function Billing() {
                           </span>
                         )}
                       </Table.Cell>
-                      <Table.Cell>{product.price}</Table.Cell>
-                      <Table.Cell>{product.quantity}</Table.Cell>
-                      <Table.Cell>{product.warranty_period}</Table.Cell>
-                      <Table.Cell>
+                      <Table.Cell className="text-xs">{product.price}</Table.Cell>
+                      <Table.Cell className="text-xs">{product.quantity}</Table.Cell>
+                      <Table.Cell className="text-xs">{product.warranty_period}</Table.Cell>
+                      <Table.Cell className="text-xs">
                         {Number(product.discount).toFixed(2)}
                       </Table.Cell>
-                      <Table.Cell>
+                      <Table.Cell className="text-xs">
                         {(
                           Number(product.price) * Number(product.quantity) -
                           Number(product.discount)
@@ -473,9 +484,9 @@ export default function Billing() {
               </Table>
             </div>
             <div className="flex justify-end">
-              <p className="font-semibold mr-4">Total : {total.toFixed(2)}</p>
+              <p className="font-semibold mr-4 text-sm">Total : {total.toFixed(2)}</p>
             </div>
-            <div className="w-full flex gap-4 justify-between items-end ">
+            <div className="w-full flex gap-4 justify-between items-end text-xs">
               <div>
                 <p className="italic">
                   {" "}
@@ -490,17 +501,15 @@ export default function Billing() {
                     To damages caused by Accident / Abuse / Misuse / Flood
                   </li>
                   <li>To consumable Parts such as Batteries</li>
-                  <li>
-                    To Cosmetic Damages (Scratches / Dents / Plastic on Parts
-                    and Display)
-                  </li>
-                  <li>Modification of Software and Hardware.</li>
+                  <li>To Cosmetic Damages (Scratches / Dents)</li>
+                  <li>Display, Touch and No Power</li>
+                  {/* <li>Modification of Software and Hardware.</li> */}
                 </ul>
               </div>
               <div>
                 <p>_ _ _ _ _ _ _ _ _ _</p>
                 <p>Customer Signature</p>
-                <p>Goods Recived in good condition</p>
+                <p className="text-xs whitespace-nowrap">Goods Recived in good condition</p>
               </div>
             </div>
           </div>
