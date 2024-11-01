@@ -387,7 +387,7 @@ export default function Billing() {
       </Modal>
 
       {/* Bill */}
-      <div className="">
+      <div className="hidden">
         <div ref={componentRef} className="p-3 pr-6 border-4">
           <div className="bg-white flex flex-col gap-1 px-3 py-1 ">
             <div className="flex justify-between items-end ">
@@ -397,7 +397,7 @@ export default function Billing() {
                   <h4>
                     No 9, First floor,
                     <br /> MC Plaza, Kurunegala <br />
-                    TP : 071 733 4400
+                    TP : 071 642 7418
                   </h4>
                   <div className="border-r-2 border-slate-500"></div>
                   <h4>
