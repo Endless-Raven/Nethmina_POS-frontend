@@ -72,15 +72,28 @@ export default function Finance() {
   const handleAddIncome = async (e) => {
     e.preventDefault();
     await postData("income/AddIncome", formData);
+    setFormData({
+      income_category: "Selling",
+      income_amount: "",
+      user_id: "",
+      store_id: "",
+      income_type: "Selling",
+      approval_status: "confirmed",
+    });
   };
 
   const handleAddExpence = async (e) => {
     e.preventDefault();
     await postData("expense/AddExpense", formDataExpence);
+    setFormDataExpence({
+      expense_category: "Utilities",
+      expense_amount: "",
+      user_id: "",
+      store_id: "",
+      expense_type: "Utilities",
+      approval_status: "confirmed",
+    });
   };
-  // console.log(formData);
-  // console.log(data?.message);
-  // console.log(error);
 
   return (
     <div className="p-6">
