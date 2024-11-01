@@ -49,7 +49,7 @@ export default function Dashboard() {
                   <div className="text-center">
                     <p className="mb-2">Monthly Profit</p>
                     <p className="w-32 font-semibold bg-cyan-700 rounded-md p-1 cursor-pointer hover:shadow-md hover:scale-105 transition-all">
-                      {data?.sales?.monthly_profit?.total_income || "0"}
+                      {data?.sales?.monthly_profit?.profit || "0"}
                     </p>
                   </div>
                 </div>
@@ -65,7 +65,7 @@ export default function Dashboard() {
                   <div className="text-center">
                     <p className="mb-2">Daily Profit</p>
                     <p className="w-32 font-semibold bg-cyan-700 rounded-md p-1 cursor-pointer hover:shadow-md hover:scale-105 transition-all">
-                      {data?.sales.daily_profit?.total_income || "0"}
+                      {data?.sales.daily_profit?.profit || "0"}
                     </p>
                   </div>
                 </div>
