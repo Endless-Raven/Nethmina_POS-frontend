@@ -16,7 +16,7 @@ export function PrivateRouteManager({ children }) {
   );
 }
 
-export function PrivateRouteAdmin({ children }) {
+export function PrivateRouteAdmin() {
   const { data } = useSelector((state) => state.user);
-  return data.role === "admin" ? children : <Navigate to="/login" />;
+  return data && data.role === "admin" ? <Outlet /> : <Navigate to="/login" />;
 }

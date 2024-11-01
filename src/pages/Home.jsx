@@ -27,10 +27,6 @@ export default function Home() {
         <PrivateRouteAdmin>
           <DailyReport />
         </PrivateRouteAdmin>
-      ) : section === "admin_panel" ? (
-        <PrivateRouteAdmin>
-          <AdminPanel />
-        </PrivateRouteAdmin>
       ) : (
         <NotFoundPage />
       )}

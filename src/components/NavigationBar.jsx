@@ -14,9 +14,7 @@ export default function NavigationBar() {
   const [active, setActive] = useState("billing");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  console.log(userData.role);
-
+  
   const handleLogout = () => {
     dispatch(signOut());
     navigate("/login");
@@ -89,7 +87,7 @@ export default function NavigationBar() {
           className={`cursor-pointer ${(userData.role==="cashier" || userData.role==="manager" )&& "hidden"}`}
           onClick={() => {
             setActive("admin panel");
-            navigate("/home/admin_panel");
+            navigate("/adminpanel/dashboard");
           }}
         >
           Admin Panel

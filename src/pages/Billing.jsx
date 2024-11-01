@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Label, TextInput, Select, Modal, Spinner } from "flowbite-react";
+import {
+  Button,
+  Label,
+  TextInput,
+  Select,
+  Modal,
+  Spinner,
+} from "flowbite-react";
 import TableBilling from "../components/TableBilling";
 import ProductBilling from "../components/ProductBilling";
 import CustomerBilling from "../components/CustomerBilling";
@@ -20,6 +27,7 @@ export default function Billing() {
   const [showToastDone, setShowToastDone] = useState(false);
   const [showToastPrint, setShowToastPrint] = useState(false);
   const userData = useSelector((state) => state.user.data);
+  const [print, setPrint] = useState(false);
 
   useEffect(() => {
     if (showToastPrint || showToastDone) {
@@ -68,8 +76,8 @@ export default function Billing() {
     warranty_period: "",
   });
   const addProduct = () => {
-    const { warranty_period, ...productWithoutWarranty } = product;
-    setOrderedList((prevData) => [...prevData, productWithoutWarranty]);
+    // const { warranty_period, ...productWithoutWarranty } = product;
+    setOrderedList((prevData) => [...prevData, product]);
   };
 
   // about customer data
@@ -125,11 +133,12 @@ export default function Billing() {
         setInvoiceId(response.data.sales_id);
         setShowToastDone(true);
         setLoading(false);
-        handleReset();
       } catch (error) {
         setLoading(false);
         setError(error.message);
         console.error(error);
+      } finally {
+        handleReset();
       }
     } else {
       setOpenModal(true);
@@ -157,9 +166,8 @@ export default function Billing() {
       try {
         const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
         setInvoiceId(response.data.sales_id);
+        setPrint(true);
         setShowToastPrint(true);
-        printFn();
-        handleReset();
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -170,6 +178,20 @@ export default function Billing() {
       setOpenModal(true);
     }
   };
+
+  useEffect(() => {
+    if (invoiceId && print) {
+      try {
+        printFn();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setPrint(false);
+        setInvoiceId(null);
+        handleReset();
+      }
+    }
+  }, [invoiceId, print]);
 
   // validate all forms
   const validate = () => {
@@ -192,7 +214,6 @@ export default function Billing() {
     if (salesman === "") {
       return false; // If salesman is not specified, return false
     }
-
     // If all checks pass, return true
     return true;
   };
@@ -215,6 +236,8 @@ export default function Billing() {
     onBeforePrint: handleBeforePrint,
   });
 
+
+
   return (
     <div className="flex w-full relative bg-slate-100">
       {/* sidebar */}
@@ -232,7 +255,7 @@ export default function Billing() {
       {/* main content */}
       <div className="w-[70%] border-l-4 p-2 min-h-[90vh] relative">
         {/* table */}
-        <TableBilling setTotal={setTotal} orderedList={orderedList} />
+        <TableBilling setTotal={setTotal} orderedList={orderedList} setOrderedList={setOrderedList}/>
         {/* form */}
         <div className="absolute bottom-4 z-10 w-[calc(100%-1rem)] border-2 p-4 rounded-md bg-white">
           <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
@@ -367,71 +390,91 @@ export default function Billing() {
 
       {/* Bill */}
       <div className="hidden">
-        <div
-          ref={componentRef}
-          className="bg-white rounded-md flex flex-col gap-6 p-6"
-        >
-          <div className="">
-            <h1 className="text-2xl font-semibold">Nethmina Mobile</h1>
-            <h4>Kurunegala</h4>
-          </div>
-          <div className="w-full flex gap-2">
-            <div className="flex-1">
-              <div className="flex gap-4">
-                <p className="font-semibold">Invoice To</p>
-                <p>{customer.customer_name}</p>
+        <div ref={componentRef} className="p-3 pr-6 border-4">
+          <div className="bg-white flex flex-col gap-1 px-3 py-1 ">
+            <div className="flex justify-between items-end ">
+              <div className="text-xs">
+                <h1 className="text-2xl font-bold">Nethmina Cellular</h1>
+                <div className="flex gap-3">
+                  <h4>
+                    No 9, First floor,
+                    <br /> MC Plaza, Kurunegala <br />
+                    TP : 071 642 7418
+                  </h4>
+                  <div className="border-r-2 border-slate-500"></div>
+                  <h4>
+                    Hospital Junction,
+                    <br /> Polonnaruwa (Infront of KFC) <br />
+                    TP : 070 480 4800
+                  </h4>
+                </div>
               </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Mobile</p>
-                <p>{customer.customer_number}</p>
-              </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Address</p>
-                <p>{customer.customer_address}</p>
+              <div className="text-xs">
+                <div className="flex gap-4">
+                  <p className="font-medium mr-1">Invoice Id </p>
+                  <p>: {invoiceId}</p>
+                </div>
+                <div className="flex gap-4">
+                  <p className="font-medium">Date </p>
+                  <p className="ml-8">: {new Date().toLocaleDateString()}</p>
+                </div>
+                <div className="flex gap-4">
+                  <p className="font-medium">Time </p>
+                  <p className="ml-8">: {new Date().toLocaleTimeString()}</p>
+                </div>
+                <div className="flex gap-4">
+                  <p className="font-medium">Salesman </p>
+                  <p className="ml-2">: {salesman}</p>
+                </div>
               </div>
             </div>
-            <div className="flex-1">
-              <div className="flex gap-4">
-                <p className="font-semibold">Invoice</p>
-                <p className="ml-4">{invoiceId}</p>
-              </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Date</p>
-                <p className="ml-9">{new Date().toLocaleDateString()}</p>
-              </div>
-              <div className="flex gap-4">
-                <p className="font-semibold">Salesman</p>
-                <p>{salesman}</p>
-              </div>
+            <hr class="border-gray-400 border-t-2 w-full" />
+            <div className="w-full flex gap-4 text-xs">
+              <p>
+                Customer <span>: {customer.customer_name}</span>
+              </p>
+              <p>
+                Mobile <span>: {customer.customer_number}</span>
+              </p>
+              <p>
+                Address <span>: {customer.customer_address}</span>
+              </p>
             </div>
-          </div>
-          <div className="">
-            <div className="overflow-x-auto my-4">
-              <Table striped>
-                <Table.Head>
+            <hr class="border-gray-400 border-t-2 w-full" />
+            <div className="overflow-x-auto">
+              <Table>
+                <Table.Head className="">
                   <Table.HeadCell>No</Table.HeadCell>
-                  <Table.HeadCell>Product name</Table.HeadCell>
-                  <Table.HeadCell>Price</Table.HeadCell>
-                  <Table.HeadCell>Qty</Table.HeadCell>
-                  <Table.HeadCell>warranty</Table.HeadCell>
-                  <Table.HeadCell>Discount</Table.HeadCell>
-                  <Table.HeadCell>Total</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Product name</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Price</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Qty</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">warranty</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Discount</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Total</Table.HeadCell>
                 </Table.Head>
-                <Table.Body className="divide-y">
+                <Table.Body className="">
                   {orderedList.map((product, index) => (
                     <Table.Row
                       key={index}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800 font-medium text-black text-sm"
                     >
                       <Table.Cell>{index + 1}</Table.Cell>
-                      <Table.Cell>{product.product_name}</Table.Cell>
-                      <Table.Cell>{product.price}</Table.Cell>
-                      <Table.Cell>{product.quantity}</Table.Cell>
-                      <Table.Cell>{product.warranty_period}</Table.Cell>
-                      <Table.Cell>
+                      <Table.Cell className="text-xs py-0">
+                        {product.product_name}
+                        <br />
+                        {product.serial_number && (
+                          <span className="font-semibold">
+                            code : {product.serial_number}
+                          </span>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell className="text-xs py-0">{product.price}</Table.Cell>
+                      <Table.Cell className="text-xs py-0">{product.quantity}</Table.Cell>
+                      <Table.Cell className="text-xs py-0">{product.warranty_period}</Table.Cell>
+                      <Table.Cell className="text-xs py-0">
                         {Number(product.discount).toFixed(2)}
                       </Table.Cell>
-                      <Table.Cell>
+                      <Table.Cell className="text-xs py-0">
                         {(
                           Number(product.price) * Number(product.quantity) -
                           Number(product.discount)
@@ -442,10 +485,35 @@ export default function Billing() {
                 </Table.Body>
               </Table>
             </div>
-          </div>
-          <div className="flex justify-between">
-            <p>Thank you for Your Business</p>
-            <p className="font-semibold mr-2">Total : {total.toFixed(2)}</p>
+            <div className="flex justify-end">
+              <p className="font-semibold mr-4 text-sm">Total : {total.toFixed(2)}</p>
+            </div>
+            <div className="w-full flex gap-4 justify-between items-end text-xs">
+              <div>
+                <p className="italic">
+                  {" "}
+                  <strong>Note</strong> Goods Sold are Non Refundable /
+                  Not Exchangeable.{" "}
+                </p>
+                <p className="underline font-medium">
+                  Warranty does not Apply.
+                </p>
+                <ul className="pl-4 list-disc">
+                  <li>
+                    To damages caused by Accident / Abuse / Misuse / Flood
+                  </li>
+                  <li>To consumable Parts such as Batteries</li>
+                  <li>To Cosmetic Damages (Scratches / Dents)</li>
+                  <li>Display, Touch and No Power</li>
+                  {/* <li>Modification of Software and Hardware.</li> */}
+                </ul>
+              </div>
+              <div>
+                <p>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ </p>
+                <p>Customer Signature</p>
+                <p className="text-xs whitespace-nowrap">Goods Recived in good condition</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
