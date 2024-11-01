@@ -236,7 +236,7 @@ export default function Billing() {
     onBeforePrint: handleBeforePrint,
   });
 
-  
+
 
   return (
     <div className="flex w-full relative bg-slate-100">
@@ -389,7 +389,7 @@ export default function Billing() {
       </Modal>
 
       {/* Bill */}
-      <div className="hidden">
+      <div className="">
         <div ref={componentRef} className="p-3 pr-6 border-4">
           <div className="bg-white flex flex-col gap-1 px-3 py-1 ">
             <div className="flex justify-between items-end ">
@@ -443,14 +443,14 @@ export default function Billing() {
             <hr class="border-gray-400 border-t-2 w-full" />
             <div className="overflow-x-auto">
               <Table>
-                <Table.Head>
+                <Table.Head className="">
                   <Table.HeadCell>No</Table.HeadCell>
-                  <Table.HeadCell className="text-xs">Product name</Table.HeadCell>
-                  <Table.HeadCell className="text-xs">Price</Table.HeadCell>
-                  <Table.HeadCell className="text-xs">Qty</Table.HeadCell>
-                  <Table.HeadCell className="text-xs">warranty</Table.HeadCell>
-                  <Table.HeadCell className="text-xs">Discount</Table.HeadCell>
-                  <Table.HeadCell className="text-xs">Total</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Product name</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Price</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Qty</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">warranty</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Discount</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">Total</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="">
                   {orderedList.map((product, index) => (
@@ -459,7 +459,7 @@ export default function Billing() {
                       className="bg-white dark:border-gray-700 dark:bg-gray-800 font-medium text-black text-sm"
                     >
                       <Table.Cell>{index + 1}</Table.Cell>
-                      <Table.Cell className="text-xs">
+                      <Table.Cell className="text-xs py-0">
                         {product.product_name}
                         <br />
                         {product.serial_number && (
@@ -468,13 +468,13 @@ export default function Billing() {
                           </span>
                         )}
                       </Table.Cell>
-                      <Table.Cell className="text-xs">{product.price}</Table.Cell>
-                      <Table.Cell className="text-xs">{product.quantity}</Table.Cell>
-                      <Table.Cell className="text-xs">{product.warranty_period}</Table.Cell>
-                      <Table.Cell className="text-xs">
+                      <Table.Cell className="text-xs py-0">{product.price}</Table.Cell>
+                      <Table.Cell className="text-xs py-0">{product.quantity}</Table.Cell>
+                      <Table.Cell className="text-xs py-0">{product.warranty_period}</Table.Cell>
+                      <Table.Cell className="text-xs py-0">
                         {Number(product.discount).toFixed(2)}
                       </Table.Cell>
-                      <Table.Cell className="text-xs">
+                      <Table.Cell className="text-xs py-0">
                         {(
                           Number(product.price) * Number(product.quantity) -
                           Number(product.discount)
@@ -493,7 +493,7 @@ export default function Billing() {
                 <p className="italic">
                   {" "}
                   <strong>Note</strong> Goods Sold are Non Refundable /
-                  NotExchangeable.{" "}
+                  Not Exchangeable.{" "}
                 </p>
                 <p className="underline font-medium">
                   Warranty does not Apply.
@@ -509,7 +509,7 @@ export default function Billing() {
                 </ul>
               </div>
               <div>
-                <p>_ _ _ _ _ _ _ _ _ _</p>
+                <p>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ </p>
                 <p>Customer Signature</p>
                 <p className="text-xs whitespace-nowrap">Goods Recived in good condition</p>
               </div>
