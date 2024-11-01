@@ -5,7 +5,7 @@ import { Table } from "flowbite-react";
 import { useReactToPrint } from "react-to-print";
 import { useSelector } from "react-redux";
 
-export default function DailyReportAdmin({ show, onClose, date }) {
+export default function DailyReportAdmin({ show, onClose, date, selectedStore }) {
   // const data = {
   //   total_income: 123000,
   //   total_expense: 23000, // Fixed the typo from "expence" to "expense"
@@ -72,10 +72,12 @@ export default function DailyReportAdmin({ show, onClose, date }) {
   useEffect(() => {
     fetchMobileData("report/daily-report", {
       date,
-      store_id: userData.store_id,
+      store_name: selectedStore,
     });
   }, [date]);
 
+  console.log(selectedStore);
+  
   const componentRef = React.useRef(null);
 
   const handleAfterPrint = React.useCallback(() => {

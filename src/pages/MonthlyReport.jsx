@@ -17,6 +17,7 @@ export default function MonthlyReport() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedStore,setSelectedStore] = useState(1);
 
   const selectedMonthName = selectedMonth.toLocaleDateString("en-US", {
     month: "long",
@@ -95,7 +96,7 @@ export default function MonthlyReport() {
                       <Table.Row
                         key={index2}
                         className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:text-slate-900"
-                        onClick={() => handleClick(sale)}
+                        onClick={() => {handleClick(sale);setSelectedStore(shop.store)}}
                       >
                         <Table.Cell>{sale.date}</Table.Cell>
                         <Table.Cell>{sale.income}</Table.Cell>
@@ -135,6 +136,7 @@ export default function MonthlyReport() {
           show={openModal}
           onClose={() => setOpenModal(false)}
           date={selectedDate}
+          selectedStore={selectedStore}
         />
       )}
     </div>
