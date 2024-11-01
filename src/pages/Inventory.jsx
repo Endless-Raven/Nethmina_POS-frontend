@@ -178,7 +178,7 @@ const Inventory = () => {
               onChange={(e) => {
                 if (e.target.checked) {
                   setFilteredProducts(
-                    products.filter((p) => parseFloat(p.product_stock) < 10)
+                    products.filter((p) => parseFloat(p.stock_quantity) < 10)
                   );
                 } else {
                   setFilteredProducts(products);
