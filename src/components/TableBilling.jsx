@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "flowbite-react";
+import { MdOutlineDelete } from "react-icons/md";
 
-export default function TableBilling({ orderedList, setTotal }) {
-  
+export default function TableBilling({
+  orderedList,
+  setTotal,
+  setOrderedList,
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -15,6 +19,10 @@ export default function TableBilling({ orderedList, setTotal }) {
     setTotal(Number(totalAmount));
   }, [orderedList]);
 
+  const removeItem = (id) => {
+    setOrderedList(orderedList.filter((item) => item.product_id != id));
+  };
+
   return (
     <div className="min-h-[40%] overflow-x-auto">
       <Table hoverable striped>
@@ -26,6 +34,7 @@ export default function TableBilling({ orderedList, setTotal }) {
           <Table.HeadCell>No of Units</Table.HeadCell>
           <Table.HeadCell>Discount</Table.HeadCell>
           <Table.HeadCell>Total Cost</Table.HeadCell>
+          <Table.HeadCell>Del</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
           {orderedList.length === 0 ? (
@@ -39,6 +48,9 @@ export default function TableBilling({ orderedList, setTotal }) {
               <Table.Cell>0</Table.Cell>
               <Table.Cell>Rs: 0.00</Table.Cell>
               <Table.Cell>Rs: 0.00</Table.Cell>
+              <Table.Cell className="text-2xl hover:text-red-500">
+                <MdOutlineDelete />
+              </Table.Cell>
             </Table.Row>
           ) : (
             orderedList.map((item, index) => (
@@ -58,6 +70,14 @@ export default function TableBilling({ orderedList, setTotal }) {
                   Rs:{" "}
                   {Number(item.price) * Number(item.quantity) -
                     Number(item.discount)}
+                </Table.Cell>
+                <Table.Cell
+                  className="text-2xl hover:text-red-500"
+                  onClick={() => {
+                    removeItem(item.product_id);
+                  }}
+                >
+                  <MdOutlineDelete />
                 </Table.Cell>
               </Table.Row>
             ))

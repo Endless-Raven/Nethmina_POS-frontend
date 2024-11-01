@@ -57,10 +57,10 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
 
   const [models, setModels] = useState([]);
   useEffect(() => {
-    if (selectedBrand !== "") {
+    if (selectedBrand !== "" && selectedCategory !== "") {
       fetchModels();
     }
-  }, [selectedBrand]);
+  }, [selectedBrand, selectedCategory]);
   const fetchModels = async () => {
     try {
       const response = await axios.get(

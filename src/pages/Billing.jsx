@@ -236,6 +236,8 @@ export default function Billing() {
     onBeforePrint: handleBeforePrint,
   });
 
+  
+
   return (
     <div className="flex w-full relative bg-slate-100">
       {/* sidebar */}
@@ -253,7 +255,7 @@ export default function Billing() {
       {/* main content */}
       <div className="w-[70%] border-l-4 p-2 min-h-[90vh] relative">
         {/* table */}
-        <TableBilling setTotal={setTotal} orderedList={orderedList} />
+        <TableBilling setTotal={setTotal} orderedList={orderedList} setOrderedList={setOrderedList}/>
         {/* form */}
         <div className="absolute bottom-4 z-10 w-[calc(100%-1rem)] border-2 p-4 rounded-md bg-white">
           <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
