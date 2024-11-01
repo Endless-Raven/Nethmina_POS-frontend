@@ -3,6 +3,7 @@ import { Button, Modal } from "flowbite-react";
 import { useMobileForImei } from "../../services/api";
 import { Table } from "flowbite-react";
 import { useReactToPrint } from "react-to-print";
+import { useSelector } from "react-redux";
 
 export default function DailyReportAdmin({ show, onClose, date }) {
   // const data = {
@@ -60,16 +61,19 @@ export default function DailyReportAdmin({ show, onClose, date }) {
   //   ],
   // };
   // const error = "";
-
+  const userData = useSelector((state) => state.user.data); // store_id
   const {
-    data,                                             // need to uncomment after connecting to the backend
+    data, // need to uncomment after connecting to the backend
     error,
     loading,
     fetchMobileData,
   } = useMobileForImei();
 
   useEffect(() => {
-    fetchMobileData("report/daily-report", { date });
+    fetchMobileData("report/daily-report", {
+      date,
+      store_id: userData.store_id,
+    });
   }, [date]);
 
   const componentRef = React.useRef(null);
@@ -101,7 +105,7 @@ export default function DailyReportAdmin({ show, onClose, date }) {
         ) : data ? (
           <div className="overflow-x-auto" ref={componentRef}>
             <Table hoverable>
-              <Table.Head >
+              <Table.Head>
                 <Table.HeadCell>Time</Table.HeadCell>
                 <Table.HeadCell>Category</Table.HeadCell>
                 <Table.HeadCell>Income</Table.HeadCell>
