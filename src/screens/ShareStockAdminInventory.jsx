@@ -3,10 +3,12 @@ import { Button, Modal, Label, Select, TextInput } from "flowbite-react";
 import PendingRequestList from "../components/admin_inventory/PendingRequestList";
 import { ProductTable } from "../components/admin_inventory/ProductTable";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.API_BASE_URL;
 
 function ShareStockAdminInventory() {
+  const userData = useSelector((state) => state.user.data);
   // Backend data
   const [shopsAndCategories, setShopsAndCategories] = useState({
     shops: [],
@@ -32,6 +34,7 @@ function ShareStockAdminInventory() {
         ...prev,
         product_types: response.data,
       }));
+      // console.log(response.data)
     } catch (error) {
       console.error("Error fetching Categories:", error);
       setError(error.message);
@@ -77,6 +80,7 @@ function ShareStockAdminInventory() {
         `${API_BASE_URL}/product/brands/byproducttype?product_type=${type}`
       );
       setBrands(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching brands data:", error);
       setError(error.message);
@@ -85,14 +89,15 @@ function ShareStockAdminInventory() {
     }
   };
 
-  const getProducts = async (type, brand) => {
+  const getProducts = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/product/getFiltered/ProductDetails`,
         {
-          brand_name: brand,
-          product_type: type,
+          brand_name: selectedBrand,
+          product_type: selectedType,
+          store_id: userData.store_id,
         }
       );
       setProducts(response.data);
@@ -150,6 +155,8 @@ function ShareStockAdminInventory() {
     });
   };
 
+  // console.log(items);
+
   const handleTransfer = async () => {
     const req = {
       products: items,
@@ -163,15 +170,32 @@ function ShareStockAdminInventory() {
         req
       );
       setMessage("Transfer Send Successfully");
-      setItems([]);
     } catch (error) {
       console.error("Error fetching transfer data:", error);
       setError(error.message);
     } finally {
+      setItems([]);
       setLoading(false);
       setTimeout(() => setMessage(""), 4000);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => setError(""), 4000);
+    }
+  }, [error]);
+
+  // useEffect(() => {
+  //   getModels();
+  // }, [selectedType]);
+
+  useEffect(() => {
+    if (selectedType && selectedBrand) {
+      setProducts([]);
+      getProducts();
+    }
+  }, [selectedType, selectedBrand]);
 
   return (
     <div className="share-stock-container p-5 min-h-screen max-w-5xl mx-auto">
@@ -190,11 +214,17 @@ function ShareStockAdminInventory() {
             onChange={(e) => setToShop(e.target.value)}
           >
             <option value="">Select Shop</option>
-            {shopsAndCategories?.shops?.map((shop, index) => (
-              <option key={index} value={shop}>
-                {shop}
-              </option>
-            ))}
+            {shopsAndCategories?.shops
+              ?.filter((shop) => shop !== "Tech_Haven")
+              .map((shop, index) => (
+                <option
+                  key={index}
+                  value={shop}
+                  className={`${shop === "repair" && "bg-red-300"}`}
+                >
+                  {shop}
+                </option>
+              ))}
           </Select>
         </div>
         {toShop && (
@@ -243,7 +273,6 @@ function ShareStockAdminInventory() {
                     value={newItem.brand}
                     onChange={(e) => {
                       setSelectedBrand(e.target.value);
-                      getProducts(selectedType, e.target.value);
                     }}
                   >
                     <option value="">Select Brand</option>
@@ -263,9 +292,14 @@ function ShareStockAdminInventory() {
                     id="product"
                     value={newItem.product_id}
                     onChange={(e) => {
+                      console.log("onChange triggered");
+                      var name = products.find(
+                        (p) => p.product_id == e.target.value
+                      ).product_name;
                       setNewItem({
                         ...newItem,
                         product_id: e.target.value,
+                        product_name: name,
                       });
                     }}
                   >

@@ -2,7 +2,7 @@ import {Table,TableBody,TableCell,TableHead,TableHeadCell,TableRow,}from "flowbi
 
 export function ProductTable({ items }) {
 
-  console.log(items);
+  // console.log(items);
 
   return (
     <div className="overflow-x-auto border border-collapse rounded-lg">
@@ -18,7 +18,7 @@ export function ProductTable({ items }) {
               className=" bg-slate-200 hover:bg-slate-300"
             >
               <TableCell className="">
-                {item.product_id}
+                {item.product_name}
               </TableCell>
               <TableCell className="">
                 {item.transfer_quantity}
