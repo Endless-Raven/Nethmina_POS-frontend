@@ -19,7 +19,7 @@ function Product() {
   const [brands, setBrands] = useState([]);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStore, setSelectedStore] = useState("All");
+  const [selectedStore, setSelectedStore] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -97,7 +97,7 @@ function Product() {
         `${API_BASE_URL}/product/getFiltered/ProductDetails`,
         {
           product_name: searchTerm,
-          store_name: selectedStore,
+          store_id: selectedStore,
           brand_name: selectedBrand,
           product_type: selectedCategory,
         }
@@ -131,7 +131,7 @@ function Product() {
             </div>
             <br />
             <div className="relative flex flex-col w-full gap-4">
-              <select
+              {/* <select
                 value={selectedStore}
                 onChange={(e) => setSelectedStore(e.target.value)}
                 className="p-2 border rounded-lg bg-white"
@@ -142,7 +142,7 @@ function Product() {
                     {store}
                   </option>
                 ))}
-              </select>
+              </select> */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
