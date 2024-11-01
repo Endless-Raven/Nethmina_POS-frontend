@@ -68,16 +68,18 @@ const Inventory = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/product/models/bybrand`,
+        `${API_BASE_URL}/product/inventory/stock`,
         {
           params: {
             product_type: selectedType,
             brand_name: selectedBrand,
+            store_id: userData.store_id
           },
         }
       );
       setProducts(response.data);
       setFilteredProducts(response.data);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
       setError(error.message);
