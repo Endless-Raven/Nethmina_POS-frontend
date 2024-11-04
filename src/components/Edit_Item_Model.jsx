@@ -175,6 +175,34 @@ const Edit_Item_Model = ({ productName }) => {
         required
         className="mb-2"
       />
+      
+      <Label htmlFor="capacity" value="Capacity" />
+      
+      <TextInput
+        type="text"
+        id="capacity"
+        required
+        
+      />
+
+<Label htmlFor="colour" value="Colour" />
+      
+      <TextInput
+        type="text"
+        id="colour"
+        required
+        
+      />
+
+<Label htmlFor="grade" value="Grade" />
+      
+      <TextInput
+        type="text"
+        id="grade"
+        required
+        
+      />
+
       <Label htmlFor="warranty_period" value="Warranty Period" />
       <TextInput
         id="warranty_period"
