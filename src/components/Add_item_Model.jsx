@@ -53,6 +53,7 @@ const Add_item_Model = () => {
     // Trim and validate required fields
     const trimmedName = itemNames.name.trim();
     const trimmedCode = newItem.code.trim();
+    
     const trimmedRetailPrice = newItem.retailPrice?.toString().trim();
     const trimmedWarrantyPeriod = newItem.warranty_period.trim();
     const trimmedCategory = newItem.category?.trim();
@@ -64,6 +65,7 @@ const Add_item_Model = () => {
 
     if (
       !trimmedName ||
+      
       !trimmedRetailPrice ||
       !trimmedWarrantyPeriod ||
       !trimmedCategory ||
@@ -88,6 +90,7 @@ const Add_item_Model = () => {
       const response = await axios.post(`${API_BASE_URL}/product`, {
         product_name: trimmedName,
         product_code: trimmedCode,
+        
         product_price: trimmedRetailPrice,
         warranty_period: trimmedWarrantyPeriod,
         imei_numbers: imeiNumbers,
@@ -179,6 +182,7 @@ const Add_item_Model = () => {
   const resetForm = () => {
     setNewItem({
       code: "",
+      
       warranty_period: "",
       imei_number: "",
       qty: "",
@@ -238,6 +242,30 @@ const Add_item_Model = () => {
         }
         onKeyDown={handleKeyDown}
         required
+      />
+      <Label htmlFor="capacity" value="Capacity" />
+      
+        <TextInput
+          type="text"
+          id="capacity"
+          required  
+        />
+
+      <Label htmlFor="colour" value="Colour" />
+      
+      <TextInput
+        type="text"
+        id="colour"
+        required  
+      />
+
+      <Label htmlFor="grade" value="Grade" />
+      
+      <TextInput
+        type="text"
+        id="grade"
+        required
+        
       />
 
       <Label htmlFor="warranty_period" value="Warranty Period" />
