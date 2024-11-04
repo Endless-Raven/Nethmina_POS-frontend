@@ -23,7 +23,7 @@ const Add_item_Model = () => {
     name: "",
     brand: "",
     code: "",
-    qty: "",
+    qty: 0,
     warranty_period: "No Warranty",
     imei_number: "",
     category: "",
@@ -191,7 +191,7 @@ const Add_item_Model = () => {
 
       warranty_period: "",
       imei_number: "",
-      qty: "",
+      qty: 0,
       retailPrice: "",
       wholesale_price: "",
       store: "",
@@ -207,7 +207,6 @@ const Add_item_Model = () => {
     setItemNames({ name: "" });
     setReset(true);
   };
-  console.log(newItem);
   return (
     <div className="space-y-6">
       <div className="w-full flex gap-4">
