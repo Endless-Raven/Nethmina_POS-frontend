@@ -3,23 +3,29 @@ import axios from "axios";
 import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import UpdateItemModel from "../components/admin/UpdateItemModel";
-
+import ImeiNumberModel from "../components/admin/ImeiNumberModel";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 function ItemAdminInventory() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState("");
+  const [showImeiNumber, setShowImeiNumberModal] = useState("");
   const [qty, setqty] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [stores, setStores] = useState([]);
+  const [color, setColor] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedColor,setSelectedColor]=useState("All");
+  const [selectedGrade,setSelectedGrade]=useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
+  const [selectedProductID, setselectedProductID] = useState("");
+  const [selectedShop, setselectedShop] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -28,11 +34,22 @@ function ItemAdminInventory() {
     fetchCategories();
     fetchBrands();
     fetchProductData();
+    fetchColor();
   }, []);
 
   useEffect(() => {
     fetchProductData();
   }, [searchTerm, selectedStore, selectedBrand, selectedCategory]);
+
+
+  useEffect(() => {
+    fetchProductData();
+  }, [selectedColor]);
+
+  
+  useEffect(() => {
+    fetchProductData();
+  }, [selectedGrade]);
 
   useEffect(() => {
     fetchBrands();
@@ -57,6 +74,17 @@ function ItemAdminInventory() {
       setStores(response.data);
     } catch (error) {
       console.error("Error fetching stores:", error);
+    }
+  };
+
+  const fetchColor = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/getProductColor/get`
+      );
+      setColor(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
     }
   };
 
@@ -98,6 +126,8 @@ function ItemAdminInventory() {
           store_name: selectedStore,
           brand_name: selectedBrand,
           product_type: selectedCategory,
+          color:selectedColor,
+          grade:selectedGrade,
         }
       );
       setProducts(response.data);
@@ -165,6 +195,29 @@ function ItemAdminInventory() {
                   </option>
                 ))}
               </select>
+              <select
+                value={selectedColor}
+                onChange={(e) => setSelectedColor(e.target.value)}
+                className="p-2 border rounded-lg bg-white"
+              >
+                <option value="All">Color</option>
+                {color.map((color) => (
+                  <option key={color} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedGrade}
+                onChange={(e) => setSelectedGrade(e.target.value)}
+                className="p-2 border rounded-lg bg-white"
+              >
+                <option value="All">Grade</option>
+                <option value="P1+">P1+</option>
+                <option value="P2+">P2+</option>
+                <option value="P3+">P3+</option>
+                <option value="P4+">P4+</option>
+              </select>
             </div>
           </div>
         </div>
@@ -217,6 +270,11 @@ function ItemAdminInventory() {
                     <Table.Row
                       className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-emerald-50"
                       key={index}
+                      onClick={() => {  
+                        setselectedProductID(item.product_id);
+                        setselectedShop(item.store_name);
+                        setShowImeiNumberModal(true);
+                         }}
                     >
                       <Table.Cell>{index + 1}</Table.Cell>
                       <Table.Cell>
@@ -241,6 +299,7 @@ function ItemAdminInventory() {
                           ...
                         </Button>
                       </Table.Cell>
+                      
                     </Table.Row>
                   ))
                 )}
@@ -255,6 +314,14 @@ function ItemAdminInventory() {
         showModel={showEditModal}
         close={() => {
           setShowEditModal(false);
+        }}
+      />
+       <ImeiNumberModel
+        productID={selectedProductID}
+        shop={selectedShop}
+        showModel={showImeiNumber}
+        close={() => {
+          setShowImeiNumberModal(false);
         }}
       />
     </div>

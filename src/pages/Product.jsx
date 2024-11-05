@@ -16,11 +16,14 @@ function Product() {
   const [editIndex, setEditIndex] = useState(null);
   const [stores, setStores] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [color, setColor] = useState([]);
   const [brands, setBrands] = useState([]);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStore, setSelectedStore] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedColor,setSelectedColor]=useState("All");
+  const [selectedGrade,setSelectedGrade]=useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,6 +33,7 @@ function Product() {
     fetchCategories();
     fetchBrands();
     fetchProductData();
+    fetchColor();
   }, []);
 
   useEffect(() => {
@@ -42,7 +46,16 @@ function Product() {
 
   useEffect(() => {
     fetchProductData();
+  }, [selectedColor]);
+
+  useEffect(() => {
+    fetchProductData();
   }, [selectedBrand]);
+
+
+  useEffect(() => {
+    fetchProductData();
+  }, [selectedGrade]);
 
   useEffect(() => {
     fetchProductData();
@@ -69,6 +82,16 @@ function Product() {
         `${API_BASE_URL}/product/getProductTypes/get`
       );
       setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+  const fetchColor = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/getProductColor/get`
+      );
+      setColor(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -100,6 +123,8 @@ function Product() {
           store_id: selectedStore,
           brand_name: selectedBrand,
           product_type: selectedCategory,
+          color:selectedColor,
+          grade:selectedGrade,
         }
       );
       setProducts(response.data);
@@ -131,18 +156,6 @@ function Product() {
             </div>
             <br />
             <div className="relative flex flex-col w-full gap-4">
-              {/* <select
-                value={selectedStore}
-                onChange={(e) => setSelectedStore(e.target.value)}
-                className="p-2 border rounded-lg bg-white"
-              >
-                <option value="All">All Stores</option>
-                {stores.map((store) => (
-                  <option key={store} value={store}>
-                    {store}
-                  </option>
-                ))}
-              </select> */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -167,6 +180,30 @@ function Product() {
                   </option>
                 ))}
               </select>
+              <select
+                value={selectedColor}
+                onChange={(e) => setSelectedColor(e.target.value)}
+                className="p-2 border rounded-lg bg-white"
+              >
+                <option value="All">Color</option>
+                {color.map((color) => (
+                  <option key={color} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedGrade}
+                onChange={(e) => setSelectedGrade(e.target.value)}
+                className="p-2 border rounded-lg bg-white"
+              >
+                <option value="All">Grade</option>
+                <option value="P1+">P1+</option>
+                <option value="P2+">P2+</option>
+                <option value="P3+">P3+</option>
+                <option value="P4+">P4+</option>
+              </select>
+          
               <Button
                 className="mt-3 p-1 mb-3"
                 onClick={() => setShowModal(true)}
@@ -188,7 +225,9 @@ function Product() {
                 <Table.HeadCell className="bg-sky-300">Type</Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Price</Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Warranty</Table.HeadCell>
-                <Table.HeadCell className="bg-sky-300">MAx Discount</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">
+                  MAx Discount
+                </Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Edit</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
