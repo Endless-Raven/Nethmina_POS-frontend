@@ -32,9 +32,9 @@ const Add_item_Model = () => {
     retailPrice: "",
     max_discount: "0",
     low_count: 10,
-    capacity: "128 GB",
+    capacity: "",
     color: "other",
-    grade: "P1+",
+    grade: "",
   });
 
   useEffect(() => {
@@ -200,9 +200,9 @@ const Add_item_Model = () => {
       category: "",
       max_discount: "",
       low_count: 10,
-      capacity: "128 GB",
+      capacity: "",
       color: "other",
-      grade: "P1+",
+      grade: "",
     });
     setItemNames({ name: "" });
     setReset(true);
@@ -274,6 +274,7 @@ const Add_item_Model = () => {
               })
             }
           >
+            <option value="">Select</option>
             <option value="64 GB">64 GB</option>
             <option value="128 GB">128 GB</option>
             <option value="256 GB">256 GB</option>
@@ -308,6 +309,7 @@ const Add_item_Model = () => {
               })
             }
           >
+            <option value="">select</option>
             <option value="P1+">P1+</option>
             <option value="P2+">P2+</option>
             <option value="P3+">P3+</option>
