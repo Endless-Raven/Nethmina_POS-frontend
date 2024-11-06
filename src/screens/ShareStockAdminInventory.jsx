@@ -293,7 +293,13 @@ function ShareStockAdminInventory() {
         )}
       </div>
 
-      <Modal show={modalOpen} onClose={() => setModalOpen(false)}>
+      <Modal
+        show={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setReset(true);
+        }}
+      >
         <Modal.Header>Add Item</Modal.Header>
         <Modal.Body>
           <form onSubmit={handleAddItem}>
@@ -321,7 +327,7 @@ function ShareStockAdminInventory() {
                 <Label htmlFor="product">Product</Label>
                 <Select
                   id="product"
-                  value={newItem.product_id}
+                  value={newItem.product_name}
                   onChange={(e) => {
                     console.log("onChange triggered");
                     var name = products.find(
@@ -329,14 +335,17 @@ function ShareStockAdminInventory() {
                     ).product_name;
                     setNewItem({
                       ...newItem,
-                      product_id: e.target.value,
+                      product_name: e.target.value,
                       product_name: name,
                     });
                   }}
                 >
                   <option value="">Select Product</option>
                   {products.map((product) => (
-                    <option key={product.product_id} value={product.product_id}>
+                    <option
+                      key={product.product_name}
+                      value={product.product_name}
+                    >
                       {product.product_name}
                     </option>
                   ))}
@@ -358,8 +367,7 @@ function ShareStockAdminInventory() {
                       });
                     }}
                   />
-
-                  {selectedType === "Mobile Phone" && (
+                  {newItem.category === "Mobile Phone" && (
                     <div className="mt-4">
                       <Label>IMEI Numbers</Label>
                       {[...Array(Number(newItem.transfer_quantity))].map(
@@ -369,13 +377,40 @@ function ShareStockAdminInventory() {
                             type="text"
                             placeholder={`IMEI ${index + 1}`}
                             required
+                            maxLength={15} // Limit to 15 characters
                             onChange={(e) => {
-                              const updatedIMEIs = [...newItem.imei_number];
-                              updatedIMEIs[index] = e.target.value;
-                              setNewItem({
-                                ...newItem,
-                                imei_number: updatedIMEIs,
-                              });
+                              const value = e.target.value;
+
+                              if (value.length === 15) {
+                                // Ensure imei_number is an array before updating
+                                const updatedIMEIs = Array.isArray(
+                                  newItem.imei_number
+                                )
+                                  ? [...newItem.imei_number]
+                                  : [];
+                                updatedIMEIs[index] = value;
+                                setNewItem({
+                                  ...newItem,
+                                  imei_number: updatedIMEIs,
+                                });
+                                console.log(
+                                  "IMEI Array Before Update:",
+                                  newItem.imei_number
+                                );
+                              }
+                            }}
+                            onBlur={(e) => {
+                              const value = e.target.value;
+
+                              // Update only if 15 characters are present when leaving the field
+                              if (value.length === 15) {
+                                const updatedIMEIs = [...newItem.imei_number];
+                                updatedIMEIs[index] = value;
+                                setNewItem({
+                                  ...newItem,
+                                  imei_number: updatedIMEIs,
+                                });
+                              }
                             }}
                           />
                         )
