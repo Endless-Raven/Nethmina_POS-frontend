@@ -224,9 +224,12 @@ function Product() {
                 <Table.HeadCell className="bg-sky-300">Brand</Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Type</Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Price</Table.HeadCell>
-                <Table.HeadCell className="bg-sky-300">Warranty</Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">Color</Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">
-                  MAx Discount
+                  Grade
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-sky-300">
+                  Capacity
                 </Table.HeadCell>
                 <Table.HeadCell className="bg-sky-300">Edit</Table.HeadCell>
               </Table.Head>
@@ -265,8 +268,9 @@ function Product() {
                       <Table.Cell> {item.brand_name}</Table.Cell>
                       <Table.Cell>{item.product_type}</Table.Cell>
                       <Table.Cell>{item.product_price}</Table.Cell>
-                      <Table.Cell>{item.warranty_period}</Table.Cell>
-                      <Table.Cell>{item.max_discount}</Table.Cell>
+                      <Table.Cell>{item.color}</Table.Cell>
+                      <Table.Cell>{item.grade}</Table.Cell>
+                      <Table.Cell>{item.capacity}</Table.Cell>
                       <Table.Cell>
                         <Button
                           className="m-3 p-1 mb-3 text-lg font-bold"

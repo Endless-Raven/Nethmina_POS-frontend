@@ -31,6 +31,7 @@ const Edit_Item_Model = ({ productName }) => {
     retailPrice: "",
     max_discount: "",
     low_count: "",
+    product_id:"",
   });
 
   useEffect(() => {
@@ -55,6 +56,7 @@ const Edit_Item_Model = ({ productName }) => {
       color: "",
       grade: "",
       capacity: "",
+      product_id:""
     });
     setItemNames({ name: "" });
     setReset(true);
@@ -70,6 +72,7 @@ const Edit_Item_Model = ({ productName }) => {
         const product = response.data;
         console.log(response.data);
         setNewItem({
+          product_id:product.product_id,
           name: product.product_name,
           brand: product.brand_name,
           qty: product.product_stock,
@@ -78,7 +81,7 @@ const Edit_Item_Model = ({ productName }) => {
           grade: product.grade,
           low_count: product.low_count,
           max_discount: product.max_discount,
-          low_count: product.max_discount,
+          low_count: product.low_count,
           warranty_period: product.warranty_period,
           imei_number: product.imei_number,
           category: product.product_type,
@@ -112,6 +115,7 @@ const Edit_Item_Model = ({ productName }) => {
     const productModel = newItem.model?.trim();
     const wholesalePrice = newItem.wholesale_price?.trim();
     const max_discount = newItem.max_discount;
+    const product_id = newItem.product_id;
 
     // Check for missing fields
     if (
@@ -131,7 +135,7 @@ const Edit_Item_Model = ({ productName }) => {
     setLoading(true);
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/product/${productName}`,
+        `${API_BASE_URL}/product/${product_id}`,
         {
           product_name: productName,
           product_price: productPrice,
@@ -144,6 +148,7 @@ const Edit_Item_Model = ({ productName }) => {
           color: newItem.color,
           grade: newItem.grade,
           capacity: newItem.capacity,
+          low_count:newItem.low_count
         }
       );
 

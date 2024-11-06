@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Label, Spinner, Table } from "flowbite-react";
+import { Button, Modal, Spinner, Table } from "flowbite-react";
 import axios from "axios";
+
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function ImeiNumberModel({ productID, showModel, close, shop }) {
@@ -24,14 +25,14 @@ export default function ImeiNumberModel({ productID, showModel, close, shop }) {
           Product_id: productID,
         }
       );
-      setImeiNumbers(response.data);
+      const imeiList = response.data[0].split(","); // Split the string into an array of IMEI numbers
+      setImeiNumbers(imeiList);
     } catch (error) {
       console.error("Error fetching IMEI numbers:", error);
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <Modal show={showModel} onClose={close}>
@@ -46,13 +47,17 @@ export default function ImeiNumberModel({ productID, showModel, close, shop }) {
                 <Table.HeadCell>IMEI Numbers</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
-                {imeiNumbers.map((imei, index) => (
-                  <Table.Row key={index} className="bg-white">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900">
-                      {imei}
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
+                <Table.Row className="bg-white">
+                  <Table.Cell className="whitespace-nowrap font-medium text-gray-900">
+                    <div className="grid grid-cols-3 gap-4">
+                      {imeiNumbers.map((imei, index) => (
+                        <div key={index} className="border p-2 rounded text-center">
+                          {imei}
+                        </div>
+                      ))}
+                    </div>
+                  </Table.Cell>
+                </Table.Row>
               </Table.Body>
             </Table>
           ) : (

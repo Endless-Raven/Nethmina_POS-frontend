@@ -10,6 +10,7 @@ export function useMobileForImei() {                  // get data by sending que
   const [loading, setLoading] = useState(false);
 
   const fetchMobileData = async (endpoint,params) => {
+    setError(null);
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/${endpoint}`, {
