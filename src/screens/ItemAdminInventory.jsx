@@ -21,8 +21,8 @@ function ItemAdminInventory() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedColor,setSelectedColor]=useState("All");
-  const [selectedGrade,setSelectedGrade]=useState("All");
+  const [selectedColor, setSelectedColor] = useState("All");
+  const [selectedGrade, setSelectedGrade] = useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
   const [selectedProductID, setselectedProductID] = useState("");
   const [selectedShop, setselectedShop] = useState("");
@@ -41,12 +41,10 @@ function ItemAdminInventory() {
     fetchProductData();
   }, [searchTerm, selectedStore, selectedBrand, selectedCategory]);
 
-
   useEffect(() => {
     fetchProductData();
   }, [selectedColor]);
 
-  
   useEffect(() => {
     fetchProductData();
   }, [selectedGrade]);
@@ -126,8 +124,8 @@ function ItemAdminInventory() {
           store_name: selectedStore,
           brand_name: selectedBrand,
           product_type: selectedCategory,
-          color:selectedColor,
-          grade:selectedGrade,
+          color: selectedColor,
+          grade: selectedGrade,
         }
       );
       setProducts(response.data);
@@ -144,88 +142,89 @@ function ItemAdminInventory() {
 
   return (
     <div className="mt-4">
-      <div className="flex justify-between items-start mb-4 gap-3">
-        <div className="flex justify-between items-center w-1/4 mb-4 gap-3">
-          <div className="relative w-4/5 mx-auto">
-            <div className="relative">
-              <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search Item by Name"
-                value={searchTerm}
-                onChange={handleSearch}
-                className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
-              />
-            </div>
-            <br />
-            <div className="relative flex flex-col w-full gap-4">
-              <select
-                value={selectedStore}
-                onChange={(e) => setSelectedStore(e.target.value)}
-                className="p-2 border rounded-lg bg-white"
-              >
-                <option value="All">All Stores</option>
-                {stores.map((store) => (
-                  <option key={store} value={store}>
-                    {store}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="p-2 border rounded-lg bg-white"
-              >
-                <option value="All">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-                className="p-2 border rounded-lg bg-white"
-              >
-                <option value="All">All Brands</option>
-                {brands.map((brand, index) => (
-                  <option key={index} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedColor}
-                onChange={(e) => setSelectedColor(e.target.value)}
-                className="p-2 border rounded-lg bg-white"
-              >
-                <option value="All">Color</option>
-                {color.map((color) => (
-                  <option key={color} value={color}>
-                    {color}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedGrade}
-                onChange={(e) => setSelectedGrade(e.target.value)}
-                className="p-2 border rounded-lg bg-white"
-              >
-                <option value="All">Grade</option>
-                <option value="P1+">P1+</option>
-                <option value="P2+">P2+</option>
-                <option value="P3+">P3+</option>
-                <option value="P4+">P4+</option>
-              </select>
-            </div>
+      <div className="flex justify-between items-center mb-4 gap-3">
+        <div className="relative w-4/5 mx-auto">
+          <div className="relative pb-4">
+            <CiSearch className="absolute left-3 top-5 transform -translate-y-1/2 text-xl text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search Item by Name"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="pl-10 p-2 border rounded-lg border-gray-300 w-full"
+            />
+          </div>
+          <div className="relative flex justify-between w-full">
+            <select
+              value={selectedStore}
+              onChange={(e) => setSelectedStore(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">All Stores</option>
+              {stores.map((store) => (
+                <option key={store} value={store}>
+                  {store}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">All Categories</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">All Brands</option>
+              {brands.map((brand, index) => (
+                <option key={index} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedColor}
+              onChange={(e) => setSelectedColor(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">Color</option>
+              {color.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedGrade}
+              onChange={(e) => setSelectedGrade(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">Grade</option>
+              <option value="P1+">P1+</option>
+              <option value="P2+">P2+</option>
+              <option value="P3+">P3+</option>
+              <option value="P4+">P4+</option>
+            </select>
           </div>
         </div>
-        <div className="w-3/4">
+      </div>
+      <div className="flex justify-between items-start mb-4 gap-3">
+        <div>
           <div className="table-container overflow-x-auto max-h-[79vh] shadow-md">
             <Table hoverable>
               <Table.Head className="">
-                <Table.HeadCell className="bg-emerald-300">No</Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Bar Code
+                </Table.HeadCell>
                 <Table.HeadCell className="bg-emerald-300">
                   Store Name
                 </Table.HeadCell>
@@ -237,11 +236,18 @@ function ItemAdminInventory() {
                   Product
                 </Table.HeadCell>
                 <Table.HeadCell className="bg-emerald-300">
-                  Stock
+                  Color
                 </Table.HeadCell>
                 <Table.HeadCell className="bg-emerald-300">
-                  Edit
+                  Grade
                 </Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Capacity
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">
+                  Stock
+                </Table.HeadCell>
+                <Table.HeadCell className="bg-emerald-300">Edit</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
                 {loading ? (
@@ -270,24 +276,31 @@ function ItemAdminInventory() {
                     <Table.Row
                       className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-emerald-50"
                       key={index}
-                      onClick={() => {  
-                        setselectedProductID(item.product_id);
-                        setselectedShop(item.store_name);
-                        setShowImeiNumberModal(true);
-                         }}
                     >
-                      <Table.Cell>{index + 1}</Table.Cell>
+                      <Table.Cell>{item.product_code}</Table.Cell>
                       <Table.Cell>
                         <strong>{item.store_name}</strong>
                       </Table.Cell>
                       <Table.Cell> {item.brand_name}</Table.Cell>
                       <Table.Cell>{item.product_type}</Table.Cell>
-                      <Table.Cell>{item.product_name}</Table.Cell>
+                      <Table.Cell
+                        onClick={() => {
+                          setselectedProductID(item.product_id);
+                          setselectedShop(item.store_name);
+                          setShowImeiNumberModal(true);
+                        }}
+                      >
+                        {item.product_name}
+                      </Table.Cell>
+                      <Table.Cell>{item.color}</Table.Cell>
+                      <Table.Cell>{item.grade}</Table.Cell>
+                      <Table.Cell>{item.capacity}</Table.Cell>
                       <Table.Cell>{item.stock_quantity}</Table.Cell>
                       <Table.Cell>
                         <Button
                           className="m-3 p-1 mb-3 text-lg"
-                          onClick={() => {
+                          onClick={async () => {
+                            setShowImeiNumberModal(false);
                             setqty(item.stock_quantity);
                             setShowEditModal(true);
                             setselectedProductName(item.product_name);
@@ -299,7 +312,6 @@ function ItemAdminInventory() {
                           ...
                         </Button>
                       </Table.Cell>
-                      
                     </Table.Row>
                   ))
                 )}
@@ -316,7 +328,7 @@ function ItemAdminInventory() {
           setShowEditModal(false);
         }}
       />
-       <ImeiNumberModel
+      <ImeiNumberModel
         productID={selectedProductID}
         shop={selectedShop}
         showModel={showImeiNumber}

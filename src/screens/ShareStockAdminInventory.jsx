@@ -17,12 +17,30 @@ function ShareStockAdminInventory() {
   const [samplePending, setSamplePending] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedType, setSelectedType] = useState("");
+  const [code, setbarcode] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [product_name, setProductName] = useState("");
+  const [reset, setReset] = useState(false);
+  useEffect(() => {
+    if (reset) {
+      resetForm();
+      setReset(false);
+    }
+  }, [reset]);
+  const resetForm = () => {
+    setNewItem({
+      product_id: 0,
+      product_name: "",
+      transfer_quantity: 1,
+      imei_number: [],
+      brand: "",
+      category: "",
+    });
+  };
 
   const getCategories = async () => {
     setLoading(true);
@@ -89,6 +107,35 @@ function ShareStockAdminInventory() {
     }
   };
 
+  const fetchProduct = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/stock/details/byimie`,
+        {
+          product_code: code,
+        }
+      );
+      const product = response.data;
+      console.log(response.data);
+      setNewItem({
+        product_id: product.product_id,
+        product_name: product.product_name,
+        transfer_quantity: 1,
+        brand: product.brand_name,
+        category: product.product_type,
+      });
+
+      setSelectedType(product.product_type);
+      setSelectedBrand(product.brand_name);
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getProducts = async () => {
     setLoading(true);
     try {
@@ -115,6 +162,10 @@ function ShareStockAdminInventory() {
     getPending();
   }, []);
 
+  useEffect(() => {
+    fetchProduct();
+  }, [code]);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [toShop, setToShop] = useState("");
   const [newItem, setNewItem] = useState({
@@ -122,6 +173,8 @@ function ShareStockAdminInventory() {
     product_name: "",
     transfer_quantity: 1,
     imei_number: [],
+    brand: "",
+    category: "",
   });
   const [items, setItems] = useState([]);
 
@@ -162,6 +215,7 @@ function ShareStockAdminInventory() {
       products: items,
       from: "Tech_Haven",
       to: toShop,
+      user: userData.user_id,
     };
     setLoading(true);
     try {
@@ -246,75 +300,49 @@ function ShareStockAdminInventory() {
             <div className="flex flex-col gap-4">
               {toShop && (
                 <div>
+                  <TextInput
+                    id="productCode"
+                    type="text"
+                    placeholder="Enter Product Code"
+                    onChange={(e) => setbarcode(e.target.value)}
+                  />
+
                   <Label htmlFor="category">Category</Label>
-                  <Select
-                    id="category"
-                    value={newItem.category}
-                    onChange={(e) => {
-                      setSelectedType(e.target.value);
-                      getModels(e.target.value);
-                    }}
-                  >
-                    <option value="">Select Category</option>
-                    {shopsAndCategories.product_types.map((type, index) => (
-                      <option key={index} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </Select>
+                  <TextInput id="category" value={newItem.category} />
                 </div>
               )}
 
-              {selectedType && (
-                <div>
-                  <Label htmlFor="brand">Brand</Label>
-                  <Select
-                    id="brand"
-                    value={newItem.brand}
-                    onChange={(e) => {
-                      setSelectedBrand(e.target.value);
-                    }}
-                  >
-                    <option value="">Select Brand</option>
-                    {brands.map((brand, index) => (
-                      <option key={index} value={brand}>
-                        {brand}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-              )}
+              <div>
+                <Label htmlFor="brand">Brand</Label>
+                <TextInput id="brand" value={newItem.brand} />
+              </div>
 
-              {selectedBrand && (
-                <div>
-                  <Label htmlFor="product">Product</Label>
-                  <Select
-                    id="product"
-                    value={newItem.product_id}
-                    onChange={(e) => {
-                      console.log("onChange triggered");
-                      var name = products.find(
-                        (p) => p.product_id == e.target.value
-                      ).product_name;
-                      setNewItem({
-                        ...newItem,
-                        product_id: e.target.value,
-                        product_name: name,
-                      });
-                    }}
-                  >
-                    <option value="">Select Product</option>
-                    {products.map((product) => (
-                      <option
-                        key={product.product_id}
-                        value={product.product_id}
-                      >
-                        {product.product_name}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-              )}
+              <div>
+                <Label htmlFor="product">Product</Label>
+                <Select
+                  id="product"
+                  value={newItem.product_id}
+                  onChange={(e) => {
+                    console.log("onChange triggered");
+                    var name = products.find(
+                      (p) => p.product_id == e.target.value
+                    ).product_name;
+                    setNewItem({
+                      ...newItem,
+                      product_id: e.target.value,
+                      product_name: name,
+                    });
+                  }}
+                >
+                  <option value="">Select Product</option>
+                  {products.map((product) => (
+                    <option key={product.product_id} value={product.product_id}>
+                      {product.product_name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+
               {newItem.product_id !== 0 && (
                 <div>
                   <Label htmlFor="qty">Quantity</Label>
@@ -358,8 +386,15 @@ function ShareStockAdminInventory() {
               )}
             </div>
             <div className="flex justify-end gap-4 mt-6">
-              <Button type="submit">Add</Button>
-              <Button color="gray" onClick={() => setModalOpen(false)}>
+              <Button type="submit" onClick={() => setReset(true)}>
+                Add
+              </Button>
+              <Button
+                color="gray"
+                onClick={() => {
+                  setModalOpen(false), setReset(true);
+                }}
+              >
                 Cancel
               </Button>
             </div>
