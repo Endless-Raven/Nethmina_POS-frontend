@@ -1,7 +1,13 @@
-import {Table,TableBody,TableCell,TableHead,TableHeadCell,TableRow,}from "flowbite-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from "flowbite-react";
 
-export function ProductTable({ items }) {
-
+export function ProductTable({ items, setitems }) {
   // console.log(items);
 
   return (
@@ -13,16 +19,21 @@ export function ProductTable({ items }) {
         </TableHead>
         <TableBody className="divide-y">
           {items.map((item, index) => (
-            <TableRow
-              key={index}
-              className=" bg-slate-200 hover:bg-slate-300"
-            >
-              <TableCell className="">
-                {item.product_name}
+            <TableRow key={index} className=" bg-slate-200 hover:bg-slate-300">
+              <TableCell
+                className=""
+                onClick={() => {
+                  setitems(
+                    items.filter(
+                      (product) => product.product_id != item.product_id
+                    )
+                  );
+                }}
+              >
+                X
               </TableCell>
-              <TableCell className="">
-                {item.transfer_quantity}
-              </TableCell>
+              <TableCell className="">{item.product_name}</TableCell>
+              <TableCell className="">{item.transfer_quantity}</TableCell>
             </TableRow>
           ))}
         </TableBody>

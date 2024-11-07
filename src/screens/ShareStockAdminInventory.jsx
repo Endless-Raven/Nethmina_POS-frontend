@@ -25,6 +25,7 @@ function ShareStockAdminInventory() {
   const [message, setMessage] = useState("");
   const [product_name, setProductName] = useState("");
   const [reset, setReset] = useState(false);
+  
   useEffect(() => {
     if (reset) {
       resetForm();
@@ -181,22 +182,21 @@ function ShareStockAdminInventory() {
   const openModal = () => setModalOpen(true);
 
   const handleAddItem = () => {
-    if (!newItem.product_id) {
-      alert("Please add a product");
-      return;
+    
+
+  // Ensure IMEI numbers are properly filled if required
+  if (newItem.category === "Mobile Phone") {
+    const imeiNumbersFilled =
+      Array.isArray(newItem.imei_number) &&
+      newItem.imei_number.length === Number(newItem.transfer_quantity) &&
+      newItem.imei_number.every((imei) => imei.trim() !== "");
+
+    if (!imeiNumbersFilled) {
+      console.error("IMEI numbers are missing or incomplete.");
+      return; // Stop if IMEI numbers are not fully populated
     }
-
-    if (newItem.category === "mobile phone") {
-      const imeiNumbersFilled =
-        newItem.imei_number.length === Number(newItem.transfer_quantity) &&
-        newItem.imei_number.every((imei) => imei.trim() !== "");
-
-      if (!imeiNumbersFilled) {
-        alert("Please enter all required IMEI numbers.");
-        return;
-      }
-    }
-
+  }
+    
     setItems([...items, newItem]);
     setModalOpen(false);
 
@@ -208,7 +208,7 @@ function ShareStockAdminInventory() {
     });
   };
 
-  // console.log(items);
+   console.log(items);
 
   const handleTransfer = async () => {
     const req = {
@@ -302,7 +302,7 @@ function ShareStockAdminInventory() {
       >
         <Modal.Header>Add Item</Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleAddItem}>
+      
             <div className="flex flex-col gap-4">
               {toShop && (
                 <div>
@@ -310,7 +310,7 @@ function ShareStockAdminInventory() {
                     id="productCode"
                     type="text"
                     placeholder="Enter Product Code"
-                    onChange={(e) => setbarcode(e.target.value)}
+                    onChange={(e) => {e.preventDefault(); setbarcode(e.target.value);}}
                   />
 
                   <Label htmlFor="category">Category</Label>
@@ -372,47 +372,26 @@ function ShareStockAdminInventory() {
                       <Label>IMEI Numbers</Label>
                       {[...Array(Number(newItem.transfer_quantity))].map(
                         (_, index) => (
-                          <TextInput
-                            key={index}
-                            type="text"
-                            placeholder={`IMEI ${index + 1}`}
-                            required
-                            maxLength={15} // Limit to 15 characters
-                            onChange={(e) => {
-                              const value = e.target.value;
-
-                              if (value.length === 15) {
-                                // Ensure imei_number is an array before updating
-                                const updatedIMEIs = Array.isArray(
-                                  newItem.imei_number
-                                )
-                                  ? [...newItem.imei_number]
-                                  : [];
-                                updatedIMEIs[index] = value;
-                                setNewItem({
-                                  ...newItem,
-                                  imei_number: updatedIMEIs,
-                                });
-                                console.log(
-                                  "IMEI Array Before Update:",
-                                  newItem.imei_number
-                                );
-                              }
-                            }}
-                            onBlur={(e) => {
-                              const value = e.target.value;
-
-                              // Update only if 15 characters are present when leaving the field
-                              if (value.length === 15) {
-                                const updatedIMEIs = [...newItem.imei_number];
-                                updatedIMEIs[index] = value;
-                                setNewItem({
-                                  ...newItem,
-                                  imei_number: updatedIMEIs,
-                                });
-                              }
-                            }}
-                          />
+                          // IMEI Number Input Handling
+<TextInput
+  key={index}
+  type="text"
+  placeholder={`IMEI ${index + 1}`}
+  required
+  maxLength={15} // Limit to 15 characters
+  onChange={(e) => {
+    const value = e.target.value;
+    if (value.length === 15) {
+      // Ensure imei_number is an array before updating it
+      const updatedIMEIs = Array.isArray(newItem.imei_number) ? [...newItem.imei_number] : [];
+      updatedIMEIs[index] = value;
+      setNewItem({
+        ...newItem,
+        imei_number: updatedIMEIs,
+      });
+    }
+  }}
+/>
                         )
                       )}
                     </div>
@@ -421,7 +400,7 @@ function ShareStockAdminInventory() {
               )}
             </div>
             <div className="flex justify-end gap-4 mt-6">
-              <Button type="submit" onClick={() => setReset(true)}>
+              <Button type="submit" onClick={() =>{handleAddItem(); setReset(true);}}>
                 Add
               </Button>
               <Button
@@ -433,11 +412,11 @@ function ShareStockAdminInventory() {
                 Cancel
               </Button>
             </div>
-          </form>
+          
         </Modal.Body>
       </Modal>
 
-      {items.length > 0 && <ProductTable items={items} />}
+      {items.length > 0 && <ProductTable items={items} setitems={setItems} />}
 
       {message && (
         <div className="fixed right-8 bottom-8 text-xl font-semibold text-green-500">
