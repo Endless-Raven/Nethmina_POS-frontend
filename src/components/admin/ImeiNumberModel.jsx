@@ -4,15 +4,33 @@ import axios from "axios";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export default function ImeiNumberModel({ productID, showModel, close, shop }) {
+export default function ImeiNumberModel({
+  showModel,
+  imeiList,
+  productID,
+  close,
+  shop,
+}) {
   const [imeiNumbers, setImeiNumbers] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log(imeiList);
+
+  
+  
+  useEffect(() => {
+    if (Array.isArray(imeiList)) {
+      setImeiNumbers(imeiList);
+    } else {
+      console.warn("imeiList is not an array:", imeiList);
+      setImeiNumbers([]);
+    }
+  }, [imeiList]);
 
   useEffect(() => {
-    if (showModel) {
+    if (productID) {
       fetchImeis();
     }
-  }, [showModel]);
+  }, [productID]);
 
   // Fetch IMEI numbers based on selected product and shop
   const fetchImeis = async () => {
@@ -51,7 +69,10 @@ export default function ImeiNumberModel({ productID, showModel, close, shop }) {
                   <Table.Cell className="whitespace-nowrap font-medium text-gray-900">
                     <div className="grid grid-cols-3 gap-4">
                       {imeiNumbers.map((imei, index) => (
-                        <div key={index} className="border p-2 rounded text-center">
+                        <div
+                          key={index}
+                          className="border p-2 rounded text-center"
+                        >
                           {imei}
                         </div>
                       ))}
@@ -71,3 +92,23 @@ export default function ImeiNumberModel({ productID, showModel, close, shop }) {
     </Modal>
   );
 }
+
+// Fetch IMEI numbers based on selected product and shop
+//   const fetchImeis = async () => {
+//     setLoading(true);
+//     try {
+//       const response = await axios.post(
+//         `${API_BASE_URL}/product/Imeinumber/list`,
+//         {
+//           shop: shop,
+//           Product_id: productID,
+//         }
+//       );
+//       const imeiList = response.data[0].split(","); // Split the string into an array of IMEI numbers
+//       setImeiNumbers(imeiList);
+//     } catch (error) {
+//       console.error("Error fetching IMEI numbers:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };

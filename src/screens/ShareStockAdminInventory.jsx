@@ -25,7 +25,7 @@ function ShareStockAdminInventory() {
   const [message, setMessage] = useState("");
   const [product_name, setProductName] = useState("");
   const [reset, setReset] = useState(false);
-  
+
   useEffect(() => {
     if (reset) {
       resetForm();
@@ -182,21 +182,19 @@ function ShareStockAdminInventory() {
   const openModal = () => setModalOpen(true);
 
   const handleAddItem = () => {
-    
+    // Ensure IMEI numbers are properly filled if required
+    if (newItem.category === "Mobile Phone") {
+      const imeiNumbersFilled =
+        Array.isArray(newItem.imei_number) &&
+        newItem.imei_number.length === Number(newItem.transfer_quantity) &&
+        newItem.imei_number.every((imei) => imei.trim() !== "");
 
-  // Ensure IMEI numbers are properly filled if required
-  if (newItem.category === "Mobile Phone") {
-    const imeiNumbersFilled =
-      Array.isArray(newItem.imei_number) &&
-      newItem.imei_number.length === Number(newItem.transfer_quantity) &&
-      newItem.imei_number.every((imei) => imei.trim() !== "");
-
-    if (!imeiNumbersFilled) {
-      console.error("IMEI numbers are missing or incomplete.");
-      return; // Stop if IMEI numbers are not fully populated
+      if (!imeiNumbersFilled) {
+        console.error("IMEI numbers are missing or incomplete.");
+        return; // Stop if IMEI numbers are not fully populated
+      }
     }
-  }
-    
+
     setItems([...items, newItem]);
     setModalOpen(false);
 
@@ -208,7 +206,7 @@ function ShareStockAdminInventory() {
     });
   };
 
-   console.log(items);
+  console.log(items);
 
   const handleTransfer = async () => {
     const req = {
@@ -302,117 +300,128 @@ function ShareStockAdminInventory() {
       >
         <Modal.Header>Add Item</Modal.Header>
         <Modal.Body>
-      
-            <div className="flex flex-col gap-4">
-              {toShop && (
-                <div>
-                  <TextInput
-                    id="productCode"
-                    type="text"
-                    placeholder="Enter Product Code"
-                    onChange={(e) => {e.preventDefault(); setbarcode(e.target.value);}}
-                  />
-
-                  <Label htmlFor="category">Category</Label>
-                  <TextInput id="category" value={newItem.category} />
-                </div>
-              )}
-
+          <div className="flex flex-col gap-4">
+            {toShop && (
               <div>
-                <Label htmlFor="brand">Brand</Label>
-                <TextInput id="brand" value={newItem.brand} />
-              </div>
-
-              <div>
-                <Label htmlFor="product">Product</Label>
-                <Select
-                  id="product"
-                  value={newItem.product_name}
+                <TextInput
+                  id="productCode"
+                  type="text"
+                  placeholder="Enter Product Code"
                   onChange={(e) => {
-                    console.log("onChange triggered");
-                    var name = products.find(
-                      (p) => p.product_id == e.target.value
-                    ).product_name;
-                    setNewItem({
-                      ...newItem,
-                      product_name: e.target.value,
-                      product_name: name,
-                    });
+                    e.preventDefault();
+                    setbarcode(e.target.value);
                   }}
-                >
-                  <option value="">Select Product</option>
-                  {products.map((product) => (
-                    <option
-                      key={product.product_name}
-                      value={product.product_name}
-                    >
-                      {product.product_name}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+                />
 
-              {newItem.product_id !== 0 && (
-                <div>
-                  <Label htmlFor="qty">Quantity</Label>
-                  <TextInput
-                    id="qty"
-                    type="number"
-                    min={1}
-                    value={newItem.transfer_quantity}
-                    onChange={(e) => {
-                      setNewItem({
-                        ...newItem,
-                        transfer_quantity: e.target.value,
-                      });
-                    }}
-                  />
-                  {newItem.category === "Mobile Phone" && (
-                    <div className="mt-4">
-                      <Label>IMEI Numbers</Label>
-                      {[...Array(Number(newItem.transfer_quantity))].map(
-                        (_, index) => (
-                          // IMEI Number Input Handling
-<TextInput
-  key={index}
-  type="text"
-  placeholder={`IMEI ${index + 1}`}
-  required
-  maxLength={15} // Limit to 15 characters
-  onChange={(e) => {
-    const value = e.target.value;
-    if (value.length === 15) {
-      // Ensure imei_number is an array before updating it
-      const updatedIMEIs = Array.isArray(newItem.imei_number) ? [...newItem.imei_number] : [];
-      updatedIMEIs[index] = value;
-      setNewItem({
-        ...newItem,
-        imei_number: updatedIMEIs,
-      });
-    }
-  }}
-/>
-                        )
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
+                <Label htmlFor="category">Category</Label>
+                <TextInput id="category" value={newItem.category} />
+              </div>
+            )}
+
+            <div>
+              <Label htmlFor="brand">Brand</Label>
+              <TextInput id="brand" value={newItem.brand} />
             </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <Button type="submit" onClick={() =>{handleAddItem(); setReset(true);}}>
-                Add
-              </Button>
-              <Button
-                color="gray"
-                onClick={() => {
-                  setModalOpen(false), setReset(true);
+
+            <div>
+              <Label htmlFor="product">Product</Label>
+              <Select
+                id="product"
+                value={newItem.product_name}
+                onChange={(e) => {
+                  console.log("onChange triggered");
+                  var name = products.find(
+                    (p) => p.product_id == e.target.value
+                  ).product_name;
+                  setNewItem({
+                    ...newItem,
+                    product_name: e.target.value,
+                    product_name: name,
+                  });
                 }}
               >
-                Cancel
-              </Button>
+                <option value="">Select Product</option>
+                {products.map((product) => (
+                  <option
+                    key={product.product_name}
+                    value={product.product_name}
+                  >
+                    {product.product_name}
+                  </option>
+                ))}
+              </Select>
             </div>
-          
+
+            {newItem.product_id !== 0 && (
+              <div>
+                <Label htmlFor="qty">Quantity</Label>
+                <TextInput
+                  id="qty"
+                  type="number"
+                  min={1}
+                  value={newItem.transfer_quantity}
+                  onChange={(e) => {
+                    setNewItem({
+                      ...newItem,
+                      transfer_quantity: e.target.value,
+                    });
+                  }}
+                />
+                {newItem.category === "Mobile Phone" && (
+                  <div className="mt-4">
+                    <Label>IMEI Numbers</Label>
+                    {[...Array(Number(newItem.transfer_quantity))].map(
+                      (_, index) => (
+                        // IMEI Number Input Handling
+                        <TextInput
+                          key={index}
+                          type="text"
+                          placeholder={`IMEI ${index + 1}`}
+                          required
+                          maxLength={15} // Limit to 15 characters
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value.length === 15) {
+                              // Ensure imei_number is an array before updating it
+                              const updatedIMEIs = Array.isArray(
+                                newItem.imei_number
+                              )
+                                ? [...newItem.imei_number]
+                                : [];
+                              updatedIMEIs[index] = value;
+                              setNewItem({
+                                ...newItem,
+                                imei_number: updatedIMEIs,
+                              });
+                            }
+                          }}
+                        />
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="flex justify-end gap-4 mt-6">
+            <Button
+              type="submit"
+              onClick={() => {
+                handleAddItem();
+                setReset(true);
+              }}
+            >
+              Add
+            </Button>
+            <Button
+              color="gray"
+              onClick={() => {
+                setModalOpen(false), setReset(true);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
         </Modal.Body>
       </Modal>
 
