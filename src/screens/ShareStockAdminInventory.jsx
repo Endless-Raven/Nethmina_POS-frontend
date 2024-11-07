@@ -40,6 +40,9 @@ function ShareStockAdminInventory() {
       imei_number: [],
       brand: "",
       category: "",
+      color: "",
+      grade: "",
+      capacity: "",
     });
   };
 
@@ -125,6 +128,9 @@ function ShareStockAdminInventory() {
         transfer_quantity: 1,
         brand: product.brand_name,
         category: product.product_type,
+        color: product.color,
+        grade: product.grade,
+        capacity: product.capacity,
       });
 
       setSelectedType(product.product_type);
@@ -176,6 +182,9 @@ function ShareStockAdminInventory() {
     imei_number: [],
     brand: "",
     category: "",
+    color: "",
+    grade: "",
+    capacity: "",
   });
   const [items, setItems] = useState([]);
 
@@ -203,6 +212,9 @@ function ShareStockAdminInventory() {
       product_name: "",
       transfer_quantity: 1,
       imei_number: [],
+      color:"",
+      grade:"",
+      capacity:""
     });
   };
 
@@ -321,6 +333,20 @@ function ShareStockAdminInventory() {
             <div>
               <Label htmlFor="brand">Brand</Label>
               <TextInput id="brand" value={newItem.brand} />
+            </div>
+            <div className="flex items-center gap-6">
+            <div>
+              <Label htmlFor="brand">grade</Label>
+              <TextInput id="brand" value={newItem.grade} />
+              </div>
+              <div>
+              <Label htmlFor="brand">color</Label>
+              <TextInput id="brand" value={newItem.color} />
+              </div>
+              <div>
+              <Label htmlFor="brand">capacity</Label>
+              <TextInput id="brand" value={newItem.capacity} />
+            </div>
             </div>
 
             <div>

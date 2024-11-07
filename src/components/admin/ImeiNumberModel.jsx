@@ -15,7 +15,7 @@ export default function ImeiNumberModel({
   const [loading, setLoading] = useState(false);
   console.log(imeiList);
 
-  
+  console.log(shop);
   
   useEffect(() => {
     if (Array.isArray(imeiList)) {
@@ -30,7 +30,7 @@ export default function ImeiNumberModel({
     if (productID) {
       fetchImeis();
     }
-  }, [productID]);
+  }, [productID , shop]);
 
   // Fetch IMEI numbers based on selected product and shop
   const fetchImeis = async () => {
@@ -41,8 +41,10 @@ export default function ImeiNumberModel({
         {
           shop: shop,
           Product_id: productID,
+          
         }
       );
+      
       const imeiList = response.data[0].split(","); // Split the string into an array of IMEI numbers
       setImeiNumbers(imeiList);
     } catch (error) {
