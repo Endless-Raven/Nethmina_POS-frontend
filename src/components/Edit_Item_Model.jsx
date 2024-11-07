@@ -69,7 +69,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
         `${API_BASE_URL}/product/${product_id}`
       );
       const product = response.data;
-      console.log(response.data);
+      // console.log(response.data);
       setNewItem({
         product_id:product.product_id,
         name: product.product_name,
