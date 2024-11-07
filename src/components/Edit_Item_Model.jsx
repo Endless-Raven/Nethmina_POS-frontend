@@ -66,7 +66,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
   const fetchProductDetails = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}  /${product_id}`
+        `${API_BASE_URL}/product/${product_id}`
       );
       const product = response.data;
       console.log(response.data);
