@@ -7,7 +7,8 @@ import Model from "../components/Model";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-const Edit_Item_Model = ({ productName }) => {
+const Edit_Item_Model = ({ productName , product_id }) => {
+  console.log(product_id);
   const [reset, setReset] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemNames, setItemNames] = useState({ name: "", category: "" });
@@ -62,47 +63,47 @@ const Edit_Item_Model = ({ productName }) => {
     setReset(true);
   };
 
+  const fetchProductDetails = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}  /${product_id}`
+      );
+      const product = response.data;
+      console.log(response.data);
+      setNewItem({
+        product_id:product.product_id,
+        name: product.product_name,
+        brand: product.brand_name,
+        qty: product.product_stock,
+        color: product.color,
+        capacity: product.capacity,
+        grade: product.grade,
+        low_count: product.low_count,
+        max_discount: product.max_discount,
+        low_count: product.low_count,
+        warranty_period: product.warranty_period,
+        imei_number: product.imei_number,
+        category: product.product_type,
+        model: product.product_model,
+        wholesale_price: product.product_wholesale_price,
+        retailPrice: product.product_price,
+      });
+      setSelectedType(product.product_type);
+      setSelectedModel(product.product_model);
+      setSelectedBrand(product.brand_name);
+      setItemNames({ name: product.product_name });
+      console.log(product.brand_name);
+      setFooterMessage("");
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+      setFooterMessage("Error fetching product details.");
+    }
+  };
   // Fetch product details when the component mounts
   useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/product/${productName}`
-        );
-        const product = response.data;
-        console.log(response.data);
-        setNewItem({
-          product_id:product.product_id,
-          name: product.product_name,
-          brand: product.brand_name,
-          qty: product.product_stock,
-          color: product.color,
-          capacity: product.capacity,
-          grade: product.grade,
-          low_count: product.low_count,
-          max_discount: product.max_discount,
-          low_count: product.low_count,
-          warranty_period: product.warranty_period,
-          imei_number: product.imei_number,
-          category: product.product_type,
-          model: product.product_model,
-          wholesale_price: product.product_wholesale_price,
-          retailPrice: product.product_price,
-        });
-        setSelectedType(product.product_type);
-        setSelectedModel(product.product_model);
-        setSelectedBrand(product.brand_name);
-        setItemNames({ name: product.product_name });
-        console.log(product.brand_name);
-        setFooterMessage("");
-      } catch (error) {
-        console.error("Error fetching product details:", error);
-        setFooterMessage("Error fetching product details.");
-      }
-    };
 
     fetchProductDetails();
-  }, [productName]);
+  }, [product_id]);
 
   // Function to handle updating the product
   const updateProduct = async () => {
