@@ -25,6 +25,7 @@ function Product() {
   const [selectedColor,setSelectedColor]=useState("All");
   const [selectedGrade,setSelectedGrade]=useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
+  const [selectedProductID, setselectedProductID] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -277,6 +278,8 @@ function Product() {
                           onClick={() => {
                             setShowEditModal(true),
                               setselectedProductName(item.product_name);
+                              setselectedProductID(item.product_id);
+                              
                           }}
                           size="m"
                           gradientDuoTone="Transparent"
@@ -315,7 +318,7 @@ function Product() {
           {editIndex !== null ? "Update Item" : "Update Item"}
         </Modal.Header>
         <Modal.Body>
-          <Edit_Item_Model productName={selectedProductName} />
+          <Edit_Item_Model  productName={selectedProductName}  product_id={selectedProductID} />
         </Modal.Body>
       </Modal>
     </div>

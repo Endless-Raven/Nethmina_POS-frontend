@@ -18,7 +18,7 @@ export function InventoryTable({productList}) {
           <TableHeadCell>Brand</TableHeadCell>
           <TableHeadCell>Category</TableHeadCell>
           <TableHeadCell>Qty</TableHeadCell>
-          <TableHeadCell>Wholesale Price</TableHeadCell>
+          <TableHeadCell>Max Discount</TableHeadCell>
           <TableHeadCell>Retail Price</TableHeadCell>
         </TableHead>
         <TableBody className="divide-y">
@@ -34,7 +34,7 @@ export function InventoryTable({productList}) {
                 <TableCell>{product.brand_name}</TableCell>
                 <TableCell>{product.product_type}</TableCell>
                 <TableCell>{Number(product.stock_quantity).toFixed()}</TableCell>
-                <TableCell>{product.product_wholesale_price}</TableCell>
+                <TableCell>{product.max_discount}</TableCell>
                 <TableCell>{product.product_price}</TableCell>
               </TableRow>
             ))}

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
+const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close }) => {
   const imeiRefs = useRef([]);
   const [loading, setLoading] = useState(false);
   const [itemNames, setItemNames] = useState({ name: "", category: "" });
@@ -33,7 +33,7 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
     const fetchProductDetails = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/product/${productName}`
+          `${API_BASE_URL}/product/${product_id}`
         );
         const product = response.data;
         // console.log(productName);
@@ -61,7 +61,7 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
     };
 
     fetchProductDetails();
-  }, [productName]);
+  }, [product_id]);
 
   // Function to handle updating the product
   const updateProduct = async () => {
@@ -90,7 +90,7 @@ const UpdateItemModel = ({ stockqty, productName, showModel, close }) => {
         : [newItem.newimeinumber];
 
       const response = await axios.put(
-        `${API_BASE_URL}/product/updateStockAndIMEI/${productName}`,
+        `${API_BASE_URL}/product/updateStockAndIMEI/${product_id}`,
         {
           category: newItem.category,
           imei_number: imeiNumbers,

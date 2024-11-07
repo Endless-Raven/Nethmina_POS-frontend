@@ -304,6 +304,7 @@ function ItemAdminInventory() {
                             setqty(item.stock_quantity);
                             setShowEditModal(true);
                             setselectedProductName(item.product_name);
+                            setselectedProductID(item.product_id);
                             console.log(item.product_name);
                           }}
                           size="m"
@@ -323,6 +324,7 @@ function ItemAdminInventory() {
       <UpdateItemModel
         stockqty={qty}
         productName={selectedProductName}
+        product_id={selectedProductID}
         showModel={showEditModal}
         close={() => {
           setShowEditModal(false);
