@@ -101,6 +101,9 @@ const InventoryPendingRequest = ({ show, close }) => {
                       <strong>Request ID:</strong> {request.request_id}
                     </p>
                     <p>
+                      <strong>Request From:</strong> {request.req_from}
+                    </p>
+                    <p>
                       <strong>Date:</strong>{" "}
                       {new Date(request.date).toLocaleDateString()}
                     </p>
