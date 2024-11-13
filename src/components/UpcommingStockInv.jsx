@@ -97,6 +97,7 @@ export default function UpcommingStockInv({ show, close }) {
                     className="flex justify-between items-center mb-1"
                   >
                     <span>{product.product_name}</span>
+                    <span>{product.imei_number}</span>
                     <span className="text-sm">{product.product_type}</span>
                     <span>{product.transfer_quantity}</span>
                   </p>

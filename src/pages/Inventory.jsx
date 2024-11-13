@@ -17,9 +17,6 @@ const Inventory = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
-  const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
-  const [openModalRequest, setOpenModalRequest] = useState(false);
-  const [openModalPending, setOpenModalPending] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -193,45 +190,9 @@ const Inventory = () => {
           {/* Stock table */}
           <InventoryTable productList={filteredProducts} />
 
-          {/* Bottom Buttons */}
-          <div className="flex justify-between fixed bottom-2 left-0 w-full px-6">
-            <Button
-              gradientDuoTone="purpleToBlue"
-              outline
-              onClick={() => setOpenModalUpcomming(true)}
-            >
-              Upcoming Stocks
-            </Button>
-            <div className="flex gap-4">
-              <Button
-                gradientDuoTone="purpleToBlue"
-                onClick={() => setOpenModalRequest(true)}
-              >
-                Request Product
-              </Button>
-              <Button
-                gradientDuoTone="greenToBlue"
-                outline
-                onClick={() => setOpenModalPending(true)}
-              >
-                Pending Request
-              </Button>
-            </div>
-          </div>
+       
 
-          {/* Modals */}
-          <UpcommingStockInv
-            show={openModalUpcomming}
-            close={() => setOpenModalUpcomming(false)}
-          />
-          <RequestProduct
-            show={openModalRequest}
-            close={() => setOpenModalRequest(false)}
-          />
-          <InventoryPendingRequest
-            show={openModalPending}
-            close={() => setOpenModalPending(false)}
-          />
+         
         </div>
       )}
     </div>
