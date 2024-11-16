@@ -93,11 +93,23 @@ export default function NavigationBar() {
             userData.role === "cashier" && "hidden"
           }`}
           onClick={() => {
-            setActive("product");
+            setActive("ShareStockAdminInventory");
             navigate("/home/ShareStockAdminInventory");
           }}
         >
           Shere Stock
+        </Navbar.Link>
+        <Navbar.Link
+          active={active === "ManagerFinance"}
+          className={`cursor-pointer ${
+            userData.role === "cashier" && "hidden"
+          }`}
+          onClick={() => {
+            setActive("ManagerFinance");
+            navigate("/home/ManagerFinance");
+          }}
+        >
+          Finance
         </Navbar.Link>
         <Navbar.Link
           active={active === "daily report"}
