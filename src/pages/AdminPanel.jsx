@@ -9,6 +9,7 @@ import SidebarAdminPanel from "../components/admin/SidebarAdminPanel";
 import { useParams } from "react-router-dom";
 import Finance from "./Finance";
 import DailyReport from "./DailyReport";
+import AdminProductReturns from "./AdminProductReturns";
 
 export default function AdminPanel() {
   const { section } = useParams();
@@ -35,7 +36,9 @@ export default function AdminPanel() {
           <ManageShopsAndEmp />
         ) : section === "finance" ? (
           <Finance />
-        ) : (
+        )  : section === "AdminProductReturns" ? (
+          <AdminProductReturns />
+        ): (
           <NotFoundPage />
         )}
       </div>
