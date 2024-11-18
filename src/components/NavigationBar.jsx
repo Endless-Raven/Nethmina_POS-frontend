@@ -112,6 +112,16 @@ export default function NavigationBar() {
           Finance
         </Navbar.Link>
         <Navbar.Link
+          active={active === "ReturnProduct"}
+          className="cursor-pointer"
+          onClick={() => {
+            setActive("billing");
+            navigate("/home/ReturnProduct");
+          }}
+        >
+          ReturnProduct
+        </Navbar.Link>
+        <Navbar.Link
           active={active === "daily report"}
           className={`cursor-pointer ${
             (userData.role === "cashier" || userData.role === "manager") &&
@@ -136,6 +146,19 @@ export default function NavigationBar() {
           }}
         >
           Admin Panel
+        </Navbar.Link>
+        <Navbar.Link
+          active={active === "admin panel"}
+          className={`cursor-pointer ${
+            (userData.role === "cashier" || userData.role === "manager") &&
+            "hidden"
+          }`}
+          onClick={() => {
+            setActive("admin panel");
+            navigate("/adminpanel/dashboard");
+          }}
+        >
+          Product Returns
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
