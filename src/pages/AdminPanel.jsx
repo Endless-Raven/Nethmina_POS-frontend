@@ -18,7 +18,7 @@ export default function AdminPanel() {
       <SidebarAdminPanel />
       <div className="m-3 relative shadow-md bg-slate-50 rounded-md flex-grow p-3 max-h-screen overflow-y-scroll">
         <p className="text-4xl font-bold absolute z-20 right-5 top-3 text-slate-500 uppercase cursor-default hover:drop-shadow-md">
-          {section}
+          {section === "AdminProductReturns" ? "Product Return" : section}
         </p>
         {section === "dashboard" ? (
           <Dashboard />
@@ -36,9 +36,9 @@ export default function AdminPanel() {
           <ManageShopsAndEmp />
         ) : section === "finance" ? (
           <Finance />
-        )  : section === "AdminProductReturns" ? (
+        ) : section === "AdminProductReturns" ? (
           <AdminProductReturns />
-        ): (
+        ) : (
           <NotFoundPage />
         )}
       </div>
