@@ -7,7 +7,13 @@ import { useGetWithoutQuery } from "../services/api";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export default function ProductBilling({ product, setProduct, addProduct }) {
+export default function ProductBilling({
+  product,
+  setProduct,
+  addProduct,
+  reset,
+  undo,
+}) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
@@ -127,6 +133,9 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       warranty_period: "",
     });
     setSelectedModelId(""); // Reset selected model ID
+    setSelectedCategory("");
+    setSelectedBrand("");
+    setBarcode("");
     setValidEmi([]);
     setMax_discount(null);
   };
@@ -191,6 +200,13 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       discount: 0.0,
     }));
   }, [data]);
+
+  useEffect(() => {
+    if (reset) {
+      resetProduct();
+      undo();
+    }
+  }, [reset]);
 
   return (
     <div className="">

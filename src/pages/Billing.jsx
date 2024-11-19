@@ -91,7 +91,24 @@ export default function Billing() {
   const [total, setTotal] = useState(0);
 
   // reset button function
+  // Save data before reset
+  const [savedData, setSavedData] = useState(null);
+  const [fullReset, setFullReset] = useState(false);
+
   const handleReset = () => {
+    setFullReset(true);
+    // Save current data before reset
+    setSavedData({
+      orderedList,
+      product,
+      customer,
+      total,
+      salesman,
+      salesmanId,
+      invoiceId,
+    });
+
+    // Reset the states
     setOrderedList([]);
     setProduct({
       product_id: "",
@@ -108,6 +125,9 @@ export default function Billing() {
       customer_address: "",
     });
     setTotal(0);
+    setSalesman("");
+    setSalesmanId("");
+    setInvoiceId("");
   };
 
   // done button function
@@ -166,6 +186,7 @@ export default function Billing() {
       try {
         const response = await axios.post(`${API_BASE_URL}/sales`, requestBody);
         setInvoiceId(response.data.sales_id);
+
         setPrint(true);
         setShowToastPrint(true);
         setLoading(false);
@@ -188,6 +209,7 @@ export default function Billing() {
       } finally {
         setPrint(false);
         setInvoiceId(null);
+
         handleReset();
       }
     }
@@ -219,6 +241,7 @@ export default function Billing() {
   };
 
   const componentRef = React.useRef(null);
+  const [printContent, setPrintContent] = useState(null); // State to store printable content
 
   const handleAfterPrint = React.useCallback(() => {
     console.log("`onAfterPrint` called");
@@ -236,7 +259,51 @@ export default function Billing() {
     onBeforePrint: handleBeforePrint,
   });
 
+  // Print function for reprinting
+  const reprintFn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Reprinted Bill",
+    onAfterPrint: handleAfterPrint,
+    onBeforePrint: handleBeforePrint,
+  });
 
+  const [rep, setRep] = useState(false);
+
+  // Handle Reprint: Set saved data before printing
+  const handleReprint = () => {
+    if (savedData) {
+      setOrderedList(savedData.orderedList);
+      setProduct(savedData.product);
+      setCustomer(savedData.customer);
+      setTotal(savedData.total);
+      setSalesman(savedData.salesman);
+      setSalesmanId(savedData.salesmanId);
+      setInvoiceId(savedData.invoiceId);
+
+      // Trigger the reprint after setting the state
+      setRep(true);
+    } else {
+      alert("No saved data available for reprint.");
+    }
+  };
+  useEffect(() => {
+    if (rep) {
+      reprintFn();
+      setRep(false);
+      handleReset();
+    }
+  }, [rep]);
+
+  // const handleReprint = () => {
+  //   if (printContent) {
+  //     const newWindow = window.open("", "_blank");
+  //     newWindow.document.write(printContent);
+  //     newWindow.document.close();
+  //     newWindow.print();
+  //   } else {
+  //     alert("No content available to reprint.");
+  //   }
+  // };
 
   return (
     <div className="flex w-full relative bg-slate-100">
@@ -249,13 +316,21 @@ export default function Billing() {
           product={product}
           setProduct={setProduct}
           addProduct={addProduct}
+          reset={fullReset}
+          undo={() => {
+            setFullReset(false);
+          }}
         />
       </div>
 
       {/* main content */}
       <div className="w-[70%] border-l-4 p-2 min-h-[90vh] relative">
         {/* table */}
-        <TableBilling setTotal={setTotal} orderedList={orderedList} setOrderedList={setOrderedList}/>
+        <TableBilling
+          setTotal={setTotal}
+          orderedList={orderedList}
+          setOrderedList={setOrderedList}
+        />
         {/* form */}
         <div className="absolute bottom-4 z-10 w-[calc(100%-1rem)] border-2 p-4 rounded-md bg-white">
           <div className="flex justify-between items-center gap-8 flex-col md:flex-row">
@@ -339,6 +414,11 @@ export default function Billing() {
               ) : (
                 <>Print</>
               )}
+            </Button>
+
+            {/* Reprint Button */}
+            <Button gradientMonochrome="purple" onClick={handleReprint}>
+              Reprint
             </Button>
           </div>
         </div>
@@ -445,12 +525,22 @@ export default function Billing() {
               <Table>
                 <Table.Head className="">
                   <Table.HeadCell>No</Table.HeadCell>
-                  <Table.HeadCell className="text-xs py-0">Product name</Table.HeadCell>
-                  <Table.HeadCell className="text-xs py-0">Price</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">
+                    Product name
+                  </Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">
+                    Price
+                  </Table.HeadCell>
                   <Table.HeadCell className="text-xs py-0">Qty</Table.HeadCell>
-                  <Table.HeadCell className="text-xs py-0">warranty</Table.HeadCell>
-                  <Table.HeadCell className="text-xs py-0">Discount</Table.HeadCell>
-                  <Table.HeadCell className="text-xs py-0">Total</Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">
+                    warranty
+                  </Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">
+                    Discount
+                  </Table.HeadCell>
+                  <Table.HeadCell className="text-xs py-0">
+                    Total
+                  </Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="">
                   {orderedList.map((product, index) => (
@@ -464,13 +554,19 @@ export default function Billing() {
                         <br />
                         {product.serial_number && (
                           <span className="font-semibold">
-                            code : {product.serial_number}
+                            {product.serial_number}
                           </span>
                         )}
                       </Table.Cell>
-                      <Table.Cell className="text-xs py-0">{product.price}</Table.Cell>
-                      <Table.Cell className="text-xs py-0">{product.quantity}</Table.Cell>
-                      <Table.Cell className="text-xs py-0">{product.warranty_period}</Table.Cell>
+                      <Table.Cell className="text-xs py-0">
+                        {product.price}
+                      </Table.Cell>
+                      <Table.Cell className="text-xs py-0">
+                        {product.quantity}
+                      </Table.Cell>
+                      <Table.Cell className="text-xs py-0">
+                        {product.warranty_period}
+                      </Table.Cell>
                       <Table.Cell className="text-xs py-0">
                         {Number(product.discount).toFixed(2)}
                       </Table.Cell>
@@ -486,14 +582,16 @@ export default function Billing() {
               </Table>
             </div>
             <div className="flex justify-end">
-              <p className="font-semibold mr-4 text-sm">Total : {total.toFixed(2)}</p>
+              <p className="font-semibold mr-4 text-sm">
+                Total : {total.toFixed(2)}
+              </p>
             </div>
             <div className="w-full flex gap-4 justify-between items-end text-xs">
               <div>
                 <p className="italic">
                   {" "}
-                  <strong>Note</strong> Goods Sold are Non Refundable /
-                  Not Exchangeable.{" "}
+                  <strong>Note</strong> Goods Sold are Non Refundable / Not
+                  Exchangeable.{" "}
                 </p>
                 <p className="underline font-medium">
                   Warranty does not Apply.
@@ -511,7 +609,9 @@ export default function Billing() {
               <div>
                 <p>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ </p>
                 <p>Customer Signature</p>
-                <p className="text-xs whitespace-nowrap">Goods Recived in good condition</p>
+                <p className="text-xs whitespace-nowrap">
+                  Goods Recived in good condition
+                </p>
               </div>
             </div>
           </div>
