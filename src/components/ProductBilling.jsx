@@ -180,6 +180,10 @@ export default function ProductBilling({
     }
     if (data?.product_name)
       setProduct((prev) => ({ ...prev, product_name: data.product_name }));
+    if (data?.product_name)
+      setProduct((prev) => ({ ...prev, color: data.color }));
+    if (data?.product_name)
+      setProduct((prev) => ({ ...prev, capacity: data.capacity }));
     if (data?.product_price)
       setProduct((prev) => ({ ...prev, price: data.product_price }));
     if (data?.warranty_period)
@@ -303,7 +307,7 @@ export default function ProductBilling({
             name="serial_number"
             min={0}
             id="serial"
-            type="number"
+            type="text"
             className="w-64"
             placeholder="350123451234560"
             required

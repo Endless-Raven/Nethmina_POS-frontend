@@ -74,6 +74,8 @@ export default function Billing() {
     quantity: "",
     discount: 0.0,
     warranty_period: "",
+    capacity: "",
+    color: "",
   });
   const addProduct = () => {
     // const { warranty_period, ...productWithoutWarranty } = product;
@@ -85,6 +87,7 @@ export default function Billing() {
     customer_number: "",
     customer_name: "",
     customer_address: "",
+    customer_email: "",
   });
 
   // about total balance
@@ -123,6 +126,7 @@ export default function Billing() {
       customer_number: "",
       customer_name: "",
       customer_address: "",
+      customer_email: "",
     });
     setTotal(0);
     setSalesman("");
@@ -146,6 +150,7 @@ export default function Billing() {
           customer_name: customer.customer_name,
           customer_phone_number: customer.customer_number,
           customer_address: customer.customer_address,
+          customer_email: customer.customer_email,
         },
       };
       try {
@@ -181,6 +186,7 @@ export default function Billing() {
           customer_name: customer.customer_name,
           customer_phone_number: customer.customer_number,
           customer_address: customer.customer_address,
+          customer_email: customer.customer_email,
         },
       };
       try {
@@ -553,9 +559,11 @@ export default function Billing() {
                         {product.product_name}
                         <br />
                         {product.serial_number && (
-                          <span className="font-semibold">
-                            {product.serial_number}
-                          </span>
+                          <p className="font-semibold space-x-4">
+                            <span>{product.capacity}</span>
+                            <span> {product.color}</span>
+                            <span> {product.serial_number}</span>
+                          </p>
                         )}
                       </Table.Cell>
                       <Table.Cell className="text-xs py-0">
