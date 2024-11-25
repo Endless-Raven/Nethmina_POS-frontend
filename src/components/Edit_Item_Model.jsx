@@ -80,7 +80,6 @@ const Edit_Item_Model = ({ productName , product_id }) => {
         grade: product.grade,
         low_count: product.low_count,
         max_discount: product.max_discount,
-        low_count: product.low_count,
         warranty_period: product.warranty_period,
         imei_number: product.imei_number,
         category: product.product_type,
