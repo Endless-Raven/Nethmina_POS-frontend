@@ -167,7 +167,7 @@ function AdminProductReturns() {
             </tbody>
           </table>
         ) : (
-          <p className="text-gray-500">No {title.toLowerCase()} returns.</p>
+          <p className="text-gray-500">No {title.toLowerCase()}</p>
         )}
       </div>
     );

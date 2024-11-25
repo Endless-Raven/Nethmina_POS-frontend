@@ -174,8 +174,11 @@ function ShareStockAdminInventory() {
   }, []);
 
   useEffect(() => {
-    fetchProduct();
+    if (code.trim() !== "") {
+      fetchProduct();
+    }
   }, [code]);
+  
 
   const [modalOpen, setModalOpen] = useState(false);
   const [toShop, setToShop] = useState("");
@@ -478,7 +481,7 @@ function ShareStockAdminInventory() {
     show={OpenModaltranserPending}
     store_Id={userData.store_id}
     close={() => setOpenModaltranserPending(false)}
-  />;
+  />
     </div>
     
   );
