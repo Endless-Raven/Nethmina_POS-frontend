@@ -9,4 +9,7 @@ export default defineConfig({
       API_BASE_URL: 'https://nethmina-pos-backend-endless.vercel.app',
     },
   },
+  server: {
+    port: 3001, // Change to another available port
+  },
 })
