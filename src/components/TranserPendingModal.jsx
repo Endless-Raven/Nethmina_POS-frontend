@@ -82,7 +82,7 @@ export default function TranserPendingModal({ store_Id, show, close }) {
                   <div key={transfer.transfer_id} className="mb-6">
                     {/* Transfer Header Box */}
                     <div className="p-2 flex rounded-t-md justify-start gap-4 bg-green-200 text-green-600">
-                      <strong>From:</strong> {transfer.to}
+                      <strong>To:</strong> {transfer.to}
                       <strong>Transfer ID:</strong> {transfer.transfer_id}
                       <strong>Date:</strong> {new Date(transfer.date).toLocaleDateString()}
                       <strong>Time:</strong> {transfer.time}

@@ -253,7 +253,7 @@ export default function ManagerProduct() {
                   <Table.HeadCell className="bg-emerald-300">
                     Stock
                   </Table.HeadCell>
-                  <Table.HeadCell className="bg-emerald-300">Edit</Table.HeadCell>
+
                 </Table.Head>
                 <Table.Body className="divide-y">
                   {loading ? (
