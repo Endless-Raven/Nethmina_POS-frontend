@@ -6,6 +6,10 @@ import Inventory from "./Inventory";
 import DailyReport from "./DailyReport";
 import AdminPanel from "./AdminPanel";
 import NotFoundPage from "./NotFoundPage";
+import ManagerProduct from "./ManagerProduct";
+import ShareStockAdminInventory from "./ShareStockManagerInventory";
+import ManagerFinance from "./ManagerFinance";
+import ReturnProduct from "./ReturnProduct";
 import {
   PrivateRouteAdmin,
   PrivateRouteManager,
@@ -23,11 +27,27 @@ export default function Home() {
         <PrivateRouteManager>
           <Inventory />
         </PrivateRouteManager>
-      ) : section === "daily_report" ? (
+      ) : section === "product" ? (
+        <PrivateRouteManager>
+          <ManagerProduct />
+        </PrivateRouteManager>
+      ): section === "ShareStockAdminInventory" ? (
+        <PrivateRouteManager>
+          <ShareStockAdminInventory />
+        </PrivateRouteManager>
+      ): section === "ManagerFinance" ? (
+        <PrivateRouteManager>
+          <ManagerFinance />
+        </PrivateRouteManager>
+      ): section === "ReturnProduct" ? (
+        <PrivateRouteManager>
+          <ReturnProduct />
+        </PrivateRouteManager>
+      ): section === "daily_report" ? (
         <PrivateRouteAdmin>
           <DailyReport />
         </PrivateRouteAdmin>
-      ) : (
+      )  : (
         <NotFoundPage />
       )}
     </div>

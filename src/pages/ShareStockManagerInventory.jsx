@@ -6,10 +6,9 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import TranserPending from "../components/TranserPendingModal";
 
-
 const API_BASE_URL = process.env.API_BASE_URL;
 
-function ShareStockAdminInventory() {
+function ShareStockManagerInventory() {
   const userData = useSelector((state) => state.user.data);
   // Backend data
   const [shopsAndCategories, setShopsAndCategories] = useState({
@@ -29,7 +28,6 @@ function ShareStockAdminInventory() {
   const [reset, setReset] = useState(false);
   const [OpenModaltranserPending, setOpenModaltranserPending] = useState(false);
 
-  
   useEffect(() => {
     if (reset) {
       resetForm();
@@ -86,8 +84,11 @@ function ShareStockAdminInventory() {
     setError(null);
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/stock/getAllPendingRequests`
+      const response = await axios.post(
+        `${API_BASE_URL}/stock/PendingRequests/byid`,
+        {
+          store_id: userData.store_id,
+        }
       );
       setSamplePending(response.data);
     } catch (error) {
@@ -174,11 +175,8 @@ function ShareStockAdminInventory() {
   }, []);
 
   useEffect(() => {
-    if (code.trim() !== "") {
-      fetchProduct();
-    }
+    fetchProduct();
   }, [code]);
-  
 
   const [modalOpen, setModalOpen] = useState(false);
   const [toShop, setToShop] = useState("");
@@ -219,9 +217,9 @@ function ShareStockAdminInventory() {
       product_name: "",
       transfer_quantity: 1,
       imei_number: [],
-      color:"",
-      grade:"",
-      capacity:""
+      color: "",
+      grade: "",
+      capacity: "",
     });
   };
 
@@ -271,17 +269,19 @@ function ShareStockAdminInventory() {
   return (
     <div className="share-stock-container p-5 min-h-screen max-w-5xl mx-auto">
       {samplePending.length > 0 && <PendingRequestList data={samplePending} />}
-      <Button
+      <div>
+        <Button
           gradientDuoTone="greenToBlue"
           outline
           onClick={() => setOpenModaltranserPending(true)}
         >
           Pending transfers
         </Button>
+      </div>
       <div className=" flex gap-8 items-end my-8">
         <div className="">
           <Label htmlFor="fromShop">From:</Label>
-          <TextInput id="fromShop" value={"Admin"} readOnly />
+          <TextInput id="fromShop" value={"Your Store"} readOnly />
         </div>
         <div className="">
           <Label htmlFor="Shops">To:</Label>
@@ -349,18 +349,18 @@ function ShareStockAdminInventory() {
               <TextInput id="brand" value={newItem.brand} />
             </div>
             <div className="flex items-center gap-6">
-            <div>
-              <Label htmlFor="brand">grade</Label>
-              <TextInput id="brand" value={newItem.grade} />
+              <div>
+                <Label htmlFor="brand">grade</Label>
+                <TextInput id="brand" value={newItem.grade} />
               </div>
               <div>
-              <Label htmlFor="brand">color</Label>
-              <TextInput id="brand" value={newItem.color} />
+                <Label htmlFor="brand">color</Label>
+                <TextInput id="brand" value={newItem.color} />
               </div>
               <div>
-              <Label htmlFor="brand">capacity</Label>
-              <TextInput id="brand" value={newItem.capacity} />
-            </div>
+                <Label htmlFor="brand">capacity</Label>
+                <TextInput id="brand" value={newItem.capacity} />
+              </div>
             </div>
 
             <div>
@@ -376,6 +376,7 @@ function ShareStockAdminInventory() {
                   setNewItem({
                     ...newItem,
                     product_name: e.target.value,
+                    product_name: name,
                   });
                 }}
               >
@@ -476,14 +477,13 @@ function ShareStockAdminInventory() {
           {error}
         </div>
       )}
-      <TranserPending
+  <TranserPending
     show={OpenModaltranserPending}
     store_Id={userData.store_id}
     close={() => setOpenModaltranserPending(false)}
-  />
+  />;
     </div>
-    
   );
 }
 
-export default ShareStockAdminInventory;
+export default ShareStockManagerInventory;

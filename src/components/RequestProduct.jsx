@@ -14,6 +14,8 @@ export default function RequestProduct({ show, close }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggesstionList, setSuggesstionList] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedStore, setSelectedStore] = useState("");
+  const [stores, setStores] = useState([]);
 
   async function getSuggestions() {
     try {
@@ -28,6 +30,19 @@ export default function RequestProduct({ show, close }) {
       else setError(error.message);
     }
   }
+  useEffect(() => {
+    fetchStores();
+  }, []);
+
+    // Fetch store names
+    const fetchStores = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/stores/getstore/names`);
+        setStores(response.data);
+      } catch (error) {
+        console.error("Error fetching stores:", error);
+      }
+    };
 
   useEffect(() => {
     if (searchQuery && searchQuery !== "") getSuggestions();
@@ -35,12 +50,18 @@ export default function RequestProduct({ show, close }) {
 
   async function requestProduct() {
     try {
+      if (!selectedStore || selectedStore === "") {
+        setError("Please select a valid store.");
+        return; // Exit the function if no store is selected
+      }
+
       setLoading(true);
       setError(null);
       setSuccess(null);
       const req = {
         products: selectedProducts,
         store_id: userData.store_id,
+        req_from:selectedStore
       };
       const response = await axios.post(
         `${API_BASE_URL}/stock/requestproduct`,
@@ -66,6 +87,19 @@ export default function RequestProduct({ show, close }) {
         </Modal.Header>
         <Modal.Body>
           <div className="min-h-[50vh]">
+          <select
+                value={selectedStore}
+                onChange={(e) => setSelectedStore(e.target.value)}
+                className="p-2 border rounded-lg bg-white"
+                required
+              >
+                <option value="All">Request From</option>
+                {stores.map((store) => (
+                  <option key={store} value={store}>
+                    {store}
+                  </option>
+                ))}
+              </select>
             {/* Search Bar */}
             <div className="relative pt-2">
               <CiSearch className="text-gray-600 mr-2 absolute left-2 top-5 text-xl" />

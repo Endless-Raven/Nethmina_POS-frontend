@@ -4,13 +4,18 @@ import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import UpdateItemModel from "../components/admin/UpdateItemModel";
 import ImeiNumberModel from "../components/admin/ImeiNumberModel";
+import DeleteProductModel from "../components/admin/DeleteProductModel";
+import { useNavigate } from "react-router-dom";
+
 const API_BASE_URL = process.env.API_BASE_URL;
 
 function ItemAdminInventory() {
+  const navigate = useNavigate();
   const [selectedBrand, setSelectedBrand] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState("");
   const [showImeiNumber, setShowImeiNumberModal] = useState("");
+  const [showDelete, setShowDeleteModal] = useState(false);
   const [qty, setqty] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [stores, setStores] = useState([]);
@@ -24,6 +29,7 @@ function ItemAdminInventory() {
   const [selectedColor, setSelectedColor] = useState("All");
   const [selectedGrade, setSelectedGrade] = useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
+  const [selectedProductCode, setselectedPrdocutCode] = useState("");
   const [selectedProductID, setselectedProductID] = useState("");
   const [selectedShop, setselectedShop] = useState("");
   const [loading, setLoading] = useState(false);
@@ -214,6 +220,7 @@ function ItemAdminInventory() {
               <option value="P3+">P3+</option>
               <option value="P4+">P4+</option>
             </select>
+         
           </div>
         </div>
       </div>
@@ -297,6 +304,7 @@ function ItemAdminInventory() {
                       <Table.Cell>{item.capacity}</Table.Cell>
                       <Table.Cell>{item.stock_quantity}</Table.Cell>
                       <Table.Cell>
+                      <div className="flex justify-between items-center mb-4 gap-3">
                         <Button
                           className="m-3 p-1 mb-3 text-lg"
                           onClick={async () => {
@@ -312,6 +320,21 @@ function ItemAdminInventory() {
                         >
                           ...
                         </Button>
+                        <Button
+                          className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                          onClick={() => {
+                            setselectedShop(item.store_name);
+                            setselectedProductID(item.product_id);
+                            setselectedPrdocutCode(item.product_code);
+                            setShowDeleteModal(true);
+                            setqty(item.stock_quantity);
+                          }}
+                          size="m"
+                          gradientDuoTone="Transparent"
+                        >
+                          Delete
+                        </Button>
+                        </div>
                       </Table.Cell>
                     </Table.Row>
                   ))
@@ -321,6 +344,17 @@ function ItemAdminInventory() {
           </div>
         </div>
       </div>
+      {showDelete &&  <DeleteProductModel
+        showModel={showDelete}
+        shop={selectedShop}
+        productID={selectedProductID}
+        qty={qty}
+        code={selectedProductCode}
+        close={() => {
+          setShowDeleteModal(false);
+          navigate(0);
+        }}
+      />}
       <UpdateItemModel
         stockqty={qty}
         productName={selectedProductName}
@@ -328,6 +362,7 @@ function ItemAdminInventory() {
         showModel={showEditModal}
         close={() => {
           setShowEditModal(false);
+          navigate(0);
         }}
       />
       <ImeiNumberModel
@@ -338,6 +373,7 @@ function ItemAdminInventory() {
           setShowImeiNumberModal(false);
         }}
       />
+      
     </div>
   );
 }

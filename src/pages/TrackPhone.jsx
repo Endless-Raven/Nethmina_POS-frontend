@@ -2,6 +2,7 @@ import { Button, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { useMobileForImei } from "../services/api";
+import { TbTruckDelivery } from "react-icons/tb";
 
 function TrackPhone() {
   const [imei_number, setImeiNumber] = useState("");
@@ -22,6 +23,7 @@ function TrackPhone() {
   const handleClear = () => {
     setImeiNumber("");
   };
+
 
   return (
     <div className="pt-16">
@@ -60,7 +62,11 @@ function TrackPhone() {
       ) : data ? (
         <div
           className={`mt-16 ml-6 mx-auto max-w-4xl flex flex-col gap-6 text-lg border-2 bg-white rounded-md p-6 shadow-md ${
-            !data.sold ? "border-sky-300" : "border-rose-300"
+            data.sold
+              ? "border-rose-300"
+              : data.transfer
+              ? "border-yellow-300"
+              : "border-sky-300"
           }`}
         >
           <div>{data.sold ? "Out Of Stock" : "In Stock"}</div>
@@ -90,12 +96,24 @@ function TrackPhone() {
               <span className="font-semibold">Price:</span> {data.product_price}
             </div>
           </div>
+          <div>
+            <span className="font-semibold">Transfer Status:</span>{" "}
+            {data.transfer ? "Transferred" : "Not Transferred"}
+          </div>
+          {data.transfer && (
+            <div className="flex gap-5 items-center" >
+              <span className="font-semibold">Transfer To:</span>{" "}
+              {data.transfer_from}  <span className="text-2xl text-yellow-300"><TbTruckDelivery /> </span> {data.transfer_to}
+            </div>
+          )}
         </div>
       ) : (
         <div className="mt-16 ml-6">Please enter a valid IMEI.</div>
       )}
     </div>
   );
+
+
 }
 
 export default TrackPhone;

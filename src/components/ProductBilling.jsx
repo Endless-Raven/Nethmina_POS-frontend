@@ -7,7 +7,13 @@ import { useGetWithoutQuery } from "../services/api";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-export default function ProductBilling({ product, setProduct, addProduct }) {
+export default function ProductBilling({
+  product,
+  setProduct,
+  addProduct,
+  reset,
+  undo,
+}) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModelId, setSelectedModelId] = useState(""); // State for selected model ID
@@ -127,6 +133,9 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       warranty_period: "",
     });
     setSelectedModelId(""); // Reset selected model ID
+    setSelectedCategory("");
+    setSelectedBrand("");
+    setBarcode("");
     setValidEmi([]);
     setMax_discount(null);
   };
@@ -171,6 +180,10 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
     }
     if (data?.product_name)
       setProduct((prev) => ({ ...prev, product_name: data.product_name }));
+    if (data?.product_name)
+      setProduct((prev) => ({ ...prev, color: data.color }));
+    if (data?.product_name)
+      setProduct((prev) => ({ ...prev, capacity: data.capacity }));
     if (data?.product_price)
       setProduct((prev) => ({ ...prev, price: data.product_price }));
     if (data?.warranty_period)
@@ -191,6 +204,13 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
       discount: 0.0,
     }));
   }, [data]);
+
+  useEffect(() => {
+    if (reset) {
+      resetProduct();
+      undo();
+    }
+  }, [reset]);
 
   return (
     <div className="">
@@ -287,7 +307,7 @@ export default function ProductBilling({ product, setProduct, addProduct }) {
             name="serial_number"
             min={0}
             id="serial"
-            type="number"
+            type="text"
             className="w-64"
             placeholder="350123451234560"
             required
