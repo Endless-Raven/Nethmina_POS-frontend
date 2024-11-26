@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Button } from "flowbite-react";
 import { useSelector } from "react-redux";
 import { usePost } from "../services/api";
-import PendingExpenseIncomeModel from "../components/admin/PendingExpenxeceIncomeModel";
 
 
-export default function Finance() {
-
+export default function ManagerFinance() {
+    
   const [incomeAmount, setIncomeAmount] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
   const [incomeType, setIncomeType] = useState("selling");
   const [expenseType, setExpenseType] = useState("inventory cost");
-  const [showPendingFinanceModal, setShowPendingFinanceModal] = useState(false);
+
   const { data, error, loading, postData } = usePost();
   const userData = useSelector((state) => state.user.data);
 
@@ -21,7 +20,7 @@ export default function Finance() {
     user_id: "",
     store_id: "",
     income_type: "Selling",
-    approval_status: "confirmed",
+    approval_status: "pending",
   });
 
   const [formDataExpence, setFormDataExpence] = useState({
@@ -30,7 +29,7 @@ export default function Finance() {
     user_id: "",
     store_id: "",
     expense_type: "Utilities",
-    approval_status: "confirmed",
+    approval_status: "pending",
   });
 
   useEffect(() => {
@@ -81,7 +80,7 @@ export default function Finance() {
       user_id: "",
       store_id: "",
       income_type: "Selling",
-      approval_status: "confirmed",
+      approval_status: "pending",
     });
   };
 
@@ -94,25 +93,17 @@ export default function Finance() {
       user_id: "",
       store_id: "",
       expense_type: "Utilities",
-      approval_status: "confirmed",
+      approval_status: "pending",
     });
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Finance Management</h2>
-      <div className="mb-6">
-      <Button
-        onClick={() => setShowPendingFinanceModal(true)} // Toggle the modal's visibility
-        gradientDuoTone="greenToBlue"
-        className="mt-4"
-      >
-        View Pending Finance Requests
-      </Button>
-      </div>
+    <div className=" w-full">
+      <div className=" px-64  ms-auto">
+      <h1 className="text-2xl font-bold mb-2">Finance Management</h1>
       {/* Add Income Form */}
-      <div className="mb-6">
-        <h3 className="text-xl mb-2">Add New Income</h3>
+      <div className="mb-2 p-6  border-2 shadow-md rounded-md border-gray-600">
+        <h3 className="text-xl mb-2 font-bold">Add New Income</h3>
         <form onSubmit={handleAddIncome}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Income Type</label>
@@ -153,8 +144,8 @@ export default function Finance() {
       </div>
 
       {/* Add Expense Form */}
-      <div>
-        <h3 className="text-xl mb-2">Add New Expense</h3>
+      <div className="mb-6 p-6  border-2 shadow-md rounded-md border-gray-600">
+        <h3 className="text-xl mb-2 font-bold">Add New Expense</h3>
         <form onSubmit={handleAddExpence}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Expense Type</label>
@@ -195,11 +186,7 @@ export default function Finance() {
         <p className={`my-2 text-green-600 `}>{data.message}</p>
       )}
       {error && <p className={`my-2 text-red-600 `}>{error}</p>}
-      <PendingExpenseIncomeModel
-            show={showPendingFinanceModal}
-            close={() => setShowPendingFinanceModal(false)}
-          />
+    </div>
     </div>
   );
 }
-

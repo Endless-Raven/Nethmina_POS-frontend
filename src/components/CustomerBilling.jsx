@@ -35,6 +35,7 @@ export default function CustomerBilling({ customer, setCustomer }) {
       customer_number: "",
       customer_name: "",
       customer_address: "",
+      customer_email:"",
     });
   };
 
@@ -70,6 +71,18 @@ export default function CustomerBilling({ customer, setCustomer }) {
             className="w-56"
             placeholder="W. Saman Kumara"
             required
+          />
+        </div>
+        <div className="flex gap-4 items-center justify-between">
+          <Label htmlFor="email" value="Customer_email " />
+          <Textarea
+            id="comment"
+            name="customer_email"
+            onChange={handleCustomerChange}
+            value={customer.customer_email}
+            className="w-56"
+            placeholder="name@gmail.com"
+            rows={2}
           />
         </div>
         <div className="flex gap-4 items-center justify-between">

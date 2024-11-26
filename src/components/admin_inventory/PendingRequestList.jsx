@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMobileForImei } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
-export default function PendingRequestList({ data }) {
+export default function     PendingRequestList({ data }) {
   const { error, loading, fetchMobileData } = useMobileForImei();
   const navigate = useNavigate();
   const handleMarkAsRead = async (id) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar } from "flowbite-react";
 import { HiChartPie, HiOutlineLogout } from "react-icons/hi";
 import { AiFillProduct } from "react-icons/ai";
@@ -9,9 +9,29 @@ import { FaShop } from "react-icons/fa6";
 import { GiReceiveMoney } from "react-icons/gi";
 import { useLocation } from "react-router-dom";
 import { TbReportMoney } from "react-icons/tb";
+import { MdOutlineAssignmentReturn } from "react-icons/md";
+
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function SidebarAdminPanel() {
   const { pathname } = useLocation();
+
+  const [pendingCount, setPendingCount] = useState(0);
+
+  // Fetch pending returns count
+  useEffect(() => {
+    const fetchPendingReturns = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/return/returns/pending-count`); // Replace with your API endpoint
+        const data = await response.json();
+        setPendingCount(data.count || 0); // Assume API returns { count: number }
+      } catch (error) {
+        console.error("Failed to fetch pending returns count:", error);
+      }
+    };
+
+    fetchPendingReturns();
+  }, []);
 
   const routes = [
     { href: "dashboard", icon: HiChartPie, label: "Dashboard" },
@@ -26,6 +46,20 @@ export default function SidebarAdminPanel() {
     },
     { href: "manage_shops", icon: FaShop, label: "Manage Shops" },
     { href: "finance", icon: GiReceiveMoney, label: "Finance" },
+    {
+      href: "AdminProductReturns",
+      icon: MdOutlineAssignmentReturn,
+      label: (
+        <span className="flex items-center">
+          Product Return
+          {pendingCount > 0 && (
+            <span className="ml-2 bg-red-600 text-white text-xs rounded-full px-2 py-1">
+              {pendingCount}
+            </span>
+          )}
+        </span>
+      ),
+    },
   ];
 
   return (

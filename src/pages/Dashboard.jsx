@@ -88,6 +88,9 @@ export default function Dashboard() {
                       className="flex justify-between items-center cursor-pointer hover:shadow-md hover:scale-105 transition-all py-1 px-2 rounded-md border border-sky-400 bg-sky-300 mb-2"
                     >
                       <span className="font-semibold text-slate-600">
+                        {itm.store_name}
+                      </span>{" "}
+                      <span className="font-semibold text-slate-600">
                         {itm.product_name}
                       </span>{" "}
                       <span className="text-slate-500 text-xs">
