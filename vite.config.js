@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   define: {
     'process.env': {
-      API_BASE_URL: 'https://nethmina-pos-backend-endless.vercel.app',
+      API_BASE_URL: 'http://localhost:4500',
     },
   },
 })
