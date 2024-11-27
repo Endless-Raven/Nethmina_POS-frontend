@@ -76,16 +76,16 @@ export default function DailyReportAdmin({ show, onClose, date, selectedStore })
     });
   }, [date]);
 
-  console.log(selectedStore);
+  
   
   const componentRef = React.useRef(null);
 
   const handleAfterPrint = React.useCallback(() => {
-    console.log("`onAfterPrint` called");
+  
   }, []);
 
   const handleBeforePrint = React.useCallback(() => {
-    console.log("`onBeforePrint` called");
+    
     return Promise.resolve();
   }, []);
 

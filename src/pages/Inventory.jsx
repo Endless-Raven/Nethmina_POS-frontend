@@ -76,7 +76,6 @@ const Inventory = () => {
       );
       setProducts(response.data);
       setFilteredProducts(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
       setError(error.message);

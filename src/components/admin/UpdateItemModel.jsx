@@ -36,7 +36,6 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
           `${API_BASE_URL}/product/${product_id}`
         );
         const product = response.data;
-        // console.log(productName);
         setNewItem({
           name: product.product_name,
           brand: product.brand_name,
@@ -52,7 +51,6 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
         setSelectedModel(product.product_model);
         setSelectedBrand(product.brand_name);
         setItemNames({ name: product.product_name });
-        // console.log(product.brand_name);
         setFooterMessage("");
       } catch (error) {
         console.error("Error fetching product details:", error);
@@ -67,14 +65,13 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
   const updateProduct = async () => {
     setLoading(true);
     try {
-      console.log(newItem.newqty);
 
       // Check if the category is 'Mobile Phone'
       if (newItem.category === "Mobile Phone") {
         const imeiNumbers = Array.isArray(newItem.newimeinumber)
           ? newItem.newimeinumber
           : [newItem.newimeinumber];
-        console.log(imeiNumbers.length);
+      
         // Check if the quantity matches the count of IMEI numbers
         if (imeiNumbers.length !== Number(newItem.newqty)) {
           setFooterMessage(

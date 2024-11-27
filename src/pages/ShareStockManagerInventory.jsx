@@ -58,7 +58,6 @@ function ShareStockManagerInventory() {
         ...prev,
         product_types: response.data,
       }));
-      // console.log(response.data)
     } catch (error) {
       console.error("Error fetching Categories:", error);
       setError(error.message);
@@ -107,7 +106,6 @@ function ShareStockManagerInventory() {
         `${API_BASE_URL}/product/brands/byproducttype?product_type=${type}`
       );
       setBrands(response.data);
-      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching brands data:", error);
       setError(error.message);
@@ -126,7 +124,6 @@ function ShareStockManagerInventory() {
         }
       );
       const product = response.data;
-      console.log(response.data);
       setNewItem({
         product_id: product.product_id,
         product_name: product.product_name,
@@ -175,7 +172,9 @@ function ShareStockManagerInventory() {
   }, []);
 
   useEffect(() => {
-    fetchProduct();
+    if (code.trim() !== "") {
+      fetchProduct();
+    }
   }, [code]);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -223,7 +222,6 @@ function ShareStockManagerInventory() {
     });
   };
 
-  console.log(items);
 
   const handleTransfer = async () => {
     const req = {
@@ -293,7 +291,7 @@ function ShareStockManagerInventory() {
           >
             <option value="">Select Shop</option>
             {shopsAndCategories?.shops
-              ?.filter((shop) => shop !== "Tech_Haven")
+              ?.filter((shop) => shop !== userData.store_name)
               .map((shop, index) => (
                 <option
                   key={index}
@@ -369,7 +367,6 @@ function ShareStockManagerInventory() {
                 id="product"
                 value={newItem.product_name}
                 onChange={(e) => {
-                  console.log("onChange triggered");
                   var name = products.find(
                     (p) => p.product_id == e.target.value
                   ).product_name;

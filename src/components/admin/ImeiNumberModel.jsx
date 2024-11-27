@@ -13,9 +13,7 @@ export default function ImeiNumberModel({
 }) {
   const [imeiNumbers, setImeiNumbers] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log(imeiList);
 
-  console.log(shop);
   
   useEffect(() => {
     if (Array.isArray(imeiList)) {

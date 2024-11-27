@@ -119,8 +119,7 @@ export default function ProductBilling({
       resetProduct(); // Reset product if no model is selected
     }
   };
-  console.log(validEmi);
-  console.log(Max_discount);
+
   // Function to reset product data
   const resetProduct = () => {
     setProduct({
@@ -140,7 +139,6 @@ export default function ProductBilling({
     setMax_discount(null);
   };
 
-  // console.log(product);
 
   // Handle form submission
   const handleAdd = (e) => {

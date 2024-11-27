@@ -36,7 +36,6 @@ const DailyReport = () => {
           },
         }
       );
-      console.log(response);
       setSalesData(response.data.stores_sales);
     } catch (error) {
       setSalesData({});

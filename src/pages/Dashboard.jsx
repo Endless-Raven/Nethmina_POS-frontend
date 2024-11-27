@@ -10,7 +10,6 @@ export default function Dashboard() {
     fetchData("dashboard/getDashboard");
   }, []);
 
-  // console.log(data.sales);
 
   return (
     <div className="mt-16 cursor-default">
