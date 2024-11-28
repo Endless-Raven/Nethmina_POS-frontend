@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   define: {
     'process.env': {
-      API_BASE_URL: 'http://localhost:4500',
+      API_BASE_URL: 'https://nethminacellular.lk/api',
     },
   },
   server: {
