@@ -17,7 +17,7 @@ export default function DeleteProductModel({
     shops: [],
     product_types: [],
   });
-  console.log(shop);
+
   const imeiRefs = useRef([]);
   const [samplePending, setSamplePending] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -68,7 +68,7 @@ export default function DeleteProductModel({
 
       // Check response status
       if (response.status === 200) {
-        console.log("IMEI number(s) deleted successfully");
+      
         alert("Product or IMEI deleted successfully.");
         // Optionally, trigger any post-success actions here, like updating UI
       } else {
@@ -102,7 +102,6 @@ export default function DeleteProductModel({
         }
       );
       const product = response.data;
-      console.log(response.data);
       setNewItem({
         product_id: product.product_id,
         code: product.product_code,
@@ -176,7 +175,7 @@ export default function DeleteProductModel({
     });
   };
 
-  console.log(items);
+
 
   useEffect(() => {
     if (error) {
@@ -232,7 +231,7 @@ export default function DeleteProductModel({
               id="product"
               value={newItem.product_name}
               onChange={(e) => {
-                console.log("onChange triggered");
+               
                 var name = products.find(
                   (p) => p.product_id == e.target.value
                 ).product_name;

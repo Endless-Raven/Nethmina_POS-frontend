@@ -97,7 +97,7 @@ export default function NavigationBar() {
             navigate("/home/ShareStockAdminInventory");
           }}
         >
-          Shere Stock
+          Share Stock
         </Navbar.Link>
         <Navbar.Link
           active={active === "ManagerFinance"}

@@ -8,7 +8,6 @@ import Model from "../components/Model";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 const Edit_Item_Model = ({ productName , product_id }) => {
-  console.log(product_id);
   const [reset, setReset] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemNames, setItemNames] = useState({ name: "", category: "" });
@@ -69,7 +68,6 @@ const Edit_Item_Model = ({ productName , product_id }) => {
         `${API_BASE_URL}/product/${product_id}`
       );
       const product = response.data;
-      // console.log(response.data);
       setNewItem({
         product_id:product.product_id,
         name: product.product_name,
@@ -91,7 +89,6 @@ const Edit_Item_Model = ({ productName , product_id }) => {
       setSelectedModel(product.product_model);
       setSelectedBrand(product.brand_name);
       setItemNames({ name: product.product_name });
-      console.log(product.brand_name);
       setFooterMessage("");
     } catch (error) {
       console.error("Error fetching product details:", error);

@@ -313,7 +313,6 @@ function ItemAdminInventory() {
                             setShowEditModal(true);
                             setselectedProductName(item.product_name);
                             setselectedProductID(item.product_id);
-                            console.log(item.product_name);
                           }}
                           size="m"
                           gradientDuoTone="Transparent"

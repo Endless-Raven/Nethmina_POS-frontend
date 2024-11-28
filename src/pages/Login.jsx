@@ -44,7 +44,6 @@ export default function Login() {
           navigate("/home/billing");
         }
       } catch (error) {
-        console.log(error);
         setError(error.response ? error.response.data.message : error.message);
         setLoading(false);
       }
