@@ -20,6 +20,7 @@ function ItemAdminInventory() {
   const [editIndex, setEditIndex] = useState(null);
   const [stores, setStores] = useState([]);
   const [color, setColor] = useState([]);
+  const [Capacity, setCapacity] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [products, setProducts] = useState([]);
@@ -27,6 +28,7 @@ function ItemAdminInventory() {
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedColor, setSelectedColor] = useState("All");
+  const [selectedCapacity, setSelectedCapacity] = useState("All");
   const [selectedGrade, setSelectedGrade] = useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
   const [selectedProductCode, setselectedPrdocutCode] = useState("");
@@ -41,6 +43,7 @@ function ItemAdminInventory() {
     fetchBrands();
     fetchProductData();
     fetchColor();
+    fetchCapacity();
   }, []);
 
   useEffect(() => {
@@ -50,6 +53,10 @@ function ItemAdminInventory() {
   useEffect(() => {
     fetchProductData();
   }, [selectedColor]);
+
+  useEffect(() => {
+    fetchProductData();
+  }, [selectedCapacity]);
 
   useEffect(() => {
     fetchProductData();
@@ -87,6 +94,18 @@ function ItemAdminInventory() {
         `${API_BASE_URL}/product/getProductColor/get`
       );
       setColor(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchCapacity = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/getProductCapacity/get`
+      );
+      setCapacity(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -132,6 +151,7 @@ function ItemAdminInventory() {
           product_type: selectedCategory,
           color: selectedColor,
           grade: selectedGrade,
+          capacity: selectedCapacity,
         }
       );
       setProducts(response.data);
@@ -206,6 +226,18 @@ function ItemAdminInventory() {
               {color.map((color) => (
                 <option key={color} value={color}>
                   {color}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedCapacity}
+              onChange={(e) => setSelectedCapacity(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">Capacity</option>
+              {Capacity.map((Capacity) => (
+                <option key={Capacity} value={Capacity}>
+                  {Capacity}
                 </option>
               ))}
             </select>
