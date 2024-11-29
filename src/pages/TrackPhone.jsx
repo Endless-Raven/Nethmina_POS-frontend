@@ -77,11 +77,20 @@ function TrackPhone() {
             <div className="w-64">
               <span className="font-semibold">Brand:</span> {data.brand_name}
             </div>
+            <div className="w-64">
+              <span className="font-semibold">Color:</span> {data.color}
+            </div>
+            <div className="w-64">
+              <span className="font-semibold">Capacity:</span> {data.capacity}
+            </div>
+            <div className="w-64">
+              <span className="font-semibold">Grade:</span> {data.grade}
+            </div>
+          </div>
             <div>
               <span className="font-semibold">Category:</span>{" "}
               {data.product_type}
             </div>
-          </div>
           {data?.store_name && (
             <div>
               <span className="font-semibold">Shop:</span> {data.store_name}
