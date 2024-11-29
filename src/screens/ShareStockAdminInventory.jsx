@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Modal, Label, Select, TextInput } from "flowbite-react";
 import PendingRequestList from "../components/admin_inventory/PendingRequestList";
 import { ProductTable } from "../components/admin_inventory/ProductTable";
@@ -10,6 +10,7 @@ import TranserPending from "../components/TranserPendingModal";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 function ShareStockAdminInventory() {
+  const imeiRefs = useRef([]);
   const userData = useSelector((state) => state.user.data);
   // Backend data
   const [shopsAndCategories, setShopsAndCategories] = useState({
@@ -408,6 +409,7 @@ function ShareStockAdminInventory() {
                         // IMEI Number Input Handling
                         <TextInput
                           key={index}
+                          ref={(el) => (imeiRefs.current[index] = el)}
                           type="text"
                           placeholder={`IMEI ${index + 1}`}
                           required
@@ -427,6 +429,13 @@ function ShareStockAdminInventory() {
                                 imei_number: updatedIMEIs,
                               });
                             }
+                            if (
+                              e.target.value.length === 15 &&
+                              index < imeiRefs.current.length - 1
+                            ) {
+                              imeiRefs.current[index + 1].focus();
+                            }
+                           
                           }}
                         />
                       )

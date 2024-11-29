@@ -18,6 +18,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [newItem, setNewItem] = useState({
     name: "",
+    code: "",
     brand: "",
     qty: "",
     color: "",
@@ -43,6 +44,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
   const resetForm = () => {
     setNewItem({
       name: "",
+      code:"",
       brand: "",
       qty: "",
       warranty_period: "",
@@ -70,6 +72,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
       const product = response.data;
       setNewItem({
         product_id:product.product_id,
+        code:product.product_code,
         name: product.product_name,
         brand: product.brand_name,
         qty: product.product_stock,
@@ -105,6 +108,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
   const updateProduct = async () => {
     // Trimmed values to remove any leading or trailing whitespace
     const productName = newItem.name?.trim();
+    const product_code = newItem.code?.trim();
     const productPrice = newItem.retailPrice?.trim();
     const warrantyPeriod = newItem.warranty_period?.trim();
     const productType = newItem.category?.trim();
@@ -117,6 +121,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
     // Check for missing fields
     if (
       !productName ||
+      !product_code ||
       !productPrice ||
       !warrantyPeriod ||
       !productType ||
@@ -135,6 +140,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
         `${API_BASE_URL}/product/${product_id}`,
         {
           product_name: productName,
+          product_code:product_code,
           product_price: productPrice,
           warranty_period: warrantyPeriod,
           product_type: productType,
@@ -191,6 +197,14 @@ const Edit_Item_Model = ({ productName , product_id }) => {
         value={newItem.name}
         onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} // Allow spaces
         onBlur={(e) => setNewItem({ ...newItem, name: e.target.value.trim() })} // Trim when focus leaves
+        required
+        className="mb-2"
+      />
+      <TextInput
+        id="name"
+        value={newItem.code}
+        onChange={(e) => setNewItem({ ...newItem, code: e.target.value })} // Allow spaces
+        onBlur={(e) => setNewItem({ ...newItem, code: e.target.value.trim() })} // Trim when focus leaves
         required
         className="mb-2"
       />

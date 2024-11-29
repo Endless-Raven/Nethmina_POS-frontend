@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import UpcommingStockInv from "../components/UpcommingStockInv";
 import RequestProduct from "../components/RequestProduct";
 import InventoryPendingRequest from "../components/InventoryPendingRequest";
+import ImeiNumberModel from "../components/admin/ImeiNumberModel";
 import PendingRequestList from "../components/admin_inventory/PendingRequestList";
 
 
@@ -14,16 +15,21 @@ const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function ManagerProduct() {
     const [selectedBrand, setSelectedBrand] = useState("");
+    const [showImeiNumber, setShowImeiNumberModal] = useState("");
     const [stores, setStores] = useState([]);
     const [color, setColor] = useState([]);
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
+    const [Capacity, setCapacity] = useState([]);
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedStore, setSelectedStore] = useState("All");
+    const [selectedCapacity, setSelectedCapacity] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [selectedColor, setSelectedColor] = useState("All");
     const [selectedGrade, setSelectedGrade] = useState("All");
+    const [selectedProductID, setselectedProductID] = useState("");
+  const [selectedShop, setselectedShop] = useState("");
     const [loading, setLoading] = useState(false);
     const [openModalUpcomming, setOpenModalUpcomming] = useState(false);
     const [openModalRequest, setOpenModalRequest] = useState(false);
@@ -35,6 +41,7 @@ export default function ManagerProduct() {
       fetchBrands();
       fetchProductData();
       fetchColor();
+      fetchCapacity();
     
     }, []);
   
@@ -45,6 +52,10 @@ export default function ManagerProduct() {
     useEffect(() => {
       fetchProductData();
     }, [selectedColor]);
+
+    useEffect(() => {
+      fetchProductData();
+    }, [selectedCapacity]);
   
     useEffect(() => {
       fetchProductData();
@@ -99,6 +110,18 @@ export default function ManagerProduct() {
         console.error("Error fetching categories:", error);
       }
     };
+
+    const fetchCapacity = async () => {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/product/getProductCapacity/get`
+        );
+        setCapacity(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
   
     // Fetch brands based on selected category
     const fetchBrands = async () => {
@@ -128,6 +151,7 @@ export default function ManagerProduct() {
             product_type: selectedCategory,
             color: selectedColor,
             grade: selectedGrade,
+            capacity: selectedCapacity,
           }
         );
         setProducts(response.data);
@@ -205,6 +229,18 @@ export default function ManagerProduct() {
                   </option>
                 ))}
               </select>
+              <select
+              value={selectedCapacity}
+              onChange={(e) => setSelectedCapacity(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">Capacity</option>
+              {Capacity.map((Capacity) => (
+                <option key={Capacity} value={Capacity}>
+                  {Capacity}
+                </option>
+              ))}
+            </select>
               <select
                 value={selectedGrade}
                 onChange={(e) => setSelectedGrade(e.target.value)}
@@ -289,7 +325,13 @@ export default function ManagerProduct() {
                         </Table.Cell>
                         <Table.Cell> {item.brand_name}</Table.Cell>
                         <Table.Cell>{item.product_type}</Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell
+                        onClick={() => {
+                          setselectedProductID(item.product_id);
+                          setselectedShop(item.store_name);
+                          setShowImeiNumberModal(true);
+                        }}
+                        >
                           {item.product_name}
                         </Table.Cell>
                         <Table.Cell>{item.color}</Table.Cell>
@@ -340,6 +382,14 @@ export default function ManagerProduct() {
             show={openModalPending}
             close={() => setOpenModalPending(false)}
           />
+             <ImeiNumberModel
+        productID={selectedProductID}
+        shop={selectedShop}
+        showModel={showImeiNumber}
+        close={() => {
+          setShowImeiNumberModal(false);
+        }}
+      />
         </div>
       </div>
     );
