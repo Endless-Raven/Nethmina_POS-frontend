@@ -46,6 +46,14 @@ export default function     PendingRequestList({ data }) {
                     <strong>Brand:</strong> {product.brand_name}
                   </div>
                   <div>
+                    {" "}
+                    <strong>Color:</strong> {product.color}
+                  </div>
+                  <div>
+                    {" "}
+                    <strong>Capacity:</strong> {product.capacity}
+                  </div>
+                  <div>
                     <strong>Product Name:</strong> {product.product_name}
                   </div>
                   <div>
