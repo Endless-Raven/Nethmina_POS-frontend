@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal, Spinner, Table } from "flowbite-react";
+import { Button, Modal,Checkbox,Label, Spinner, Table } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import UpdateItemModel from "../components/admin/UpdateItemModel";
 import ImeiNumberModel from "../components/admin/ImeiNumberModel";
@@ -36,6 +36,7 @@ function ItemAdminInventory() {
   const [selectedShop, setselectedShop] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     fetchStores();
@@ -77,6 +78,14 @@ function ItemAdminInventory() {
   useEffect(() => {
     fetchProductData();
   }, [selectedStore]);
+
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((p) =>
+        p.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm])
 
   // Fetch store names
   const fetchStores = async () => {
@@ -155,6 +164,7 @@ function ItemAdminInventory() {
         }
       );
       setProducts(response.data);
+      setFilteredProducts(response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
     } finally {
@@ -254,6 +264,24 @@ function ItemAdminInventory() {
             </select>
          
           </div>
+           {/* Checkbox and Paragraph */}
+           <div className=" pt-6 flex items-center gap-2">
+            <Checkbox
+              id="low-stock"
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setFilteredProducts(
+                    products.filter((p) => parseFloat(p.stock_quantity) < p.low_count)
+                  );
+                } else {
+                  setFilteredProducts(products);
+                }
+              }}
+            />
+            <Label htmlFor="low-stock" className="cursor-pointer">
+              Show only low stock items
+            </Label>
+          </div>
         </div>
       </div>
       <div className="flex justify-between items-start mb-4 gap-3">
@@ -301,7 +329,7 @@ function ItemAdminInventory() {
                       </span>
                     </Table.Cell>
                   </Table.Row>
-                ) : products.length < 1 ? (
+                ) : filteredProducts.length < 1 ? (
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-sky-50">
                     <Table.Cell
                       colSpan={7}
@@ -311,7 +339,7 @@ function ItemAdminInventory() {
                     </Table.Cell>
                   </Table.Row>
                 ) : (
-                  products?.map((item, index) => (
+                  filteredProducts?.map((item, index) => (
                     <Table.Row
                       className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-emerald-50"
                       key={index}
