@@ -116,7 +116,17 @@ const Add_item_Model = () => {
         setFooterMessage("Failed to add the item.");
       }
     } catch (error) {
-      setFooterMessage("An error occurred while adding the item.");
+      let errorMessage = "An error occurred while adding the item.";
+
+      // Check if error contains a response from the server
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        errorMessage = error.response.data.message;
+      }
+      setFooterMessage(errorMessage);
       console.error("Error adding product:", error);
     } finally {
       setLoading(false);
@@ -459,7 +469,15 @@ const Add_item_Model = () => {
           Cancel
         </Button>
         {footerMessage && (
-          <p className="text-sm text-red-500">{footerMessage}</p>
+          <p
+            className={`text-sm ${
+              footerMessage.includes("successfully")
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+          >
+            {footerMessage}
+          </p>
         )}
       </Modal.Footer>
     </div>

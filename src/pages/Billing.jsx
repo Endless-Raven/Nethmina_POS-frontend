@@ -351,7 +351,9 @@ export default function Billing() {
                     salesmans.find((c) => c.cashier_name === e.target.value)
                       .cashier_id
                   );
+                  
                 }}
+                value={salesman}
                 required
               >
                 <option value="">Select</option>

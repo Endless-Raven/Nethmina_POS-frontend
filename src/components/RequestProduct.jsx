@@ -22,7 +22,7 @@ export default function RequestProduct({ show, close }) {
       setError(null);
       setSuccess(null);
       const response = await axios.get(
-        `${API_BASE_URL}/product/productName/${searchQuery}`
+        `${API_BASE_URL}/product/productdetails/${searchQuery}`
       );
       setSuggesstionList(response.data);
     } catch (error) {
@@ -129,7 +129,7 @@ export default function RequestProduct({ show, close }) {
                         setSearchQuery("");
                       }}
                     >
-                      {li.product_name}
+                       {li.product_name} {" "} {li.color} {" "} {li.capacity}
                     </li>
                   ))}
               </ul>

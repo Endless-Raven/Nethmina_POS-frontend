@@ -76,7 +76,6 @@ const Inventory = () => {
       );
       setProducts(response.data);
       setFilteredProducts(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
       setError(error.message);
@@ -99,11 +98,16 @@ const Inventory = () => {
 
   useEffect(() => {
     setFilteredProducts(
-      products.filter((p) =>
-        p.product_name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      products.filter((p) => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          p.product_name.toLowerCase().includes(searchLower) ||
+          (p.product_code && p.product_code.toLowerCase().includes(searchLower))
+        );
+      })
     );
-  }, [searchQuery]);
+  }, [searchQuery, products]);
+  
 
   return (
     <div className="relative min-h-[88vh]">
@@ -138,12 +142,12 @@ const Inventory = () => {
 
               {/* Category Selector */}
               <Select
-                value={selectedType}
                 className="w-1/4"
                 onChange={(e) => {
                   setSelectedType(e.target.value);
                 }}
               >
+                <option value={"All"}>Category</option>
                 {productTypes.map((product, index) => (
                   <option value={product} key={index}>
                     {product}
@@ -153,12 +157,12 @@ const Inventory = () => {
 
               {/* Brand Selector */}
               <Select
-                value={selectedBrand}
                 className="w-1/4"
                 onChange={(e) => {
                   setSelectedBrand(e.target.value);
                 }}
               >
+                <option value={"All"}>Brand</option>
                 {brands.map((brand, index) => (
                   <option key={index} value={brand}>
                     {brand}

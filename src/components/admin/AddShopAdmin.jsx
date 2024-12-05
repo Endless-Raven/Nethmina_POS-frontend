@@ -22,7 +22,7 @@ export default function AddShopAdmin({ show, onClose, shops }) {
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
-  
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.store_name) {
@@ -55,11 +55,10 @@ export default function AddShopAdmin({ show, onClose, shops }) {
         });
         setErrors({});
       } catch (err) {
-        console.log("Error:", err); 
+        console.log("Error:", err);
       }
     }
   };
-  
 
   return (
     <div>

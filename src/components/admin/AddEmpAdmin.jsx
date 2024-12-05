@@ -52,7 +52,6 @@ export default function AddEmpAdmin({ show, onClose, shops }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log(formData);
       postData(`users`, formData);
       setFormData({
         full_name: "",
@@ -188,8 +187,8 @@ export default function AddEmpAdmin({ show, onClose, shops }) {
               )}
               {error && (
                 <p className="text-red-500">
-                  <span className="font-medium text-red-700">Oops!</span> Something went
-                  wrong!
+                  <span className="font-medium text-red-700">Oops!</span>{" "}
+                  Something went wrong!
                 </p>
               )}
             </div>

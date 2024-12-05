@@ -116,16 +116,22 @@ const InventoryPendingRequest = ({ show, close }) => {
                         className="border-t pt-2 flex"
                       >
                         <p>
-                          <strong>Product Name:</strong> {product.product_name}
+                          <strong>Product Name:</strong><br></br> {product.product_name}
                         </p>
                         <p>
-                          <strong>Brand Name:</strong> {product.brand_name}
+                          <strong>Product Color:</strong><br></br> {product.color}
                         </p>
                         <p>
-                          <strong>Product Type:</strong> {product.product_type}
+                          <strong>Product Capacity:</strong> <br></br>{product.capacity}
                         </p>
                         <p>
-                          <strong>Qty:</strong> {product.request_quentity}
+                          <strong>Brand Name:</strong><br></br> {product.brand_name}
+                        </p>
+                        <p>
+                          <strong>Product Type:</strong> <br></br>{product.product_type}
+                        </p>
+                        <p>
+                          <strong>Qty:</strong><br></br> {product.request_quentity}
                         </p>
                       </div>
                     ))}

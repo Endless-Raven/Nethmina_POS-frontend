@@ -24,7 +24,6 @@ function ManageShopsAndEmp() {
   const [openModelAddEmp, setOpenModelAddEmp] = useState(false);
   const [openModelAddShop, setOpenModelAddShop] = useState(false);
 
-  // console.log(data);
 
   return (
     <div className="pt-16">

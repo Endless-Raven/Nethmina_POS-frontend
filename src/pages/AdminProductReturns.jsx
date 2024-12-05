@@ -89,7 +89,6 @@ function AdminProductReturns() {
   };
 
   const handleSubmitExpense = () => {
-    console.log(modalData)
     fetch(`${API_BASE_URL}/return/processReturn/WithExpense`, {
       method: "POST",
       headers: {

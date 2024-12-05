@@ -38,7 +38,6 @@ export default function Model({onSelectModel , reset, model}) {
           }
         );
         setSuggestions(response.data);
-        console.log(queryValue);
         setShowSuggestions(true); // Show the suggestions only if there is data
       } catch (err) {
         console.error("Error fetching suggestions:", err);

@@ -15,7 +15,7 @@ import ImeiNumberModel from "../admin/ImeiNumberModel";
 export function ProductTable({ items, setitems }) {
   const [showImeiNumber, setShowImeiNumberModal] = useState("");
   const [selectedImeis, setSelectedImeis] = useState([]);
-  // console.log(selectedImeis);
+ 
 
   return (
     <div className="overflow-x-auto border border-collapse rounded-lg">

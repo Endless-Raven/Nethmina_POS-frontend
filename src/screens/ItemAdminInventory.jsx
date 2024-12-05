@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal, Spinner, Table } from "flowbite-react";
+import { Button, Modal,Checkbox,Label, Spinner, Table } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import UpdateItemModel from "../components/admin/UpdateItemModel";
 import ImeiNumberModel from "../components/admin/ImeiNumberModel";
@@ -20,6 +20,7 @@ function ItemAdminInventory() {
   const [editIndex, setEditIndex] = useState(null);
   const [stores, setStores] = useState([]);
   const [color, setColor] = useState([]);
+  const [Capacity, setCapacity] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [products, setProducts] = useState([]);
@@ -27,6 +28,7 @@ function ItemAdminInventory() {
   const [selectedStore, setSelectedStore] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedColor, setSelectedColor] = useState("All");
+  const [selectedCapacity, setSelectedCapacity] = useState("All");
   const [selectedGrade, setSelectedGrade] = useState("All");
   const [selectedProductName, setselectedProductName] = useState("");
   const [selectedProductCode, setselectedPrdocutCode] = useState("");
@@ -34,6 +36,7 @@ function ItemAdminInventory() {
   const [selectedShop, setselectedShop] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     fetchStores();
@@ -41,6 +44,7 @@ function ItemAdminInventory() {
     fetchBrands();
     fetchProductData();
     fetchColor();
+    fetchCapacity();
   }, []);
 
   useEffect(() => {
@@ -50,6 +54,10 @@ function ItemAdminInventory() {
   useEffect(() => {
     fetchProductData();
   }, [selectedColor]);
+
+  useEffect(() => {
+    fetchProductData();
+  }, [selectedCapacity]);
 
   useEffect(() => {
     fetchProductData();
@@ -71,6 +79,14 @@ function ItemAdminInventory() {
     fetchProductData();
   }, [selectedStore]);
 
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((p) =>
+        p.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm])
+
   // Fetch store names
   const fetchStores = async () => {
     try {
@@ -87,6 +103,18 @@ function ItemAdminInventory() {
         `${API_BASE_URL}/product/getProductColor/get`
       );
       setColor(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchCapacity = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/product/getProductCapacity/get`
+      );
+      setCapacity(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -132,9 +160,11 @@ function ItemAdminInventory() {
           product_type: selectedCategory,
           color: selectedColor,
           grade: selectedGrade,
+          capacity: selectedCapacity,
         }
       );
       setProducts(response.data);
+      setFilteredProducts(response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
     } finally {
@@ -210,6 +240,18 @@ function ItemAdminInventory() {
               ))}
             </select>
             <select
+              value={selectedCapacity}
+              onChange={(e) => setSelectedCapacity(e.target.value)}
+              className="p-2 border rounded-lg bg-white"
+            >
+              <option value="All">Capacity</option>
+              {Capacity.map((Capacity) => (
+                <option key={Capacity} value={Capacity}>
+                  {Capacity}
+                </option>
+              ))}
+            </select>
+            <select
               value={selectedGrade}
               onChange={(e) => setSelectedGrade(e.target.value)}
               className="p-2 border rounded-lg bg-white"
@@ -221,6 +263,24 @@ function ItemAdminInventory() {
               <option value="P4+">P4+</option>
             </select>
          
+          </div>
+           {/* Checkbox and Paragraph */}
+           <div className=" pt-6 flex items-center gap-2">
+            <Checkbox
+              id="low-stock"
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setFilteredProducts(
+                    products.filter((p) => parseFloat(p.stock_quantity) < p.low_count)
+                  );
+                } else {
+                  setFilteredProducts(products);
+                }
+              }}
+            />
+            <Label htmlFor="low-stock" className="cursor-pointer">
+              Show only low stock items
+            </Label>
           </div>
         </div>
       </div>
@@ -269,7 +329,7 @@ function ItemAdminInventory() {
                       </span>
                     </Table.Cell>
                   </Table.Row>
-                ) : products.length < 1 ? (
+                ) : filteredProducts.length < 1 ? (
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-sky-50">
                     <Table.Cell
                       colSpan={7}
@@ -279,7 +339,7 @@ function ItemAdminInventory() {
                     </Table.Cell>
                   </Table.Row>
                 ) : (
-                  products?.map((item, index) => (
+                  filteredProducts?.map((item, index) => (
                     <Table.Row
                       className="bg-white dark:border-gray-700 dark:bg-gray-800 hover:bg-emerald-50"
                       key={index}
@@ -313,7 +373,6 @@ function ItemAdminInventory() {
                             setShowEditModal(true);
                             setselectedProductName(item.product_name);
                             setselectedProductID(item.product_id);
-                            console.log(item.product_name);
                           }}
                           size="m"
                           gradientDuoTone="Transparent"

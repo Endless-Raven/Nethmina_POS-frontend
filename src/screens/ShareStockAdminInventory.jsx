@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Modal, Label, Select, TextInput } from "flowbite-react";
 import PendingRequestList from "../components/admin_inventory/PendingRequestList";
 import { ProductTable } from "../components/admin_inventory/ProductTable";
@@ -10,6 +10,7 @@ import TranserPending from "../components/TranserPendingModal";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 function ShareStockAdminInventory() {
+  const imeiRefs = useRef([]);
   const userData = useSelector((state) => state.user.data);
   // Backend data
   const [shopsAndCategories, setShopsAndCategories] = useState({
@@ -60,7 +61,6 @@ function ShareStockAdminInventory() {
         ...prev,
         product_types: response.data,
       }));
-      // console.log(response.data)
     } catch (error) {
       console.error("Error fetching Categories:", error);
       setError(error.message);
@@ -106,7 +106,6 @@ function ShareStockAdminInventory() {
         `${API_BASE_URL}/product/brands/byproducttype?product_type=${type}`
       );
       setBrands(response.data);
-      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching brands data:", error);
       setError(error.message);
@@ -125,7 +124,6 @@ function ShareStockAdminInventory() {
         }
       );
       const product = response.data;
-      console.log(response.data);
       setNewItem({
         product_id: product.product_id,
         product_name: product.product_name,
@@ -225,8 +223,6 @@ function ShareStockAdminInventory() {
     });
   };
 
-  console.log(items);
-
   const handleTransfer = async () => {
     const req = {
       products: items,
@@ -293,7 +289,7 @@ function ShareStockAdminInventory() {
           >
             <option value="">Select Shop</option>
             {shopsAndCategories?.shops
-              ?.filter((shop) => shop !== "Tech_Haven")
+              ?.filter((shop) => shop !== userData.store_name)
               .map((shop, index) => (
                 <option
                   key={index}
@@ -369,14 +365,12 @@ function ShareStockAdminInventory() {
                 id="product"
                 value={newItem.product_name}
                 onChange={(e) => {
-                  console.log("onChange triggered");
                   var name = products.find(
                     (p) => p.product_id == e.target.value
                   ).product_name;
                   setNewItem({
                     ...newItem,
                     product_name: e.target.value,
-                    product_name: name,
                   });
                 }}
               >
@@ -415,6 +409,7 @@ function ShareStockAdminInventory() {
                         // IMEI Number Input Handling
                         <TextInput
                           key={index}
+                          ref={(el) => (imeiRefs.current[index] = el)}
                           type="text"
                           placeholder={`IMEI ${index + 1}`}
                           required
@@ -434,6 +429,13 @@ function ShareStockAdminInventory() {
                                 imei_number: updatedIMEIs,
                               });
                             }
+                            if (
+                              e.target.value.length === 15 &&
+                              index < imeiRefs.current.length - 1
+                            ) {
+                              imeiRefs.current[index + 1].focus();
+                            }
+                           
                           }}
                         />
                       )

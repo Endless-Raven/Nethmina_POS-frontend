@@ -21,8 +21,11 @@ export default function     PendingRequestList({ data }) {
               className="p-4 border-b-2 bg-green-50 hover:bg-green-100"
             >
               <div className="flex justify-between gap-2 mb-2 ">
+              <div className="">
+                  <strong>Requested By:</strong> {pending.shop}
+                </div>
                 <div className="">
-                  <strong>From:</strong> {pending.shop}
+                  <strong>From:</strong> {pending.req_from}
                 </div>
                 <div className="flex gap-3">
                   <strong>Time:</strong> {pending.time}
@@ -41,6 +44,14 @@ export default function     PendingRequestList({ data }) {
                   <div>
                     {" "}
                     <strong>Brand:</strong> {product.brand_name}
+                  </div>
+                  <div>
+                    {" "}
+                    <strong>Color:</strong> {product.color}
+                  </div>
+                  <div>
+                    {" "}
+                    <strong>Capacity:</strong> {product.capacity}
                   </div>
                   <div>
                     <strong>Product Name:</strong> {product.product_name}

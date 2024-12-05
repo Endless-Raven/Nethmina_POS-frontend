@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
 import { useSelector, useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/features/userSlice";
@@ -7,12 +7,37 @@ import axios from "axios";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export default function Login() {
+
   const [formDetail, setFormDetail] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const userData = useSelector((state) => state.user.data); // see user data
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    test();
+    test1();
+console.log(API_BASE_URL);
+  },[])  
+
+  const test = async ()=>{
+    try {
+      const response = await axios.get(`https://nethminacellular.lk/api`);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+const test1 = async ()=>{
+    try {
+      const response = await axios.get(`https://nethminacellular.lk/api/saman`);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   const handleChange = (e) => {
     setFormDetail((prevData) => ({
@@ -44,7 +69,6 @@ export default function Login() {
           navigate("/home/billing");
         }
       } catch (error) {
-        console.log(error);
         setError(error.response ? error.response.data.message : error.message);
         setLoading(false);
       }
