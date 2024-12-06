@@ -70,7 +70,6 @@ const Add_item_Model = () => {
     if (
       !trimmedName ||
       !trimmedRetailPrice ||
-      !trimmedWarrantyPeriod ||
       !trimmedCategory ||
       !trimmedBrand ||
       !trimmedModel ||
