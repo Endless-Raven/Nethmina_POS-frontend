@@ -11,6 +11,7 @@ export default function ProductBilling({
   product,
   setProduct,
   addProduct,
+  store_name,
   reset,
   undo,
 }) {
@@ -23,11 +24,17 @@ export default function ProductBilling({
   const [barcode, setBarcode] = useState("");
   const { data, error, loading, fetchData } = useGetWithoutQuery();
   const [Max_discount, setMax_discount] = useState(null);
+  const [imeicheck, setEmeicheck] = useState(false);
 
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     fetchCate();
   }, []);
+
+  useEffect(() => {
+    checkSerial();
+  }, [product.serial_number]);
+
   const fetchCate = async () => {
     try {
       const response = await axios.get(
@@ -81,6 +88,31 @@ export default function ProductBilling({
       setModels(response.data);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const checkSerial = async () => {
+    try {
+      console.log(imeicheck);
+      setEmeicheck(false);
+      const response = await axios.post(
+        `${API_BASE_URL}/product/stockin/imei`,
+        {
+          product_id: product.product_id,
+          store_id: store_name,
+          product_serial: product.serial_number,
+        }
+      );
+      if (response.data?.message === "Serial number found in stock.") {
+        setEmeicheck(true);
+      } else {
+        console.warn("IMEI not found in store.");
+      }
+    } catch (error) {
+      console.error(
+        "Error checking serial number:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -138,7 +170,6 @@ export default function ProductBilling({
     setValidEmi([]);
     setMax_discount(null);
   };
-
 
   // Handle form submission
   const handleAdd = (e) => {
@@ -287,27 +318,30 @@ export default function ProductBilling({
             onChange={handleChangeProduct}
           >
             <option value="">Select</option>
-            {models.map((model, index) => (
-              <option key={index} value={model.product_id}>
+            {models.map((model , index)=>(
+            <option key={index} value={model.product_id}>
                 {model.product_name}
               </option>
-            ))}
+              ))}
           </Select>
         </div>
-
         {/* Serial Number */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="serial" value="Serial Number" />
-          <TextInput
+          <input
             sizing={"sm"}
             value={product.serial_number}
-            onChange={handleProductChange}
+            onChange={(e) => {
+              handleProductChange(e);
+            }}
             name="serial_number"
-            min={0}
             id="serial"
             type="text"
-            className="w-64"
-            placeholder="350123451234560"
+            className={`w-64 rounded-md focus:ring-2 ${
+              false === imeicheck
+                ? `border-red-600 focus:ring-red-500`
+                : `border-green-400 focus:ring-green-500`
+            } px-2 py-1`}
             required
           />
         </div>
@@ -394,7 +428,9 @@ export default function ProductBilling({
             onClick={handleAdd}
             size={"sm"}
             gradientDuoTone="purpleToBlue"
-            disabled={loading}
+            disabled={
+              loading || (selectedCategory == "Mobile Phone" && !imeicheck)
+            }
           >
             Add Product
           </Button>
