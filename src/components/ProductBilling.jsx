@@ -23,6 +23,8 @@ export default function ProductBilling({
   const [emiAvialable, setEmiAvialable] = useState(true);
   const [barcode, setBarcode] = useState("");
   const { data, error, loading, fetchData } = useGetWithoutQuery();
+  const [producterror, setError] = useState("");
+
   const [Max_discount, setMax_discount] = useState(null);
   const [imeicheck, setEmeicheck] = useState(false);
 
@@ -30,6 +32,12 @@ export default function ProductBilling({
   useEffect(() => {
     fetchCate();
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setError("");
+    }, 10000);
+  }, [barcode==""]);
 
   useEffect(() => {
     checkSerial();
@@ -77,15 +85,17 @@ export default function ProductBilling({
   const fetchModels = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/product/models/bybrand`,
+        `${API_BASE_URL}/product/models/bybrandAndStore`,
         {
           params: {
             brand_name: selectedBrand,
             product_type: selectedCategory,
+            store_name:store_name
           },
         }
       );
       setModels(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -93,7 +103,6 @@ export default function ProductBilling({
 
   const checkSerial = async () => {
     try {
-      console.log(imeicheck);
       setEmeicheck(false);
       const response = await axios.post(
         `${API_BASE_URL}/product/stockin/imei`,
@@ -163,6 +172,7 @@ export default function ProductBilling({
       discount: "",
       warranty_period: "",
     });
+    setError("");
     setSelectedModelId(""); // Reset selected model ID
     setSelectedCategory("");
     setSelectedBrand("");
@@ -194,11 +204,41 @@ export default function ProductBilling({
       setOpenModal(true);
     }
   };
+  // const handleChangeBarCode = (e) => {
+  //   setBarcode(e.target.value);
+  //   fetchData(`product/productCode/${e.target.value}/${store_name}`);
+  // };
 
-  const handleChangeBarCode = (e) => {
-    setBarcode(e.target.value);
-    fetchData(`product/productCode/${e.target.value}`);
+  const handleChangeBarCode = async (e) => {
+    const barcode = e.target.value;
+    setBarcode(barcode);
+
+    if (barcode.trim() === "") {
+      setError("");
+      return;
+    }
+  
+    try {
+      const response = await fetchData(`product/productCode/${barcode}/${store_name}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Handle the product data (e.g., setProduct(data))
+        setError(""); // Clear any previous error
+      } else {
+        // Handle errors based on response status
+        if (response.status > 404) {
+          setError("Product not in your store.");
+        } else {
+          setError("Error fetching data.");
+        }
+      }
+      
+    } catch (err) {
+      console.error("Error fetching data:", err.message);
+      setError("Product not in your store.");
+    }
   };
+  
 
   useEffect(() => {
     if (data?.product_type) setSelectedCategory(data.product_type);
@@ -337,6 +377,7 @@ export default function ProductBilling({
             name="serial_number"
             id="serial"
             type="text"
+            maxLength={15}
             className={`w-64 rounded-md focus:ring-2 ${
               false === imeicheck
                 ? `border-red-600 focus:ring-red-500`
@@ -413,7 +454,7 @@ export default function ProductBilling({
 
         {/* Buttons */}
         <div className="flex justify-end gap-2">
-          {error && <span className="text-red-500">error fetching Data</span>}
+        {error && <span className="text-red-500">{producterror}</span>}
           <Button
             type="reset"
             size={"sm"}
