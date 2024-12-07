@@ -373,7 +373,6 @@ function ShareStockManagerInventory() {
                   setNewItem({
                     ...newItem,
                     product_name: e.target.value,
-                    product_name: name,
                   });
                 }}
               >
