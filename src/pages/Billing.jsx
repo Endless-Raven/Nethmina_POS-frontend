@@ -323,6 +323,7 @@ export default function Billing() {
           setProduct={setProduct}
           addProduct={addProduct}
           reset={fullReset}
+          store_name={userData.store_name}
           undo={() => {
             setFullReset(false);
           }}

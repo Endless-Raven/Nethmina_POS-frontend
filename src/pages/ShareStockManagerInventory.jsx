@@ -27,6 +27,11 @@ function ShareStockManagerInventory() {
   const [product_name, setProductName] = useState("");
   const [reset, setReset] = useState(false);
   const [OpenModaltranserPending, setOpenModaltranserPending] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suggesstionList, setSuggesstionList] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [success,setSuccess] = useState(null);
+
 
   useEffect(() => {
     if (reset) {
@@ -47,6 +52,11 @@ function ShareStockManagerInventory() {
       capacity: "",
     });
   };
+
+  useEffect(() => {
+    if (searchQuery && searchQuery !== "") getSuggestions();
+  }, [searchQuery]);
+
 
   const getCategories = async () => {
     setLoading(true);
@@ -113,6 +123,46 @@ function ShareStockManagerInventory() {
       setLoading(false);
     }
   };
+
+
+  
+  async function getSuggestions() {
+    try {
+      setError(null);
+      setSuccess(null);
+      const response = await axios.get(
+        `${API_BASE_URL}/product/productdetails/${searchQuery}`
+      );
+      setSuggesstionList(response.data);
+    } catch (error) {
+      if (error.response.data.message) setError("Products Not Found");
+      else setError(error.message);
+    }
+  }
+
+
+  const fetchProductByname = async (product_id) => {
+    setLoading(true);
+    try {
+      // Ensure you're passing product_id instead of product_name
+      const response = await axios.post(`${API_BASE_URL}/product/productcode/byID`, {
+        product_id: product_id, // Pass product_id here
+      });
+  
+      const product = response.data;
+  
+      // Handle the response, which will be the product code
+      setbarcode(product.product_code);
+  
+      // Do further processing as needed
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   const fetchProduct = async () => {
     setLoading(true);
@@ -327,6 +377,39 @@ function ShareStockManagerInventory() {
           <div className="flex flex-col gap-4">
             {toShop && (
               <div>
+                 <div className="relative pt-2">
+              <input
+                type="search"
+                placeholder="Search product"
+                className="mb-5 w-full rounded-lg pl-8 pr-2 py-2 border  bg-gray-50"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <ul className="bg-gray-50 top-14 w-full absolute z-10 border-b rounded-md">
+                {suggesstionList?.length > 0 &&
+                  suggesstionList.map((li, index) => (
+                    <li
+                      className="pl-8 hover:bg-gray-200 cursor-pointer mb-1"
+                      key={index}
+                      onClick={async () => {
+                        setSelectedProducts((prev) => [
+                          ...prev,
+                          {
+                            product_id: li.product_id,
+                            product_name: li.product_name,
+                            request_quantity: 1,
+                          },
+                        ]);
+                        setSuggesstionList([]);
+                        setSearchQuery("");
+                        fetchProductByname(li.product_id);
+                      }}
+                    >
+                       {li.product_name} {" "} {li.color} {" "} {li.capacity}
+                    </li>
+                  ))}
+              </ul>
+            </div>
                 <TextInput
                   id="productCode"
                   type="text"

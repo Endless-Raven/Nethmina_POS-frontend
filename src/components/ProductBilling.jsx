@@ -11,6 +11,7 @@ export default function ProductBilling({
   product,
   setProduct,
   addProduct,
+  store_name,
   reset,
   undo,
 }) {
@@ -22,12 +23,26 @@ export default function ProductBilling({
   const [emiAvialable, setEmiAvialable] = useState(true);
   const [barcode, setBarcode] = useState("");
   const { data, error, loading, fetchData } = useGetWithoutQuery();
+  const [producterror, setError] = useState("");
+
   const [Max_discount, setMax_discount] = useState(null);
+  const [imeicheck, setEmeicheck] = useState(false);
 
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     fetchCate();
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setError("");
+    }, 10000);
+  }, [barcode==""]);
+
+  useEffect(() => {
+    checkSerial();
+  }, [product.serial_number]);
+
   const fetchCate = async () => {
     try {
       const response = await axios.get(
@@ -70,17 +85,43 @@ export default function ProductBilling({
   const fetchModels = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/product/models/bybrand`,
+        `${API_BASE_URL}/product/models/bybrandAndStore`,
         {
           params: {
             brand_name: selectedBrand,
             product_type: selectedCategory,
+            store_name:store_name
           },
         }
       );
       setModels(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const checkSerial = async () => {
+    try {
+      setEmeicheck(false);
+      const response = await axios.post(
+        `${API_BASE_URL}/product/stockin/imei`,
+        {
+          product_id: product.product_id,
+          store_id: store_name,
+          product_serial: product.serial_number,
+        }
+      );
+      if (response.data?.message === "Serial number found in stock.") {
+        setEmeicheck(true);
+      } else {
+        console.warn("IMEI not found in store.");
+      }
+    } catch (error) {
+      console.error(
+        "Error checking serial number:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -131,6 +172,7 @@ export default function ProductBilling({
       discount: "",
       warranty_period: "",
     });
+    setError("");
     setSelectedModelId(""); // Reset selected model ID
     setSelectedCategory("");
     setSelectedBrand("");
@@ -138,7 +180,6 @@ export default function ProductBilling({
     setValidEmi([]);
     setMax_discount(null);
   };
-
 
   // Handle form submission
   const handleAdd = (e) => {
@@ -163,11 +204,41 @@ export default function ProductBilling({
       setOpenModal(true);
     }
   };
+  // const handleChangeBarCode = (e) => {
+  //   setBarcode(e.target.value);
+  //   fetchData(`product/productCode/${e.target.value}/${store_name}`);
+  // };
 
-  const handleChangeBarCode = (e) => {
-    setBarcode(e.target.value);
-    fetchData(`product/productCode/${e.target.value}`);
+  const handleChangeBarCode = async (e) => {
+    const barcode = e.target.value;
+    setBarcode(barcode);
+
+    if (barcode.trim() === "") {
+      setError("");
+      return;
+    }
+  
+    try {
+      const response = await fetchData(`product/productCode/${barcode}/${store_name}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Handle the product data (e.g., setProduct(data))
+        setError(""); // Clear any previous error
+      } else {
+        // Handle errors based on response status
+        if (response.status > 404) {
+          setError("Product not in your store.");
+        } else {
+          setError("Error fetching data.");
+        }
+      }
+      
+    } catch (err) {
+      console.error("Error fetching data:", err.message);
+      setError("Product not in your store.");
+    }
   };
+  
 
   useEffect(() => {
     if (data?.product_type) setSelectedCategory(data.product_type);
@@ -287,27 +358,31 @@ export default function ProductBilling({
             onChange={handleChangeProduct}
           >
             <option value="">Select</option>
-            {models.map((model, index) => (
-              <option key={index} value={model.product_id}>
+            {models.map((model , index)=>(
+            <option key={index} value={model.product_id}>
                 {model.product_name}
               </option>
-            ))}
+              ))}
           </Select>
         </div>
-
         {/* Serial Number */}
         <div className="flex gap-4 items-center justify-between">
           <Label htmlFor="serial" value="Serial Number" />
-          <TextInput
+          <input
             sizing={"sm"}
             value={product.serial_number}
-            onChange={handleProductChange}
+            onChange={(e) => {
+              handleProductChange(e);
+            }}
             name="serial_number"
-            min={0}
             id="serial"
             type="text"
-            className="w-64"
-            placeholder="350123451234560"
+            maxLength={15}
+            className={`w-64 rounded-md focus:ring-2 ${
+              false === imeicheck
+                ? `border-red-600 focus:ring-red-500`
+                : `border-green-400 focus:ring-green-500`
+            } px-2 py-1`}
             required
           />
         </div>
@@ -379,7 +454,7 @@ export default function ProductBilling({
 
         {/* Buttons */}
         <div className="flex justify-end gap-2">
-          {error && <span className="text-red-500">error fetching Data</span>}
+        {error && <span className="text-red-500">{producterror}</span>}
           <Button
             type="reset"
             size={"sm"}
@@ -394,7 +469,9 @@ export default function ProductBilling({
             onClick={handleAdd}
             size={"sm"}
             gradientDuoTone="purpleToBlue"
-            disabled={loading}
+            disabled={
+              loading || (selectedCategory == "Mobile Phone" && !imeicheck)
+            }
           >
             Add Product
           </Button>
