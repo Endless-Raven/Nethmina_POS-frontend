@@ -242,12 +242,13 @@ export default function ReturnProduct() {
               </Button>
             )}
           </div>
+            {/* Success/Error Message */}
+      {data?.message && <p className="my-2 text-green-600">{data.message}</p>}
+      {error && <p className="my-2 text-red-600">{error}</p>}
         </form>
       </div>
 
-      {/* Success/Error Message */}
-      {data?.message && <p className="my-2 text-green-600">{data.message}</p>}
-      {error && <p className="my-2 text-red-600">{error}</p>}
+    
     </div>
   );
 }

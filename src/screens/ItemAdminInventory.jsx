@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Modal,Checkbox,Label, Spinner, Table } from "flowbite-react";
+import { Button, Modal, Checkbox, Label, Spinner, Table } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import UpdateItemModel from "../components/admin/UpdateItemModel";
 import ImeiNumberModel from "../components/admin/ImeiNumberModel";
@@ -85,7 +85,7 @@ function ItemAdminInventory() {
         p.product_name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-  }, [searchTerm])
+  }, [searchTerm]);
 
   // Fetch store names
   const fetchStores = async () => {
@@ -209,7 +209,9 @@ function ItemAdminInventory() {
               className="p-2 border rounded-lg bg-white"
             >
               <option value="All">All Categories</option>
-              {categories.map((category) => (
+              {categories
+              .filter((category) => category && category.trim() !== "")
+              .map((category) => (
                 <option key={category} value={category}>
                   {category}
                 </option>
@@ -221,7 +223,9 @@ function ItemAdminInventory() {
               className="p-2 border rounded-lg bg-white"
             >
               <option value="All">All Brands</option>
-              {brands.map((brand, index) => (
+              {brands
+              .filter((brand) => brand && brand.trim() !== "")
+              .map((brand, index) => (
                 <option key={index} value={brand}>
                   {brand}
                 </option>
@@ -233,11 +237,13 @@ function ItemAdminInventory() {
               className="p-2 border rounded-lg bg-white"
             >
               <option value="All">Color</option>
-              {color.map((color) => (
-                <option key={color} value={color}>
-                  {color}
-                </option>
-              ))}
+              {color
+                .filter((c) => c && c.trim() !== "") // Filter out empty or null values
+                .map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
             </select>
             <select
               value={selectedCapacity}
@@ -245,7 +251,9 @@ function ItemAdminInventory() {
               className="p-2 border rounded-lg bg-white"
             >
               <option value="All">Capacity</option>
-              {Capacity.map((Capacity) => (
+              {Capacity
+              .filter((Capacity) => Capacity && Capacity.trim() !== "")
+              .map((Capacity) => (
                 <option key={Capacity} value={Capacity}>
                   {Capacity}
                 </option>
@@ -262,16 +270,17 @@ function ItemAdminInventory() {
               <option value="P3+">P3+</option>
               <option value="P4+">P4+</option>
             </select>
-         
           </div>
-           {/* Checkbox and Paragraph */}
-           <div className=" pt-6 flex items-center gap-2">
+          {/* Checkbox and Paragraph */}
+          <div className=" pt-6 flex items-center gap-2">
             <Checkbox
               id="low-stock"
               onChange={(e) => {
                 if (e.target.checked) {
                   setFilteredProducts(
-                    products.filter((p) => parseFloat(p.stock_quantity) < p.low_count)
+                    products.filter(
+                      (p) => parseFloat(p.stock_quantity) < p.low_count
+                    )
                   );
                 } else {
                   setFilteredProducts(products);
@@ -364,35 +373,35 @@ function ItemAdminInventory() {
                       <Table.Cell>{item.capacity}</Table.Cell>
                       <Table.Cell>{item.stock_quantity}</Table.Cell>
                       <Table.Cell>
-                      <div className="flex justify-between items-center mb-4 gap-3">
-                        <Button
-                          className="m-3 p-1 mb-3 text-lg"
-                          onClick={async () => {
-                            setShowImeiNumberModal(false);
-                            setqty(item.stock_quantity);
-                            setShowEditModal(true);
-                            setselectedProductName(item.product_name);
-                            setselectedProductID(item.product_id);
-                          }}
-                          size="m"
-                          gradientDuoTone="Transparent"
-                        >
-                          ...
-                        </Button>
-                        <Button
-                          className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                          onClick={() => {
-                            setselectedShop(item.store_name);
-                            setselectedProductID(item.product_id);
-                            setselectedPrdocutCode(item.product_code);
-                            setShowDeleteModal(true);
-                            setqty(item.stock_quantity);
-                          }}
-                          size="m"
-                          gradientDuoTone="Transparent"
-                        >
-                          Delete
-                        </Button>
+                        <div className="flex justify-between items-center mb-4 gap-3">
+                          <Button
+                            className="m-3 p-1 mb-3 text-lg"
+                            onClick={async () => {
+                              setShowImeiNumberModal(false);
+                              setqty(item.stock_quantity);
+                              setShowEditModal(true);
+                              setselectedProductName(item.product_name);
+                              setselectedProductID(item.product_id);
+                            }}
+                            size="m"
+                            gradientDuoTone="Transparent"
+                          >
+                            ...
+                          </Button>
+                          <Button
+                            className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                            onClick={() => {
+                              setselectedShop(item.store_name);
+                              setselectedProductID(item.product_id);
+                              setselectedPrdocutCode(item.product_code);
+                              setShowDeleteModal(true);
+                              setqty(item.stock_quantity);
+                            }}
+                            size="m"
+                            gradientDuoTone="Transparent"
+                          >
+                            Delete
+                          </Button>
                         </div>
                       </Table.Cell>
                     </Table.Row>
@@ -403,17 +412,19 @@ function ItemAdminInventory() {
           </div>
         </div>
       </div>
-      {showDelete &&  <DeleteProductModel
-        showModel={showDelete}
-        shop={selectedShop}
-        productID={selectedProductID}
-        qty={qty}
-        code={selectedProductCode}
-        close={() => {
-          setShowDeleteModal(false);
-          navigate(0);
-        }}
-      />}
+      {showDelete && (
+        <DeleteProductModel
+          showModel={showDelete}
+          shop={selectedShop}
+          productID={selectedProductID}
+          qty={qty}
+          code={selectedProductCode}
+          close={() => {
+            setShowDeleteModal(false);
+            navigate(0);
+          }}
+        />
+      )}
       <UpdateItemModel
         stockqty={qty}
         productName={selectedProductName}
@@ -432,7 +443,6 @@ function ItemAdminInventory() {
           setShowImeiNumberModal(false);
         }}
       />
-      
     </div>
   );
 }

@@ -63,7 +63,6 @@ export function ProductTable({ items, setitems }) {
           setShowImeiNumberModal(false);
         }}
       />
-      ;
     </div>
   );
 }
