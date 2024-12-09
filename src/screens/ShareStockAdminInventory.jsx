@@ -355,7 +355,7 @@ function ShareStockAdminInventory() {
           </Button>
         )}
         {items.length > 0 && (
-          <Button gradientDuoTone="greenToBlue" onClick={handleTransfer}>
+          <Button gradientDuoTone="greenToBlue" onClick={handleTransfer} disabled={loading}>
             Transfer
           </Button>
         )}
