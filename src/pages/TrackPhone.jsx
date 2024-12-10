@@ -24,7 +24,6 @@ function TrackPhone() {
     setImeiNumber("");
   };
 
-
   return (
     <div className="pt-16">
       <div className="flex w-full justify-center gap-2">
@@ -70,7 +69,27 @@ function TrackPhone() {
               : "border-sky-300"
           }`}
         >
-          <div>{data.sold ? "Out Of Stock" : "In Stock"}</div>
+          <div>
+            {/* Check if the product is in return */}
+            {data.return ? (
+              <span>
+                {data.return_status === "pending"
+                  ? "Pending Return"
+                  : data.return_status === "confirmed"
+                  ? "Confirmed Return"
+                  : "In Return"}
+              </span>
+            ) : (
+              // Display sold or stock status if not in return
+              <span>{data.sold ? "Out Of Stock" : "In Stock"}</span>
+            )}
+          </div>
+
+          <div>
+            {/* Display transfer status */}
+            <span>{data.transfer ? "Transferred" : "Not Transferred"}</span>
+          </div>
+
           <div>
             <span className="font-semibold">Product:</span> {data.product_name}
           </div>
@@ -88,10 +107,9 @@ function TrackPhone() {
               <span className="font-semibold">Grade:</span> {data.grade}
             </div>
           </div>
-            <div>
-              <span className="font-semibold">Category:</span>{" "}
-              {data.product_type}
-            </div>
+          <div>
+            <span className="font-semibold">Category:</span> {data.product_type}
+          </div>
           {data?.store_name && (
             <div>
               <span className="font-semibold">Shop:</span> {data.store_name}
@@ -110,10 +128,23 @@ function TrackPhone() {
             <span className="font-semibold">Transfer Status:</span>{" "}
             {data.transfer ? "Transferred" : "Not Transferred"}
           </div>
+          {data.return && (
+            <div>
+              <span className="font-semibold">Return Status:</span>{" "}
+              {data.return_status === "confirmed" ||
+              data.return_status === "pending"
+                ? `Return Status: ${data.return_status}`
+                : "No relevant return status"}
+            </div>
+          )}
           {data.transfer && (
-            <div className="flex gap-5 items-center" >
+            <div className="flex gap-5 items-center">
               <span className="font-semibold">Transfer To:</span>{" "}
-              {data.transfer_from}  <span className="text-2xl text-yellow-300"><TbTruckDelivery /> </span> {data.transfer_to}
+              {data.transfer_from}{" "}
+              <span className="text-2xl text-yellow-300">
+                <TbTruckDelivery />{" "}
+              </span>{" "}
+              {data.transfer_to}
             </div>
           )}
         </div>
@@ -122,8 +153,6 @@ function TrackPhone() {
       )}
     </div>
   );
-
-
 }
 
 export default TrackPhone;

@@ -561,7 +561,7 @@ function ShareStockManagerInventory() {
     show={OpenModaltranserPending}
     store_Id={userData.store_id}
     close={() => setOpenModaltranserPending(false)}
-  />;
+  />
     </div>
   );
 }
