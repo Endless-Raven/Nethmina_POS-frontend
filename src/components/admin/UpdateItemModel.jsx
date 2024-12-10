@@ -5,7 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = process.env.API_BASE_URL;
 
-const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close }) => {
+const UpdateItemModel = ({
+  stockqty,
+  productName,
+  product_id,
+  showModel,
+  close,
+}) => {
   const imeiRefs = useRef([]);
   const [loading, setLoading] = useState(false);
   const [itemNames, setItemNames] = useState({ name: "", category: "" });
@@ -65,13 +71,12 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
   const updateProduct = async () => {
     setLoading(true);
     try {
-
       // Check if the category is 'Mobile Phone'
       if (newItem.category === "Mobile Phone") {
         const imeiNumbers = Array.isArray(newItem.newimeinumber)
           ? newItem.newimeinumber
           : [newItem.newimeinumber];
-      
+
         // Check if the quantity matches the count of IMEI numbers
         if (imeiNumbers.length !== Number(newItem.newqty)) {
           setFooterMessage(
@@ -103,7 +108,13 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
         setFooterMessage("Failed to update the product.");
       }
     } catch (error) {
-      setFooterMessage("An error occurred while updating the product.");
+      if (error.response && error.response.data && error.response.data.message) {
+        // Extract the error message from the backend
+        setFooterMessage(error.response.data.message);
+      } else {
+        // Fallback to a generic error message
+        setFooterMessage("An error occurred while updating the product.");
+      }
       console.error("Error updating product:", error);
     } finally {
       setLoading(false);
@@ -111,10 +122,7 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
   };
 
   return (
-    <Modal
-      show={showModel}
-      onClose={close}
-    >
+    <Modal show={showModel} onClose={close}>
       <Modal.Header>Add Stock</Modal.Header>
       <Modal.Body>
         <div className="flex flex-col gap-4">
@@ -125,18 +133,22 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
             <TextInput
               type="text"
               id="new_qty"
-              onChange={(e) =>
-              {
-                setNewItem({ ...newItem, newqty: e.target.value.trim(),newimeinumber:[] })
-              } // Trimmed
-            }
-            required
+              onChange={
+                (e) => {
+                  setNewItem({
+                    ...newItem,
+                    newqty: e.target.value.trim(),
+                    newimeinumber: [],
+                  });
+                } // Trimmed
+              }
+              required
             />
           </div>
           <div className="space-y-2">
-           {newItem.category==="Mobile Phone" &&
-            <Label>IMEI Numbers</Label>}
-            {newItem.category==="Mobile Phone" && newItem?.newqty &&
+            {newItem.category === "Mobile Phone" && <Label>IMEI Numbers</Label>}
+            {newItem.category === "Mobile Phone" &&
+              newItem?.newqty &&
               Array.from({ length: Number(newItem.newqty) }).map((_, index) => (
                 <TextInput
                   key={index}
@@ -177,7 +189,15 @@ const UpdateItemModel = ({ stockqty, productName,product_id, showModel, close })
             {loading ? "Updating..." : "Update Stock"}
           </Button>
           {footerMessage && (
-            <p className="text-sm text-green-500">{footerMessage}</p>
+            <p
+              className={`text-sm ${
+                footerMessage.includes("Duplicate IMEIs")
+                  ? "text-red-500"
+                  : "text-green-500"
+              }`}
+            >
+              {footerMessage}
+            </p>
           )}
         </Modal.Footer>
       </Modal.Body>
