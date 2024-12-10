@@ -121,7 +121,7 @@ const DailyReport = () => {
                     <td className="border border-gray-400 p-2">
                       Rs :{" "}
                       {item.item_price
-                        ? Number(item.item_price).toFixed(2)
+                        ? (Number(item.item_price)+Number(item.discount)).toFixed(2)
                         : "-"}
                     </td>
                     <td className="border border-gray-400 text-center">
@@ -132,7 +132,7 @@ const DailyReport = () => {
                     </td>
                     <td className="border border-gray-400 p-2 ">
                       Rs :{" "}
-                      {Number((item.item_price*item.item_quantity)-item.discount).toFixed(2)}
+                      {Number((item.item_price*item.item_quantity)).toFixed(2)}
                     </td>
                   </tr>
                 ))}
