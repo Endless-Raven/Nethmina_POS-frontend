@@ -415,6 +415,10 @@ export default function ProductBilling({
             className="w-64"
             placeholder="3"
             value={product.quantity}
+            style={{
+              WebkitAppearance: "none", // For Chrome, Edge, Safari
+              MozAppearance: "textfield", // For Firefox
+            }}
             required
           />
         </div>
@@ -427,11 +431,11 @@ export default function ProductBilling({
             id="discount"
             name="discount"
             onChange={handleProductChange}
-            type="number"
+            type="text"
             min={0}
             className="w-64"
-            placeholder="500.00"
-            value={product.discount}
+            placeholder={Max_discount}
+            value={product.discount || ""}
           />
         </div>
 

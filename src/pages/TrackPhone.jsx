@@ -35,6 +35,7 @@ function TrackPhone() {
           placeholder="Enter IMEI number"
           className="w-64"
           value={imei_number}
+          maxLength={15}
           onChange={handleImeiChange}
           required
         />

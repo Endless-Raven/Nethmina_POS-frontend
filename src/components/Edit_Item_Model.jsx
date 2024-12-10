@@ -172,7 +172,7 @@ const Edit_Item_Model = ({ productName , product_id }) => {
     setLoading(true);
     try {
       const response = await axios.delete(
-        `${API_BASE_URL}/product/${productName}`
+        `${API_BASE_URL}/product/${product_id}`
       );
 
       if (response.status === 200) {

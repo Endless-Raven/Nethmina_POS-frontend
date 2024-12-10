@@ -163,7 +163,9 @@ function Product() {
                 className="p-2 border rounded-lg bg-white"
               >
                 <option value="All">All Categories</option>
-                {categories.map((category) => (
+                {categories
+                 .filter((category) => category && category.trim() !== "")
+                .map((category) => (
                   <option key={category} value={category}>
                     {category}
                   </option>
@@ -175,7 +177,9 @@ function Product() {
                 className="p-2 border rounded-lg bg-white"
               >
                 <option value="All">All Brands</option>
-                {brands.map((brand, index) => (
+                {brands
+                 .filter((brand) => brand && brand.trim() !== "")
+                .map((brand, index) => (
                   <option key={index} value={brand}>
                     {brand}
                   </option>
@@ -187,7 +191,9 @@ function Product() {
                 className="p-2 border rounded-lg bg-white"
               >
                 <option value="All">Color</option>
-                {color.map((color) => (
+                {color
+                  .filter((color) => color && color.trim() !== "")
+                .map((color) => (
                   <option key={color} value={color}>
                     {color}
                   </option>
